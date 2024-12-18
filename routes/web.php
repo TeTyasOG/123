@@ -54,3 +54,13 @@ Route::middleware('authcheck')->group(function() {
 
 // Маршрут /exerciseInfo в исходном коде не требовал авторизации. Если хотите оставить так же:
 Route::get('/exerciseInfo', [ExerciseController::class, 'getExerciseInfo']);
+
+// Тестовый маршрут для Blade-шаблона
+Route::get('/test', function () {
+    return view('test'); // Laravel будет искать файл resources/views/test.blade.php
+});
+
+// Маршрут для страницы профиля
+Route::get('/profile', function () {
+    return view('profile'); // Laravel будет искать файл resources/views/profile.blade.php
+});
