@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use Jenssegers\Mongodb\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
 
 class User extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'users';
+    // Указываем коллекцию, если она не совпадает с названием модели
+    protected $collection = 'users'; 
 
+    // Указываем заполняемые поля
     protected $fillable = [
         'nickname',
         'email',
@@ -24,24 +24,30 @@ class User extends Model
         'muscleExperience',
         'muscleLevels',
         'exerciseExperience',
-        'exerciseLevels'
+        'exerciseLevels',
     ];
 
+    // Указываем типы полей
     protected $casts = [
-        'achievements' => 'array',
-        'muscleExperience' => 'array', 
-        'muscleLevels' => 'array', 
-        'exerciseExperience' => 'array', 
-        'exerciseLevels' => 'array',
+        'age' => 'integer',
+        'height' => 'integer',
+        'weight' => 'integer',
         'experience' => 'integer',
         'level' => 'integer',
-        'weight' => 'integer',
-        'age' => 'integer'
+        'achievements' => 'array', // Массив строк
+        'muscleExperience' => 'array', // Ассоциативный массив
+        'muscleLevels' => 'array', // Ассоциативный массив
+        'exerciseExperience' => 'array', // Объект
+        'exerciseLevels' => 'array', // Объект
     ];
 
-    // Если потребуется, можно добавить хук для шифрования пароля:
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = Hash::make($value);
-    }
+    // Поля с значениями по умолчанию
+    protected $attributes = [
+        'experience' => 0,
+        'level' => 1,
+        'muscleExperience' => [],
+        'muscleLevels' => [],
+        'exerciseExperience' => [],
+        'exerciseLevels' => [],
+    ];
 }

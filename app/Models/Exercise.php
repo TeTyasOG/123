@@ -6,31 +6,34 @@ use Jenssegers\Mongodb\Eloquent\Model;
 
 class Exercise extends Model
 {
-    protected $connection = 'mongodb'; // указываем, что это подключение к MongoDB
-    protected $collection = 'exercises'; // имя коллекции, если отличается от 'exercises', укажите нужное
 
-    // Модель не знает о схемах как Mongoose, поэтому просто указываем поля, которые можно массово присваивать.
+    // Укажите используемое подключение (mongodb)
+    protected $connection = 'mongodb';
+
+    // Укажите заполняемые поля
     protected $fillable = [
         'name',
         'englishName',
         'videoUrl',
         'thumbnailUrl',
-        // musclePercentages будет храниться как объект/массив
-        // В Laravel Map типа не нужно особо указывать, просто хранится как массив или объект
-        'musclePercentages', 
+        'musclePercentages',
         'muscleFilter',
         'minWeightMale',
         'maxWeightMale',
         'minWeightFemale',
         'maxWeightFemale',
         'description',
-        'tips'
+        'tips',
     ];
 
-    // Если нужно, можно добавить касты типов:
+    // Укажите типы данных, если необходимо
     protected $casts = [
-        'musclePercentages' => 'array', // Сохраняем Map как массив
+        'musclePercentages' => 'array',
         'muscleFilter' => 'array',
-        'tips' => 'array'
+        'tips' => 'array',
+        'minWeightMale' => 'float',
+        'maxWeightMale' => 'float',
+        'minWeightFemale' => 'float',
+        'maxWeightFemale' => 'float',
     ];
 }

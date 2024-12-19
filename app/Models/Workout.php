@@ -6,23 +6,25 @@ use Jenssegers\Mongodb\Eloquent\Model;
 
 class Workout extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'workouts';
-
+    protected $collection = 'workouts'; // Укажите имя коллекции MongoDB
     protected $fillable = [
         'userId',
         'date',
         'exercises',
         'totalXP',
         'exercisesCount',
-        'totalWorkoutTime'
+        'totalWorkoutTime',
     ];
 
+    // Атрибуты с вложенными структурами
     protected $casts = [
-        // exercises — массив объектов { exerciseId, sets: [{weight, reps, rpe}], notes: string }
-        'exercises' => 'array',
         'date' => 'datetime',
-        'totalXP' => 'integer',
-        'exercisesCount' => 'integer'
+        'exercises' => 'array', // Указываем, что поле exercises является массивом
     ];
+
+    // Связь с пользователем
+    public function user()
+    {
+        return $this->belongsTo(User::class, '_id', 'userId');
+    }
 }
