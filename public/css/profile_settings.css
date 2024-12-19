@@ -1,0 +1,261 @@
+:root {
+  --icon-size: 64px;
+  --top-bar-height: 50px;
+  --setting-label-font-size: 48px;
+  --setting-input-font-size: 40px;
+  --nav-icon-size: 48px;
+  --nav-text-size: 24px;
+
+  --modal-bg-color: #fff;
+  --modal-text-color: #333;
+  --modal-button-bg: #e0e0e0;
+  --modal-button-text-color: #333;
+  --modal-button-radius: 20px;
+  --modal-button-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+body {
+  background-color: #f3f2f8;
+  margin: 0;
+  padding: 0;
+  font-family: 'INTRO', sans-serif;
+}
+
+/* Верхняя панель */
+.top-bar {
+  position: relative;
+  width: 100%;
+  height: var(--top-bar-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.page-title {
+  font-size: 64px; /* Крупный размер */
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* Иконки-кнопки */
+.icon-button {
+  position: absolute;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  background: #e0e0e0;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease;
+}
+
+.icon-button:hover {
+  background-color: #d5d5d5;
+}
+
+.icon-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+}
+
+#backButton {
+  left: 10px;
+  top: 40%;
+  transform: translateY(-50%);
+}
+
+#saveButton {
+  right: 10px;
+  top: 40%;
+  transform: translateY(-50%);
+}
+
+/* Настройки */
+.settings-container {
+  padding: 20px;
+  margin-top: 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.setting-item {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.setting-label {
+  font-size: var(--setting-label-font-size);
+  color: #333;
+  margin: 0;
+  white-space: nowrap;
+  margin-right: 20px;
+}
+
+.setting-input,
+.setting-select {
+  font-size: var(--setting-input-font-size);
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 20px;
+  font-family: 'INTRO', sans-serif;
+  background: #f9f9f9;
+  color: #000;
+  width: 50%; 
+  max-width: 300px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.setting-input:focus,
+.setting-select:focus {
+  outline: none;
+  background: #fff;
+}
+
+/* Нижняя панель */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid #ccc;
+}
+
+.bottom-nav .nav-link {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  text-decoration: none;
+  color: #000;
+  font-size: var(--nav-text-size);
+  font-family: 'INTRO', sans-serif;
+}
+
+.bottom-nav .nav-link img {
+  width: var(--nav-icon-size);
+  height: var(--nav-icon-size);
+}
+
+.bottom-nav .nav-link span {
+  display: block;
+  margin-top: 5px;
+}
+
+.bottom-nav .nav-link.active {
+  background-color: #e0e0e0;
+}
+
+/* Модальное окно */
+.modal-overlay {
+  display: none; /* По умолчанию скрыто */
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(5px);
+  z-index: 100;
+}
+
+.modal-window {
+  background: var(--modal-bg-color);
+  color: var(--modal-text-color);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  width: 80%;
+  max-width: 250px;
+  padding: 15px;
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.modal-text {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.modal-button {
+  background: var(--modal-button-bg);
+  color: var(--modal-button-text-color);
+  border: none;
+  border-radius: var(--modal-button-radius);
+  box-shadow: var(--modal-button-shadow);
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-family: 'INTRO', sans-serif;
+}
+
+.modal-button:hover {
+  background: #d5d5d5;
+}
+
+.modal-button-blue {
+  background: #152ac7;
+  color: #fff;
+}
+
+.modal-button-blue:hover {
+  background: #0f1e9a;
+}
+
+/* Мобильная адаптация */
+@media screen and (max-width: 480px) {
+  :root {
+    --icon-size: 32px;
+    --setting-label-font-size: 20px;
+    --setting-input-font-size: 16px;
+    --nav-icon-size: 20px;
+    --nav-text-size: 10px;
+  }
+
+  .page-title {
+    font-size: 24px;
+  }
+
+  .setting-item {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .setting-input,
+  .setting-select {
+    width: 100%;
+    max-width: none;
+  }
+
+  .modal-text {
+    font-size: 18px;
+  }
+
+  .modal-button {
+    font-size: 16px;
+  }
+}

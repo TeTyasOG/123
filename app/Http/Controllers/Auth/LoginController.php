@@ -37,4 +37,20 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
+
+    /**
+     * Determine which field (email or nickname) to use for authentication.
+     *
+     * @return string
+     */
+    public function username()
+    {
+        $login = request()->input('login');
+
+        // Determine if the login is an email or a nickname
+        $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'nickname';
+        request()->merge([$fieldType => $login]);
+
+        return $fieldType;
+    }
 }

@@ -1,47 +1,44 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MeasurementController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\WorkoutController;
 
-// Маршруты аутентификации (аналог authRoutes.js)
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
-
-// Маршруты для замеров (аналог measurementRoutes.js)
-// Здесь мы используем middleware('authcheck') для защиты маршрутов
-Route::middleware('authcheck')->group(function() {
+// Маршруты для замеров
+Route::middleware('authcheck')->group(function () {
     Route::post('/addMeasurement', [MeasurementController::class, 'addMeasurement']);
     Route::get('/getMeasurements', [MeasurementController::class, 'getMeasurements']);
+    Route::post('/measurements/add', [MeasurementController::class, 'addMeasurement']);
+    Route::get('/measurements', [MeasurementController::class, 'getMeasurements']);
 });
 
-// Маршруты для программ (аналог programRoutes.js)
-Route::middleware('authcheck')->group(function() {
+// Маршруты для программ
+Route::middleware('authcheck')->group(function () {
     Route::post('/addProgram', [ProgramController::class, 'addProgram']);
     Route::get('/getPrograms', [ProgramController::class, 'getPrograms']);
     Route::post('/deleteProgram', [ProgramController::class, 'deleteProgram']);
+    Route::get('/programs', [ProgramController::class, 'getPrograms']);
+    Route::get('/program', [ProgramController::class, 'getProgram']);
+    Route::post('/program/add', [ProgramController::class, 'addProgram']);
+    Route::post('/program/update', [ProgramController::class, 'updateProgram']);
+    Route::delete('/program/delete', [ProgramController::class, 'deleteProgram']);
 });
 
-// Маршруты профиля пользователя (аналог userRoutes.js)
-Route::middleware('authcheck')->group(function() {
+// Маршруты профиля пользователя
+Route::middleware('authcheck')->group(function () {
     Route::get('/getUserProfile', [UserController::class, 'getUserProfile']);
     Route::post('/updateProfile', [UserController::class, 'updateProfile']);
 });
+Route::middleware('auth')->group(function () {
+    Route::get('/user/profile', [UserController::class, 'getUserProfile']);
+    Route::post('/user/profile/update', [UserController::class, 'updateProfile']);
+});
 
-// Маршруты тренировок и упражнений (аналог workoutRoutes.js)
-// В вашем Node коде часть логики была связана с упражнениями и тренировками.
-// Предположим, ExerciseController отвечает за упражнения, WorkoutController — за тренировки.
-// Некоторые маршруты доступны без авторизации, другие — с ней. Подумайте, что вам нужно.
-// В исходном коде большинство маршрутов защищены, кроме exerciseInfo.  
-// Перенесём так же:
-
-// Для упражнений и тренировок
-Route::middleware('authcheck')->group(function() {
+// Маршруты тренировок и упражнений
+Route::middleware('authcheck')->group(function () {
     Route::get('/getExercises', [ExerciseController::class, 'getExercises']);
     Route::get('/getRecentExercises', [ExerciseController::class, 'getRecentExercises']);
     Route::post('/addWorkout', [WorkoutController::class, 'addWorkout']);
@@ -50,17 +47,69 @@ Route::middleware('authcheck')->group(function() {
     Route::get('/exerciseHistory', [WorkoutController::class, 'getExerciseHistory']);
     Route::get('/getExerciseNotes', [WorkoutController::class, 'getExerciseNotes']);
     Route::post('/startProgramWorkout', [WorkoutController::class, 'startProgramWorkout']);
+    Route::post('/workout/add', [WorkoutController::class, 'addWorkout']);
+    Route::get('/workouts', [WorkoutController::class, 'getWorkouts']);
+    Route::get('/workout', [WorkoutController::class, 'getWorkout']);
+    Route::get('/workout/exercise-history', [WorkoutController::class, 'getExerciseHistory']);
+    Route::get('/workout/exercise-notes', [WorkoutController::class, 'getExerciseNotes']);
+    Route::post('/workout/start-program', [WorkoutController::class, 'startProgramWorkout']);
+    Route::post('/workout/update', [WorkoutController::class, 'updateWorkout']);
+    Route::delete('/workout/delete', [WorkoutController::class, 'deleteWorkout']);
 });
 
-// Маршрут /exerciseInfo в исходном коде не требовал авторизации. Если хотите оставить так же:
+// Маршруты без авторизации
 Route::get('/exerciseInfo', [ExerciseController::class, 'getExerciseInfo']);
+Route::get('/exercises', [ExerciseController::class, 'getExercises']);
+Route::get('/exercises/recent', [ExerciseController::class, 'getRecentExercises']);
+Route::get('/exercise/info', [ExerciseController::class, 'getExerciseInfo']);
 
 // Тестовый маршрут для Blade-шаблона
 Route::get('/test', function () {
-    return view('test'); // Laravel будет искать файл resources/views/test.blade.php
+    return view('test');
 });
-
-// Маршрут для страницы профиля
 Route::get('/profile', function () {
-    return view('profile'); // Laravel будет искать файл resources/views/profile.blade.php
+    return view('profile');
 });
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');
+
+Route::get('/shop', function () {
+    return view('shop');
+})->name('shop');
+
+Route::get('/training', function () {
+    return view('training');
+})->name('training');
+
+Route::get('/workout/history', function () {
+    return view('workout_history');
+})->name('workout.history');
+
+Route::get('/workout', function () {
+    return view('workout');
+})->name('workout');
+
+Route::get('/workouts', function () {
+    return view('workouts');
+})->name('workouts');
+
+Route::get('/exercise', function () {
+    return view('exercise');
+})->name('exercise');
+
+Route::get('/exercises', function () {
+    return view('exercises');
+})->name('exercises');
+
+Route::get('/login', function () {
+    return view('login');
+})->name('login');
+
+Route::get('/measurements', function () {
+    return view('measurements');
+})->name('measurements');
+
+Route::get('/workout_detail', function () {
+    return view('workout_detail');
+})->name('workout_detail');

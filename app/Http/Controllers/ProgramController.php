@@ -8,64 +8,78 @@ use Illuminate\Http\Request;
 
 class ProgramController extends Controller
 {
+    // Добавление новой программы
     public function addProgram(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'exercises' => 'required|array|min:1'
-        ]);
+        try {
+            $userId = session('userId');
+            $name = $request->input('name');
+            $exercises = $request->input('exercises');
 
-        $userId = $request->session()->get('userId');
-        if (!$userId) {
-            return response()->json(['message' => 'Требуется авторизация.'], 401);
+            // Проверка обязательных полей
+            if (!$name || !$exercises || count($exercises) === 0) {
+                return response()->json(['message' => 'Пожалуйста, заполните все поля.'], 400);
+            }
+
+            // Создание новой программы
+            $program = new Program([
+                'user_id' => $userId,
+                'name' => $name,
+                'exercises' => $exercises,
+            ]);
+            $program->save();
+
+            return response()->json(['message' => 'Программа успешно сохранена.']);
+        } catch (\Exception $e) {
+            \Log::error('Ошибка при добавлении программы: ' . $e->getMessage());
+            return response()->json(['message' => 'Ошибка при добавлении программы.'], 500);
         }
-
-        Program::create([
-            'userId' => $userId,
-            'name' => $request->name,
-            'exercises' => $request->exercises
-        ]);
-
-        return response()->json(['message' => 'Программа успешно сохранена.']);
     }
 
+    // Получение программ пользователя
     public function getPrograms(Request $request)
     {
-        $userId = $request->session()->get('userId');
-        if (!$userId) {
-            return response()->json(['message' => 'Требуется авторизация.'], 401);
+        try {
+            $userId = session('userId');
+            $search = $request->query('search');
+
+            $query = Program::where('user_id', $userId);
+
+            if ($search) {
+                $query->where('name', 'LIKE', '%' . $search . '%');
+            }
+
+            // Подгрузка данных об упражнениях
+            $programs = $query->with('exercises')->get();
+
+            return response()->json($programs);
+        } catch (\Exception $e) {
+            \Log::error('Ошибка при получении программ: ' . $e->getMessage());
+            return response()->json(['message' => 'Ошибка при получении программ.'], 500);
         }
-
-        $search = $request->query('search');
-
-        $query = Program::where('userId', $userId);
-        if ($search) {
-            $query->where('name', 'regexp', $search, 'i');
-        }
-
-        // Если нужно подгрузить упражнения, предполагается, что exercises - массив объектов {exerciseId, sets, reps}.
-        // Отношения не заданы, можно вручную получить exerciseId и подгрузить данные при необходимости.
-        // Ниже - простой пример без "populate" (в MongoDB через Eloquent нет прямого populate как в Mongoose):
-        // Можно вручную получить exerciseId и собрать данные. Здесь оставим упрощенный вариант.
-
-        $programs = $query->get();
-
-        return response()->json($programs);
     }
 
+    // Удаление программы
     public function deleteProgram(Request $request)
     {
-        $request->validate([
-            'programId' => 'required|string'
-        ]);
+        try {
+            $userId = session('userId');
+            $programId = $request->input('programId');
 
-        $userId = $request->session()->get('userId');
-        if (!$userId) {
-            return response()->json(['message' => 'Требуется авторизация.'], 401);
+            $program = Program::where('id', $programId)
+                ->where('user_id', $userId)
+                ->first();
+
+            if (!$program) {
+                return response()->json(['message' => 'Программа не найдена.'], 404);
+            }
+
+            $program->delete();
+
+            return response()->json(['message' => 'Программа успешно удалена.']);
+        } catch (\Exception $e) {
+            \Log::error('Ошибка при удалении программы: ' . $e->getMessage());
+            return response()->json(['message' => 'Ошибка при удалении программы.'], 500);
         }
-
-        Program::where('_id', $request->programId)->where('userId', $userId)->delete();
-
-        return response()->json(['message' => 'Программа успешно удалена.']);
     }
 }
