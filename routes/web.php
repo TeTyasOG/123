@@ -63,16 +63,18 @@ Route::get('/exercises', [ExerciseController::class, 'getExercises']);
 Route::get('/exercises/recent', [ExerciseController::class, 'getRecentExercises']);
 Route::get('/exercise/info', [ExerciseController::class, 'getExerciseInfo']);
 
-// Тестовый маршрут для Blade-шаблона
-Route::get('/test', function () {
-    return view('test');
-});
 Route::get('/profile', function () {
     return view('profile');
-});
+})->name('profile');
+
+use App\Http\Controllers\Auth\RegisterController;
+
 Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
+
+Route::post('/register', [RegisterController::class, 'register']);
+
 
 Route::get('/shop', function () {
     return view('shop');
@@ -113,3 +115,15 @@ Route::get('/measurements', function () {
 Route::get('/workout_detail', function () {
     return view('workout_detail');
 })->name('workout_detail');
+
+Route::get('/profile_settings', function () {
+    return view('profile_settings');
+})->name('profile_settings');
+
+Route::get('/addProgram', function () {
+    return view('addProgram');
+})->name('addProgram');
+
+Route::get('/addExercise', function () {
+    return view('addExercise');
+})->name('addExercise');

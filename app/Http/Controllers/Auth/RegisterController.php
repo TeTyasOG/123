@@ -51,13 +51,12 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'nickname' => ['required', 'string', 'max:255', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'age' => ['required', 'integer', 'min:0'],
-            'height' => ['nullable', 'integer', 'min:0'],
-            'weight' => ['nullable', 'integer', 'min:1'],
-            'gender' => ['required', 'string', 'in:male,female,other'],
+            'password' => ['required', 'string', 'min:8'],
+            'gender' => ['required', 'string', 'in:male,female'],
+            'weight' => ['required', 'numeric', 'min:1'],
         ]);
     }
+    
 
     /**
      * Create a new user instance after a valid registration.
@@ -66,22 +65,21 @@ class RegisterController extends Controller
      * @return \App\Models\User
      */
     protected function create(array $data)
-    {
-        return User::create([
-            'nickname' => $data['nickname'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'age' => $data['age'],
-            'height' => $data['height'] ?? null,
-            'weight' => $data['weight'] ?? null,
-            'gender' => $data['gender'],
-            'experience' => 0,
-            'level' => 1,
-            'achievements' => [],
-            'muscleExperience' => [],
-            'muscleLevels' => [],
-            'exerciseExperience' => [],
-            'exerciseLevels' => [],
-        ]);
-    }
+{
+    return User::create([
+        'nickname' => $data['nickname'],
+        'email' => $data['email'],
+        'password' => Hash::make($data['password']),
+        'gender' => $data['gender'],
+        'weight' => $data['weight'],
+        'experience' => 0,
+        'level' => 1,
+        'achievements' => [],
+        'muscleExperience' => [],
+        'muscleLevels' => [],
+        'exerciseExperience' => [],
+        'exerciseLevels' => [],
+    ]);
+}
+
 }
