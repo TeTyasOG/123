@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const backButton = document.getElementById('backButton');
 
   backButton.addEventListener('click', () => {
-    window.location.href = 'profile.html';
+    window.location.href = 'profile';
   });
 
   async function loadWorkouts() {

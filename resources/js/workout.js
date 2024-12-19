@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadWorkoutState();
 
   backButton.addEventListener('click', () => {
-    window.location.href = 'training.html';
+    window.location.href = 'training';
   });
 
   finishButton.addEventListener('click', () => {
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   addExerciseButton.addEventListener('click', () => {
     saveWorkoutState();
-    window.location.href = 'addExercise.html';
+    window.location.href = 'addExercise';
   });
 
   deleteWorkoutButton.addEventListener('click', () => {
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       'Вы точно хотите удалить тренировку?',
       () => {
         sessionStorage.clear();
-        window.location.href = 'training.html';
+        window.location.href = 'training';
       },
       () => {}
     );
@@ -887,7 +887,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           localStorage.setItem(key, completions.toString());
           sessionStorage.removeItem('currentProgramWorkout');
         }
-        window.location.href = 'profile.html';
+        window.location.href = 'profile';
       })
       .catch(error => {
         console.error('Ошибка при сохранении тренировки:', error);

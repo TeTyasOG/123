@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Регистрация</title>
+  @vite(['resources/css/register.css', 'resources/js/register.js'])
   <!-- Подключение стилей через Laravel Mix -->
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
   <link rel="stylesheet" href="{{ asset('css/auth.css') }}">

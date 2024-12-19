@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   confirmCancel.addEventListener('click', () => {
-    window.location.href = 'training.html';
+    window.location.href = 'training';
   });
 
   cancelCancel.addEventListener('click', () => {
@@ -69,14 +69,14 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('userPrograms', JSON.stringify(userPrograms));
 
     alert('Программа успешно сохранена.');
-    window.location.href = 'training.html';
+    window.location.href = 'training';
   });
 
   // Добавить упражнение
   addExerciseButton.addEventListener('click', () => {
     // Переходим на addExercise и указываем что возвращаться надо в программу
     sessionStorage.setItem('returnTo', 'program');
-    window.location.href = 'addExercise.html';
+    window.location.href = 'addExercise';
   });
 
   // Проверяем, пришли ли с addExercise.html

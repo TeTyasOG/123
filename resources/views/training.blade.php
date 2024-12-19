@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Тренировка</title>
+  @vite(['resources/css/training.css', 'resources/js/training.js'])
   <!-- Подключение стилей через Laravel Mix -->
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
   <link rel="stylesheet" href="{{ asset('css/training.css') }}">

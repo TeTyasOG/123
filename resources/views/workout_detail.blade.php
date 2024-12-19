@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Тренировка (История)</title>
+    @vite(['resources/css/workout_detail.css', 'resources/js/workout_detail.js'])
     <!-- Подключение стилей через Laravel Mix -->
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/workout_detail.css') }}">

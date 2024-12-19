@@ -330,15 +330,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   
     settingsButton.addEventListener('click', () => {
-      window.location.href = '/profile_settings.html';
+      window.location.href = '/profile_settings';
     });
   
     workoutHistoryButton.addEventListener('click', () => {
-      window.location.href = '/workouts.html';
+      window.location.href = '/workouts';
     });
   
     measurementsButton.addEventListener('click', () => {
-      window.location.href = '/measurements.html';
+      window.location.href = '/measurements';
     });
   
     // Загрузка данных профиля

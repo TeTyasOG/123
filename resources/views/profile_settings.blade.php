@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Настройки профиля</title>
+  @vite(['resources/css/profile_settings.css', 'resources/js/profile_settings.js'])
   <link rel="stylesheet" href="{{ asset('css/profile_settings.css') }}">
   <style>
     @font-face {

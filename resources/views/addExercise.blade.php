@@ -5,6 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Добавить упражнение</title>
+  @vite(['resources/css/addExercise.css', 'resources/js/addExercise.js'])
   <link rel="stylesheet" href="{{ asset('css/addExercise.css') }}">
 </head>
 <body>

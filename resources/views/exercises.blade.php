@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Упражнения</title>
+    @vite(['resources/css/exercises.css', 'resources/js/exercises.js'])
     <!-- Подключение стилей -->
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/exercises.css') }}">

@@ -16,13 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
     sessionStorage.removeItem('currentProgramWorkout');
     // Чтобы при добавлении упражнений мы возвращались в тренировку
     sessionStorage.setItem('returnTo', 'workout');
-    window.location.href = 'workout.html';
+    window.location.href = 'workout';
   });
 
   // Нажатие на кнопку "СОЗДАТЬ ПРОГРАММУ"
   createProgramButton.addEventListener('click', () => {
     sessionStorage.setItem('returnTo', 'program');
-    window.location.href = 'addProgram.html';
+    window.location.href = 'addProgram';
   });
 
   // Загрузка программ пользователя из localStorage

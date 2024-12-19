@@ -69,13 +69,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error('Ошибка при загрузке данных пользователя:', error);
       // Показываем модалку об ошибке
       showModal('Ошибка при загрузке данных пользователя', [
-        { text: 'ОК', onClick: () => { closeModal(); window.location.href = '/profile.html'; } }
+        { text: 'ОК', onClick: () => { closeModal(); window.location.href = '/profile'; } }
       ], false);
     }
   }
 
   backButton.addEventListener('click', () => {
-    window.location.href = '/profile.html';
+    window.location.href = '/profile';
   });
 
   // Проверка полей

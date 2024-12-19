@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Вход</title>
+  @vite(['resources/css/login.css', 'resources/js/login.js'])
   <!-- Подключение стилей -->
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
   <link rel="stylesheet" href="{{ asset('css/auth.css') }}">

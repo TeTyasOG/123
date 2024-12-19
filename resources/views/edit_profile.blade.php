@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Редактировать профиль</title>
+    @vite(['resources/css/edit_profile.css', 'resources/js/edit_profile.js'])
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
 </head>

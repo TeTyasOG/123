@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let userData = {};
 
   backButton.addEventListener('click', () => {
-    window.location.href = 'profile.html';
+    window.location.href = 'profile';
   });
 
   addButton.addEventListener('click', () => {
