@@ -2,55 +2,42 @@
 
 namespace App\Models;
 
-use Jenssegers\Mongodb\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class User extends Model
 {
-    // Указываем коллекцию, если она не совпадает с названием модели
-    protected $collection = 'users'; 
+    // Указываем коллекцию MongoDB
+    protected $connection = 'mongodb';
+    protected $collection = 'users';
 
     // Указываем заполняемые поля
     protected $fillable = [
         'nickname',
         'email',
         'password',
-        'age',
         'gender',
-        'height',
         'weight',
         'experience',
-        'level',
         'achievements',
         'muscleExperience',
-        'muscleLevels',
         'exerciseExperience',
-        'exerciseLevels',
     ];
 
     // Указываем типы полей
     protected $casts = [
-        'nickname' => 'integer',
-        'email' => 'integer',
-        'password' => 'integer',
-        'age' => 'integer',
-        'height' => 'integer',
-        'weight' => 'integer',
+        'gender' => 'string',
+        'weight' => 'float',
         'experience' => 'integer',
-        'level' => 'integer',
-        'achievements' => 'array', // Массив строк
+        'achievements' => 'array', // Массив достижений
         'muscleExperience' => 'array', // Ассоциативный массив
-        'muscleLevels' => 'array', // Ассоциативный массив
-        'exerciseExperience' => 'array', // Объект
-        'exerciseLevels' => 'array', // Объект
+        'exerciseExperience' => 'array', // Ассоциативный массив
     ];
 
     // Поля с значениями по умолчанию
     protected $attributes = [
         'experience' => 0,
-        'level' => 1,
+        'achievements' => [],
         'muscleExperience' => [],
-        'muscleLevels' => [],
         'exerciseExperience' => [],
-        'exerciseLevels' => [],
     ];
 }

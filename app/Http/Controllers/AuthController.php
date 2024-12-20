@@ -20,19 +20,25 @@ class AuthController extends Controller
             'weight' => 'required|numeric|min:1',
         ]);
 
+        // Создаём нового пользователя
         $user = User::create([
             'nickname' => $validatedData['nickname'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
             'gender' => $validatedData['gender'],
             'weight' => $validatedData['weight'],
+            'experience' => 0,
+            'achievements' => json_encode([]),
+            'muscleExperience' => json_encode([]),
+            'exerciseExperience' => json_encode([]),
         ]);
 
-        Auth::login($user);
         
-        $request->session()->put('userId', $user->id);
 
-        return response()->json(['message' => 'Регистрация успешна!'], 201);
+        // Автоматический вход пользователя
+        Auth::login($user);
+
+        return response()->json(['message' => 'Регистрация успешна!', 'user' => $user], 201);
     }
 
     // Вход пользователя
@@ -43,14 +49,17 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
+        // Поиск пользователя по email или nickname
         $user = User::where('email', $credentials['login'])
                     ->orWhere('nickname', $credentials['login'])
                     ->first();
 
+        // Проверка пароля
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             return response()->json(['message' => 'Неверный логин или пароль.'], 400);
         }
 
+        // Авторизация пользователя
         Auth::login($user);
 
         return response()->json([
@@ -68,5 +77,4 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Вы успешно вышли из системы.']);
     }
-    
 }
