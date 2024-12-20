@@ -7,6 +7,7 @@
   <!-- Подключение стилей через Laravel Mix -->
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
   <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+  <form action="{{ route('register') }}" method="post" novalidate autocomplete="off" class="space-y-6">
   <!-- Подключение шрифта INTRO -->
   <style>
     @font-face {

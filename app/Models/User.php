@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Jenssegers\Mongodb\Eloquent\Model;
+use Jenssegers\Mongodb\Auth\User as Authenticatable;
 
-class User extends Model
+class User extends Authenticatable
 {
     // Указываем коллекцию, если она не совпадает с названием модели
     protected $collection = 'users'; 
