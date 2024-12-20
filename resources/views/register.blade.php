@@ -2,71 +2,93 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Регистрация</title>
-  @vite(['resources/css/register.css', 'resources/js/register.js'])
-  <!-- Подключение стилей через Laravel Mix -->
+  <!-- Подключение стилей -->
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
-
-  <!-- Подключение шрифта INTRO -->
-  <style>
-    @font-face {
-      font-family: 'INTRO';
-      src: url('{{ asset('fonts/INTRO.ttf') }}') format('truetype');
-    }
-  </style>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
-  <!-- Верхняя панель -->
-  <div class="top-bar">
-    <h1 class="page-title">РЕГИСТРАЦИЯ</h1>
-  </div>
-  <hr class="separator">
+  <!-- Форма регистрации -->
+  <form id="registerForm">
+    <label for="nickname">Никнейм:</label>
+    <input type="text" id="nickname" name="nickname" required>
 
-  <div class="form-container">
-    <!-- Форма регистрации -->
-    <form id="registerForm" method="POST" action="{{ route('register') }}">
-      @csrf <!-- Защита от CSRF -->
-      
-      <div class="form-item">
-        <div class="form-label">Никнейм:</div>
-        <input type="text" id="nickname" name="nickname" class="form-input" required placeholder="Введите никнейм">
-      </div>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
 
-      <div class="form-item">
-        <div class="form-label">Email:</div>
-        <input type="email" id="email" name="email" class="form-input" required placeholder="Введите Email">
-      </div>
+    <label for="password">Пароль:</label>
+    <input type="password" id="password" name="password" required>
 
-      <div class="form-item">
-        <div class="form-label">Пароль:</div>
-        <input type="password" id="password" name="password" class="form-input" required placeholder="Введите пароль">
-      </div>
+    <label for="gender">Пол:</label>
+    <select id="gender" name="gender" required>
+      <option value="" disabled selected>Выберите пол</option>
+      <option value="male">Мужской</option>
+      <option value="female">Женский</option>
+    </select>
 
-      <div class="form-item">
-        <div class="form-label">Пол:</div>
-        <select id="gender" name="gender" class="form-select" required>
-          <option value="">Выберите пол</option>
-          <option value="male">Мужской</option>
-          <option value="female">Женский</option>
-        </select>
-      </div>
+    <label for="weight">Вес (кг):</label>
+    <input type="number" id="weight" name="weight" step="0.1" required>
 
-      <div class="form-item">
-        <div class="form-label">Вес (кг):</div>
-        <input type="number" id="weight" name="weight" class="form-input" required placeholder="Введите вес">
-      </div>
+    <button type="submit">Зарегистрироваться</button>
+  </form>
 
-      <button type="submit" class="form-button">Зарегистрироваться</button>
-    </form>
+  <!-- Встроенный JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const registerForm = document.getElementById('registerForm');
 
-    <div class="auth-link">
-      Уже есть аккаунт? <a href="{{ route('login') }}">Войти</a>
-    </div>
-  </div>
+      if (!registerForm) {
+          console.error('Register form not found!');
+          return;
+      }
 
-  <!-- Подключение JavaScript через Laravel Mix -->
-  <script src="{{ asset('js/register.js') }}"></script>
+      registerForm.addEventListener('submit', async (event) => {
+          event.preventDefault();
+
+          const nickname = document.getElementById('nickname').value;
+          const email = document.getElementById('email').value;
+          const password = document.getElementById('password').value;
+          const gender = document.getElementById('gender').value;
+          const weight = parseFloat(document.getElementById('weight').value);
+
+          // Проверка заполнения полей
+          if (!gender) {
+              alert('Пожалуйста, выберите пол.');
+              return;
+          }
+          if (weight <= 0) {
+              alert('Пожалуйста, введите корректный вес.');
+              return;
+          }
+
+          const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+          try {
+              const response = await fetch('/register', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRF-TOKEN': csrfToken,
+                  },
+                  body: JSON.stringify({ nickname, email, password, gender, weight })
+              });
+
+              if (response.ok) {
+                  alert('Регистрация успешна!');
+                  window.location.href = '/profile';
+              } else {
+                const errorText = await response.text();
+                console.error('Ошибка:', errorText);
+                alert('Ошибка: ' + errorText);
+                
+              }
+          } catch (error) {
+              console.error('Ошибка:', error);
+              alert('Произошла ошибка при регистрации.');
+          }
+      });
+    });
+  </script>
 </body>
 </html>
