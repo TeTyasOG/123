@@ -29,6 +29,9 @@ class User extends Authenticatable
 
     // Указываем типы полей
     protected $casts = [
+        'nickname' => 'integer',
+        'email' => 'integer',
+        'password' => 'integer',
         'age' => 'integer',
         'height' => 'integer',
         'weight' => 'integer',

@@ -64,7 +64,7 @@ Route::get('/exercises', [ExerciseController::class, 'getExercises']);
 Route::get('/exercises/recent', [ExerciseController::class, 'getRecentExercises']);
 Route::get('/exercise/info', [ExerciseController::class, 'getExerciseInfo']);
 
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/profile', function () {
