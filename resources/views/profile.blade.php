@@ -3,103 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Профиль</title>
-  @vite(['resources/css/profile.css', 'resources/js/profile.js'])
-  <!-- Подключение стилей через Laravel Mix -->
+  <title>Регистрация</title>
+  <!-- Подключение стилей -->
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
-  <style>
-    @font-face {
-      font-family: 'INTRO';
-      src: url('{{ asset('fonts/INTRO.ttf') }}') format('truetype');
-    }
-  </style>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
-  <!-- Верхняя панель с кнопками -->
-  <div class="top-bar">
-    <button id="logoutButton" class="icon-button">
-      <img src="{{ asset('images/icons/door.png') }}" alt="Выйти">
-    </button>
-    <h1 id="userNickname">{{ Auth::user()->nickname ?? 'Никнейм' }}</h1>
-    <button id="settingsButton" class="icon-button">
-      <img src="{{ asset('images/icons/gear.png') }}" alt="Настройки">
-    </button>
-  </div>
+  <!-- Форма регистрации -->
+  <form id="registerForm">
+    <label for="nickname">Никнейм:</label>
+    <input type="text" id="nickname" name="nickname" required>
 
-  <div class="screens-wrapper">
-    <!-- Стрелки -->
-    <button class="icon-button arrow-left">
-      <img src="{{ asset('images/icons/back.png') }}" alt="Назад">
-    </button>
-    <button class="icon-button arrow-right">
-      <img src="{{ asset('images/icons/next.png') }}" alt="Вперед">
-    </button>
-  
-    <div class="screens-container">
-      <div class="screen left-screen">
-        <!-- Здесь будут большие мышцы через JS -->
-      </div>
-      <div class="screen center-screen">
-        <div class="center-content">
-          <div class="main-level-container">
-            <div class="progress-container">
-              <div class="progress-circle">
-                <span id="userLevel">1</span>
-                <canvas id="progressCanvas" width="200" height="200"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="screen right-screen">
-        <!-- Здесь будут малые мышцы через JS -->
-      </div>
-    </div>
-  </div>
-  
-  <div class="buttons">
-    <!-- Кнопка "История тренировок" -->
-    <button id="workoutHistoryButton" class="text-button">ИСТОРИЯ ТРЕНИРОВОК</button>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
 
-    <!-- Контейнер для отображения процента заполненности уровня -->
-    <div id="levelProgressContainer" class="level-progress-container">
-      <p id="levelProgressText">99%</p>
-    </div>
+    <label for="password">Пароль:</label>
+    <input type="password" id="password" name="password" required>
 
-    <!-- Кнопка "Замеры" -->
-    <button id="measurementsButton" class="text-button">ЗАМЕРЫ</button>
-  </div>
+    <label for="gender">Пол:</label>
+    <select id="gender" name="gender" required>
+      <option value="" disabled selected>Выберите пол</option>
+      <option value="male">Мужской</option>
+      <option value="female">Женский</option>
+    </select>
 
-  <div class="achievements-container">
-    <h2 class="section-title">ДОСТИЖЕНИЯ</h2>
-    <p class="empty-text">ПОКА ТУТ ПУСТО</p>
-  </div>
-  
-  <!-- Модальное окно для уровней мышц -->
-  <div id="muscleLevelsModal" class="modal" onclick="closeMuscleLevelsModal()">
-    <div class="modal-content" style="border-radius: 20px;">
-    <!-- Содержимое модального окна -->
-    </div>
-  </div>
+    <label for="weight">Вес (кг):</label>
+    <input type="number" id="weight" name="weight" step="0.1" required>
 
-  <!-- Нижняя панель навигации -->
-  <nav class="bottom-nav">
-    <a href="{{ url('/shop') }}" class="nav-link">
-      <img src="{{ asset('images/icons/shop.png') }}" alt="Магазин">
-      <span>МАГАЗИН</span>
-    </a>
-    <a href="{{ url('/training') }}" class="nav-link">
-      <img src="{{ asset('images/icons/training.png') }}" alt="Тренировка">
-      <span>ТРЕНИРОВКА</span>
-    </a>
-    <a href="{{ url('/profile') }}" class="nav-link active">
-      <img src="{{ asset('images/icons/profile.png') }}" alt="Профиль">
-      <span>ПРОФИЛЬ</span>
-    </a>
-  </nav>
+    <button type="submit">Зарегистрироваться</button>
+  </form>
 
-  <!-- Подключение скриптов через Laravel Mix -->
-  <script src="{{ asset('js/profile.js') }}"></script>
+  <!-- Встроенный JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const registerForm = document.getElementById('registerForm');
+
+      if (!registerForm) {
+          console.error('Register form not found!');
+          return;
+      }
+
+      registerForm.addEventListener('submit', async (event) => {
+          event.preventDefault();
+
+          const nickname = document.getElementById('nickname').value;
+          const email = document.getElementById('email').value;
+          const password = document.getElementById('password').value;
+          const gender = document.getElementById('gender').value;
+          const weight = parseFloat(document.getElementById('weight').value);
+
+          // Проверка заполнения полей
+          if (!gender) {
+              alert('Пожалуйста, выберите пол.');
+              return;
+          }
+          if (weight <= 0) {
+              alert('Пожалуйста, введите корректный вес.');
+              return;
+          }
+
+          const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+          try {
+              const response = await fetch('/register', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRF-TOKEN': csrfToken,
+                  },
+                  body: JSON.stringify({ nickname, email, password, gender, weight })
+              });
+
+              if (response.ok) {
+                  alert('Регистрация успешна!');
+                  window.location.href = '/profile';
+              } else {
+                const errorText = await response.text();
+                console.error('Ошибка:', errorText);
+                alert('Ошибка: ' + errorText);
+                
+              }
+          } catch (error) {
+              console.error('Ошибка:', error);
+              alert('Произошла ошибка при регистрации.');
+          }
+      });
+    });
+  </script>
 </body>
 </html>
