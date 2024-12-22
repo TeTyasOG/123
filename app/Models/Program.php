@@ -2,34 +2,44 @@
 
 namespace App\Models;
 
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Program extends Model
 {
-    // Указываем коллекцию (опционально, если имя коллекции отличается от имени модели в нижнем регистре с окончанием "s")
-    protected $collection = 'programs';
+    // Указываем таблицу, с которой работает модель
+    protected $table = 'programs';
 
-    // Определяем атрибуты, которые можно массово заполнять
+    // Атрибуты, которые можно массово заполнять
     protected $fillable = [
-        'userId',
+        'user_id',
         'name',
-        'exercises',
     ];
 
     // Указываем типы данных для атрибутов
     protected $casts = [
-        'userId' => 'string', // ObjectId в MongoDB можно хранить как строку
-        'exercises' => 'array', // Массив для вложенных данных
+        'user_id' => 'integer',
     ];
 
     // Определяем связи
+
+    /**
+     * Связь "Программа принадлежит пользователю"
+     */
     public function user()
     {
-        return $this->belongsTo(User::class, 'userId', '_id');
+        return $this->belongsTo(User::class);
     }
 
+    /**
+     * Связь "Программа имеет многие упражнения"
+     */
     public function exercises()
     {
-        return $this->hasMany(Exercise::class, 'exerciseId', '_id');
+        return $this->belongsToMany(
+            Exercise::class,
+            'program_exercises', // Промежуточная таблица
+            'program_id',        // Внешний ключ на таблицу программ
+            'exercise_id'        // Внешний ключ на таблицу упражнений
+        )->withPivot(['sets', 'weight', 'reps'])->withTimestamps(); // Атрибуты из промежуточной таблицы
     }
 }

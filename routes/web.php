@@ -9,7 +9,7 @@ use App\Http\Controllers\WorkoutController;
 use App\Http\Controllers\AuthController;
 
 // Маршруты для замеров
-Route::middleware('authcheck')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::post('/addMeasurement', [MeasurementController::class, 'addMeasurement']);
     Route::get('/getMeasurements', [MeasurementController::class, 'getMeasurements']);
     Route::post('/measurements/add', [MeasurementController::class, 'addMeasurement']);
@@ -17,7 +17,7 @@ Route::middleware('authcheck')->group(function () {
 });
 
 // Маршруты для программ
-Route::middleware('authcheck')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::post('/addProgram', [ProgramController::class, 'addProgram']);
     Route::get('/getPrograms', [ProgramController::class, 'getPrograms']);
     Route::post('/deleteProgram', [ProgramController::class, 'deleteProgram']);
@@ -29,17 +29,17 @@ Route::middleware('authcheck')->group(function () {
 });
 
 // Маршруты профиля пользователя
-Route::middleware('authcheck')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/getUserProfile', [UserController::class, 'getUserProfile']);
     Route::post('/updateProfile', [UserController::class, 'updateProfile']);
 });
 Route::middleware('auth')->group(function () {
-    Route::get('/user/profile', [UserController::class, 'getUserProfile']);
+    Route::get('/profile', [UserController::class, 'getUserProfile'])->name('profile');
     Route::post('/user/profile/update', [UserController::class, 'updateProfile']);
 });
 
 // Маршруты тренировок и упражнений
-Route::middleware('authcheck')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/getExercises', [ExerciseController::class, 'getExercises']);
     Route::get('/getRecentExercises', [ExerciseController::class, 'getRecentExercises']);
     Route::post('/addWorkout', [WorkoutController::class, 'addWorkout']);
@@ -66,7 +66,7 @@ Route::get('/exercise/info', [ExerciseController::class, 'getExerciseInfo']);
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/profile', function () {
     return view('profile');
 })->name('profile');

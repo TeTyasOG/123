@@ -94,9 +94,9 @@ return new class extends Migration
     {
         $muscles = ['Грудь', 'Спина', 'Пресс', 'Ноги', 'Плечи', 'Руки'];
 
-        foreach ($muscles as $muscle) {
-            if (!\DB::table('muscles')->where('name', $muscle)->exists()) {
-                \DB::table('muscles')->insert(['name' => $muscle, 'created_at' => now(), 'updated_at' => now()]);
+        foreach ($muscles as $muscles) {
+            if (!\DB::table('muscles')->where('name', $muscles)->exists()) {
+                \DB::table('muscles')->insert(['name' => $muscles, 'created_at' => now(), 'updated_at' => now()]);
             }
         }
     }

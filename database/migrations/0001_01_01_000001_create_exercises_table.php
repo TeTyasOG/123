@@ -26,33 +26,33 @@ return new class extends Migration
         });
 
         // Таблица мышц (нагрузка в %)
-        Schema::create('muscle_percentages', function (Blueprint $table) {
+        Schema::create('muscles_percentages', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // Название мышцы
             $table->timestamps();
         });
 
         // Таблица фильтров мышц
-        Schema::create('muscle_filters', function (Blueprint $table) {
+        Schema::create('muscles_filters', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // Название фильтра
             $table->timestamps();
         });
 
         // Промежуточная таблица для связи упражнений и мышц (нагрузка)
-        Schema::create('exercise_muscle', function (Blueprint $table) {
+        Schema::create('exercises_muscles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('exercise_id')->constrained('exercises')->onDelete('cascade');
-            $table->foreignId('muscle_percentages_id')->constrained('muscle_percentages')->onDelete('cascade');
-            $table->integer('percentage')->nullable(); // Нагрузка на мышцу в процентах
+            $table->foreignId('exercises_id')->constrained('exercises')->onDelete('cascade');
+            $table->foreignId('muscles_percentages_id')->constrained('muscles_percentages')->onDelete('cascade');
+            $table->integer('percentages')->nullable(); // Нагрузка на мышцу в процентах
             $table->timestamps();
         });
 
         // Промежуточная таблица для связи упражнений и фильтров мышц
-        Schema::create('exercise_muscle_filter', function (Blueprint $table) {
+        Schema::create('exercises_muscles_filter', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('exercise_id')->constrained('exercises')->onDelete('cascade');
-            $table->foreignId('muscle_filter_id')->constrained('muscle_filters')->onDelete('cascade');
+            $table->foreignId('exercises_id')->constrained('exercises')->onDelete('cascade');
+            $table->foreignId('muscles_filter_id')->constrained('muscles_filters')->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -64,36 +64,36 @@ return new class extends Migration
         });
 
         // Промежуточная таблица для связи упражнений и советов
-        Schema::create('exercise_tip', function (Blueprint $table) {
+        Schema::create('exercises_tips', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('exercise_id')->constrained('exercises')->onDelete('cascade');
-            $table->foreignId('tip_id')->constrained('tips')->onDelete('cascade');
+            $table->foreignId('exercises_id')->constrained('exercises')->onDelete('cascade');
+            $table->foreignId('tips_id')->constrained('tips')->onDelete('cascade');
             $table->timestamps();
         });
 
         // Наполнение таблицы мышц (нагрузка)
-        $this->seedMusclePercentages();
+        $this->seedMusclesPercentages();
 
         // Наполнение таблицы фильтров мышц
-        $this->seedMuscleFilters();
+        $this->seedMusclesFilters();
     }
 
     /**
      * Наполнение таблицы мышц
      */
-    protected function seedMusclePercentages()
+    protected function seedMusclesPercentages()
     {
-        $muscle_percentages = ['Грудь', 'Спина', 'Пресс', 'Ноги', 'Плечи', 'Руки'];
+        $muscles_percentages = ['Грудь', 'Спина', 'Пресс', 'Ноги', 'Плечи', 'Руки'];
 
-        foreach ($muscle_percentages as $muscle) {
-            \DB::table('muscle_percentages')->insert(['name' => $muscle, 'created_at' => now(), 'updated_at' => now()]);
+        foreach ($muscles_percentages as $muscles) {
+            \DB::table('muscles_percentages')->insert(['name' => $muscles, 'created_at' => now(), 'updated_at' => now()]);
         }
     }
 
     /**
      * Наполнение таблицы фильтров мышц
      */
-    protected function seedMuscleFilters()
+    protected function seedMusclesFilters()
     {
         $filters = [
             'Грудь', 'Верхняя часть спины', 'Пресс', 'Икры', 'Квадрицепс',
@@ -103,7 +103,7 @@ return new class extends Migration
         ];
 
         foreach ($filters as $filter) {
-            \DB::table('muscle_filters')->insert(['name' => $filter, 'created_at' => now(), 'updated_at' => now()]);
+            \DB::table('muscles_filters')->insert(['name' => $filter, 'created_at' => now(), 'updated_at' => now()]);
         }
     }
 
@@ -114,12 +114,12 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('exercise_tip');
+        Schema::dropIfExists('exercises_tips');
         Schema::dropIfExists('tips');
-        Schema::dropIfExists('exercise_muscle_filter');
-        Schema::dropIfExists('muscle_filters');
-        Schema::dropIfExists('exercise_muscle');
-        Schema::dropIfExists('muscle_percentages');
+        Schema::dropIfExists('exercises_muscles_filter');
+        Schema::dropIfExists('muscles_filters');
+        Schema::dropIfExists('exercises_muscles');
+        Schema::dropIfExists('muscles_percentages');
         Schema::dropIfExists('exercises');
     }
 };

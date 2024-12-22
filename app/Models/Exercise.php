@@ -2,38 +2,82 @@
 
 namespace App\Models;
 
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Exercise extends Model
 {
-
-    // Укажите используемое подключение (mongodb)
-    protected $connection = 'mongodb';
-
     // Укажите заполняемые поля
     protected $fillable = [
         'name',
-        'englishName',
-        'videoUrl',
-        'thumbnailUrl',
-        'musclePercentages',
-        'muscleFilter',
-        'minWeightMale',
-        'maxWeightMale',
-        'minWeightFemale',
-        'maxWeightFemale',
+        'video_url',
+        'thumbnail_url',
+        'min_weight_male',
+        'max_weight_male',
+        'min_weight_female',
+        'max_weight_female',
         'description',
-        'tips',
     ];
 
     // Укажите типы данных, если необходимо
     protected $casts = [
-        'musclePercentages' => 'array',
-        'muscleFilter' => 'array',
-        'tips' => 'array',
-        'minWeightMale' => 'float',
-        'maxWeightMale' => 'float',
-        'minWeightFemale' => 'float',
-        'maxWeightFemale' => 'float',
+        'min_weight_male' => 'float',
+        'max_weight_male' => 'float',
+        'min_weight_female' => 'float',
+        'max_weight_female' => 'float',
     ];
+
+    /**
+     * Связь с мышцами через процент нагрузки.
+     */
+    public function muscles()
+    {
+        return $this->belongsToMany(
+            MusclePercentage::class,
+            'exercises_muscles',
+            'exercises_id',
+            'muscles_percentages_id'
+        )->withPivot('percentages')->withTimestamps();
+    }
+
+    /**
+     * Связь с фильтрами мышц.
+     */
+    public function muscleFilters()
+    {
+        return $this->belongsToMany(
+            MuscleFilter::class,
+            'exercises_muscles_filter',
+            'exercises_id',
+            'muscles_filter_id'
+        )->withTimestamps();
+    }
+
+    /**
+     * Связь с советами.
+     */
+    public function tips()
+    {
+        return $this->belongsToMany(
+            Tip::class,
+            'exercises_tips',
+            'exercises_id',
+            'tips_id'
+        )->withTimestamps();
+    }
+
+    public function users()
+{
+    return $this->belongsToMany(
+        User::class,
+        'user_exercise_experience',
+        'exercise_id',
+        'user_id'
+    )->withPivot('experience')->withTimestamps();
+}
+// Связь с тренировочными упражнениями
+public function workoutExercises()
+{
+    return $this->hasMany(WorkoutExercise::class);
+}
+
 }

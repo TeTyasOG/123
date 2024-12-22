@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Профиль</title>
   @vite(['resources/css/profile.css', 'resources/js/profile.js'])
-  <!-- Подключение стилей через Laravel Mix -->
+  <!-- Подключение стилей -->
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
   <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
   <style>
@@ -38,7 +38,7 @@
   
     <div class="screens-container">
       <div class="screen left-screen">
-        <!-- Здесь будут большие мышцы через JS -->
+        <!-- Здесь будут крупные мышцы (3 шт) через JS -->
       </div>
       <div class="screen center-screen">
         <div class="center-content">
@@ -53,7 +53,7 @@
         </div>
       </div>
       <div class="screen right-screen">
-        <!-- Здесь будут малые мышцы через JS -->
+        <!-- Здесь будут мелкие мышцы (3 шт) через JS -->
       </div>
     </div>
   </div>
@@ -76,13 +76,6 @@
     <p class="empty-text">ПОКА ТУТ ПУСТО</p>
   </div>
   
-  <!-- Модальное окно для уровней мышц -->
-  <div id="muscleLevelsModal" class="modal" onclick="closeMuscleLevelsModal()">
-    <div class="modal-content" style="border-radius: 20px;">
-    <!-- Содержимое модального окна -->
-    </div>
-  </div>
-
   <!-- Нижняя панель навигации -->
   <nav class="bottom-nav">
     <a href="{{ url('/shop') }}" class="nav-link">
@@ -99,8 +92,7 @@
     </a>
   </nav>
 
-  <!-- Подключение скриптов через Laravel Mix -->
+  <!-- Подключение скриптов -->
   <script src="{{ asset('js/profile.js') }}"></script>
 </body>
 </html>
-
