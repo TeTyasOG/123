@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -10,20 +11,34 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('mongodb')->create('programs', function ($collection) {
-            $collection->index('_id'); // MongoDB автоматически создает _id
-            $collection->string('userId'); // ID пользователя, которому принадлежит программа
-            $collection->string('name'); // Название программы
-            $collection->array('exercises')->nullable(); // Массив с упражнениями
-            $collection->timestamps(); // Поля created_at и updated_at
+        // Таблица программ
+        Schema::create('programs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Связь с пользователем
+            $table->string('name'); // Название программы
+            $table->timestamps();
+        });
+
+        // Промежуточная таблица для связи программ и упражнений
+        Schema::create('program_exercises', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('program_id')->constrained('programs')->onDelete('cascade'); // Связь с программой
+            $table->foreignId('exercise_id')->constrained('exercises')->onDelete('cascade'); // Связь с упражнением
+            $table->integer('sets'); // Количество сетов
+            $table->float('weight'); // Вес в сете
+            $table->integer('reps'); // Количество повторений
+            $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::connection('mongodb')->dropIfExists('programs');
+        Schema::dropIfExists('program_exercises');
+        Schema::dropIfExists('programs');
     }
 };

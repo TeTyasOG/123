@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class User extends Model
+class User extends Authenticatable
 {
-    // Указываем коллекцию MongoDB
-    protected $connection = 'mongodb';
-    protected $collection = 'users';
+    // Указываем таблицу
+    protected $table = 'users';
 
-    // Указываем заполняемые поля
+    // Заполняемые поля
     protected $fillable = [
         'nickname',
         'email',
@@ -18,26 +19,40 @@ class User extends Model
         'gender',
         'weight',
         'experience',
-        'achievements',
-        'muscleExperience',
-        'exerciseExperience',
     ];
 
-    // Указываем типы полей
+    // Типы данных для атрибутов
     protected $casts = [
-        'gender' => 'string',
+        'email_verified_at' => 'datetime',
         'weight' => 'float',
-        'experience' => 'integer',
-        'achievements' => 'array', // Массив достижений
-        'muscleExperience' => 'array', // Ассоциативный массив
-        'exerciseExperience' => 'array', // Ассоциативный массив
+        'experience' => 'float',
     ];
 
-    // Поля с значениями по умолчанию
-    protected $attributes = [
-        'experience' => 0,
-        'achievements' => [],
-        'muscleExperience' => [],
-        'exerciseExperience' => [],
+    // Скрываемые поля (например, пароль)
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
+
+    // Связи многие ко многим
+    public function muscles()
+    {
+        return $this->belongsToMany(Muscle::class, 'user_muscle_experience')
+        ->withPivot('experience')
+        ->withTimestamps();
+    }
+
+    public function exercises()
+    {
+    return $this->belongsToMany(Exercise::class, 'user_exercise_experience')
+        ->withPivot('experience')
+        ->withTimestamps();
+    }
+
+    public function achievements()
+    {
+
+        return $this->belongsToMany(Achievement::class, 'user_achievements')
+        ->withTimestamps();
+    }
 }

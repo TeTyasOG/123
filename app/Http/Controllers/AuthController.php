@@ -11,35 +11,36 @@ class AuthController extends Controller
 {
     // Регистрация нового пользователя
     public function register(Request $request)
-    {
-        $validatedData = $request->validate([
             'nickname' => 'required|string|max:255|unique:users,nickname',
-            'email' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-            'gender' => 'required|string|in:male,female,other',
-            'weight' => 'required|numeric|min:1',
-        ]);
+{
+    $validatedData = $request->validate([
+        'nickname' => 'required|string|max:255|unique:users,nickname',
+        'email' => 'required|email|max:255|unique:users,email',
+        'password' => 'required|string|min:8|confirmed',
+        'gender' => 'required|string|in:male,female',
+        'weight' => 'required|numeric|min:1',
+    ]);
 
-        // Создаём нового пользователя
+    \Log::info('Данные для создания пользователя:', $validatedData);
+
+    try {
         $user = User::create([
             'nickname' => $validatedData['nickname'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
             'gender' => $validatedData['gender'],
             'weight' => $validatedData['weight'],
-            'experience' => 0,
-            'achievements' => json_encode([]),
-            'muscleExperience' => json_encode([]),
-            'exerciseExperience' => json_encode([]),
         ]);
 
-        
-
-        // Автоматический вход пользователя
         Auth::login($user);
 
-        return response()->json(['message' => 'Регистрация успешна!', 'user' => $user], 201);
+        return redirect()->route('profile'); // Редирект на страницу профиля
+    } catch (\Exception $e) {
+        \Log::error('Ошибка при регистрации: ' . $e->getMessage());
+        return response()->json(['message' => 'Ошибка при регистрации.'], 500);
     }
+}
+
 
     // Вход пользователя
     public function login(Request $request)

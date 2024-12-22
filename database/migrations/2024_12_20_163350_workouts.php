@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -10,23 +11,46 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('mongodb')->create('workouts', function ($collection) {
-            $collection->index('_id'); // MongoDB автоматически создает _id
-            $collection->string('userId'); // ID пользователя, совершившего тренировку
-            $collection->date('date'); // Дата тренировки
-            $collection->array('exercises')->nullable(); // Массив упражнений
-            $collection->integer('totalXP')->nullable(); // Общее количество опыта
-            $collection->integer('exercisesCount')->nullable(); // Количество выполненных упражнений
-            $collection->integer('totalWorkoutTime')->nullable(); // Общее время тренировки в минутах
-            $collection->timestamps(); // Поля created_at и updated_at
+        // Таблица тренировок
+        Schema::create('workouts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Связь с пользователем
+            $table->date('date'); // Дата тренировки
+            $table->float('total_experience')->default(0); // Общее количество опыта
+            $table->integer('exercises_count')->default(0); // Количество упражнений
+            $table->string('total_workout_time')->nullable(); // Общее время тренировки (в формате 1Ч.23М.24С)
+            $table->timestamps();
+        });
+
+        // Таблица для связи тренировок и упражнений
+        Schema::create('workout_exercises', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('workout_id')->constrained('workouts')->onDelete('cascade'); // Связь с тренировкой
+            $table->foreignId('exercise_id')->constrained('exercises')->onDelete('cascade'); // Связь с упражнением
+            $table->integer('sets_count')->default(0); // Количество сетов в упражнении
+            $table->timestamps();
+        });
+
+        // Таблица для связи упражнений и сетов
+        Schema::create('exercise_sets', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('workout_exercise_id')->constrained('workout_exercises')->onDelete('cascade'); // Связь с упражнением в тренировке
+            $table->float('weight')->default(0); // Вес в сете
+            $table->integer('reps')->default(0); // Количество повторений в сете
+            $table->float('rpe')->nullable(); // Мера усилия в сете
+            $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::connection('mongodb')->dropIfExists('workouts');
+        Schema::dropIfExists('exercise_sets');
+        Schema::dropIfExists('workout_exercises');
+        Schema::dropIfExists('workouts');
     }
 };
