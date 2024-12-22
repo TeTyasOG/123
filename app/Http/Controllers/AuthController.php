@@ -11,7 +11,6 @@ class AuthController extends Controller
 {
     // Регистрация нового пользователя
     public function register(Request $request)
-            'nickname' => 'required|string|max:255|unique:users,nickname',
 {
     $validatedData = $request->validate([
         'nickname' => 'required|string|max:255|unique:users,nickname',
