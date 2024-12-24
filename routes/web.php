@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
 // Маршруты профиля пользователя
 Route::middleware('auth')->group(function () {
     Route::get('/getUserProfile', [UserController::class, 'getUserProfile']);
-    Route::post('/updateProfile', [UserController::class, 'updateProfile']);
+    Route::post('/updateProfile', [UserController::class, 'updateProfile'])->middleware('auth');
 });
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [UserController::class, 'getUserProfile'])->name('profile');
@@ -65,7 +65,7 @@ Route::get('/exercises/recent', [ExerciseController::class, 'getRecentExercises'
 Route::get('/exercise/info', [ExerciseController::class, 'getExerciseInfo']);
 
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/profile', function () {
     return view('profile');

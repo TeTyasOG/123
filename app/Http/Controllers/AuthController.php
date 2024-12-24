@@ -63,8 +63,7 @@ class AuthController extends Controller
         Auth::login($user);
 
         return response()->json([
-            'message' => 'Вход выполнен успешно!',
-            'user' => $user
+            'redirect' => route('profile') // URL для редиректа
         ]);
     }
 

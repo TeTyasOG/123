@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Профиль</title>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   @vite(['resources/css/profile.css', 'resources/js/profile.js'])
   <!-- Подключение стилей -->
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">

@@ -22,12 +22,12 @@ class MeasurementUnit extends Model
     // Связь с замером
     public function measurement()
     {
-        return $this->belongsTo(Measurement::class);
+        return $this->belongsTo(Measurement::class, 'measurement_id');
     }
 
     // Связь с единицей измерения
     public function unitMeasurement()
     {
-        return $this->belongsTo(UnitMeasurement::class);
+        return $this->belongsTo(UnitMeasurement::class, 'unit_measurement_id');
     }
 }

@@ -263,7 +263,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
       if (response.ok) {
-        alert('Вы успешно вышли из системы.');
         // Было: window.location.href = '/login.html';
         // Стало (переходим на /login):
         window.location.href = '/login';

@@ -20,13 +20,13 @@ class Measurement extends Model
 
     // Типы данных для атрибутов
     protected $casts = [
-        'date' => 'datetime',
+        'date' => 'date',
     ];
 
     // Связь с пользователем
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     // Связь с промежуточной таблицей (measurement_unit)
