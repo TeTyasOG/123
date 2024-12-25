@@ -42,7 +42,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/getExercises', [ExerciseController::class, 'getExercises']);
     Route::get('/getRecentExercises', [ExerciseController::class, 'getRecentExercises']);
-    Route::post('/addWorkout', [WorkoutController::class, 'addWorkout']);
+    Route::post('/addWorkout', [WorkoutController::class, 'addWorkout'])
+    ->middleware('web');
     Route::get('/getWorkouts', [WorkoutController::class, 'getWorkouts']);
     Route::get('/getWorkout', [WorkoutController::class, 'getWorkout']);
     Route::get('/exerciseHistory', [WorkoutController::class, 'getExerciseHistory']);

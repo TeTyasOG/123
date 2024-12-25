@@ -17,10 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let recentExercises = [];
   let userExerciseExperience = {};
 
-  // Считываем куда возвращаться после выбора упражнения
+  // Считываем, куда возвращаться после выбора упражнения
   const returnTo = sessionStorage.getItem('returnTo') || 'workout'; 
 
-  // Кнопка закрытия страницы
+  // Кнопка закрытия
   closeButton.addEventListener('click', () => {
     window.history.back();
   });
@@ -114,20 +114,22 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadExercises() {
     try {
       const searchQuery = searchInput.value.trim();
-      const response = await fetch(`/getExercises?searchQuery=${encodeURIComponent(searchQuery)}`);
+      // Передаём muscleGroup и searchQuery
+      const url = new URL('/getExercises', window.location.origin);
+      url.searchParams.append('searchQuery', searchQuery);
+
+      // Если мы хотим фильтровать по мышцам (кроме "ВСЕ МЫШЦЫ"), передаём параметр muscleGroup
+      if (selectedMuscleGroup !== 'ВСЕ МЫШЦЫ') {
+        url.searchParams.append('muscleGroup', selectedMuscleGroup);
+      }
+
+      const response = await fetch(url);
       if (!response.ok) throw new Error('Ошибка при получении упражнений');
       let allData = await response.json();
 
-      let filteredData = allData;
-      if (selectedMuscleGroup !== 'ВСЕ МЫШЦЫ') {
-        filteredData = allData.filter(ex => {
-          if (!ex.musclePercentages || typeof ex.musclePercentages !== 'object') return false;
-          const muscles = Object.keys(ex.musclePercentages).map(m => m.toUpperCase());
-          return muscles.includes(selectedMuscleGroup.toUpperCase());
-        });
-      }
+      // allData — уже массив объектов, где musclePercentages — объект { "Грудь": 50, "Спина": 50 }, и т.д.
+      exercises = allData;
 
-      exercises = filteredData;
       await loadUserExerciseExperience();
       sortExercises();
       renderAllExercises();
@@ -140,20 +142,25 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadRecentExercises() {
     try {
       const searchQuery = searchInput.value.trim();
-      const response = await fetch(`/getRecentExercises?searchQuery=${encodeURIComponent(searchQuery)}`);
+      const url = new URL('/getRecentExercises', window.location.origin);
+      if (searchQuery) {
+        url.searchParams.append('searchQuery', searchQuery);
+      }
+      const response = await fetch(url);
       if (!response.ok) throw new Error('Ошибка при получении последних упражнений');
       let allData = await response.json();
 
-      let filteredRecent = allData;
+      // Фильтруем ещё раз по выбранной мышце
       if (selectedMuscleGroup !== 'ВСЕ МЫШЦЫ') {
-        filteredRecent = allData.filter(ex => {
-          if (!ex.musclePercentages || typeof ex.musclePercentages !== 'object') return false;
-          const muscles = Object.keys(ex.musclePercentages).map(m => m.toUpperCase());
+        allData = allData.filter(ex => {
+          const mp = ex.musclePercentages || {};
+          // Собираем все названия мышц в верхнем регистре
+          const muscles = Object.keys(mp).map(m => m.toUpperCase());
           return muscles.includes(selectedMuscleGroup.toUpperCase());
         });
       }
 
-      recentExercises = filteredRecent;
+      recentExercises = allData;
       renderRecentExercises();
     } catch (error) {
       console.error('Ошибка при загрузке последних упражнений:', error);
@@ -165,8 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
       exercises.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
     } else if (selectedFilter === 'level') {
       exercises.sort((a, b) => {
-        const levelA = calculateExerciseLevel(a._id);
-        const levelB = calculateExerciseLevel(b._id);
+        const levelA = calculateExerciseLevel(a.id);
+        const levelB = calculateExerciseLevel(b.id);
         return levelB - levelA;
       });
     }
@@ -207,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function calculateExerciseLevel(exerciseId) {
-    const exp = Number(userExerciseExperience[exerciseId.toString()] || 0);
+    const exp = Number(userExerciseExperience[exerciseId] || 0);
     return calcLevelFromXP(exp);
   }
 
@@ -226,10 +233,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getMainMuscle(exercise) {
-    if (!exercise.musclePercentages || typeof exercise.musclePercentages !== 'object' || Object.keys(exercise.musclePercentages).length === 0) {
-      return 'UNKNOWN';
-    }
-    const entries = Object.entries(exercise.musclePercentages);
+    // musclePercentages — объект { 'Грудь': 80, 'Трицепс': 20, ... }
+    const mp = exercise.musclePercentages || {};
+    const entries = Object.entries(mp);
+    if (entries.length === 0) return 'UNKNOWN';
+
+    // Сортируем по величине процента
     entries.sort((a, b) => b[1] - a[1]);
     return (entries[0][0] || 'UNKNOWN').toUpperCase();
   }
@@ -238,14 +247,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const exerciseItem = document.createElement('div');
     exerciseItem.className = 'exercise-item';
 
-    const level = calculateExerciseLevel(exercise._id?.toString() || '');
+    const level = calculateExerciseLevel(exercise.id);
     let levelHTML = '';
     if (level >= 1) levelHTML += '<div class="level-indicator bronze"></div>';
     if (level >= 2) levelHTML += '<div class="level-indicator silver"></div>';
     if (level >= 3) levelHTML += '<div class="level-indicator gold"></div>';
     if (level >= 4) levelHTML += '<div class="level-indicator diamond"></div>';
 
-    const exerciseName = (typeof exercise.name === 'string' && exercise.name.trim() !== '') ? exercise.name.toUpperCase() : 'UNKNOWN';
+    const exerciseName = (typeof exercise.name === 'string' && exercise.name.trim() !== '')
+      ? exercise.name.toUpperCase()
+      : 'UNKNOWN';
+
     const mainMuscle = getMainMuscle(exercise);
 
     exerciseItem.innerHTML = `
@@ -260,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const exerciseImage = exerciseItem.querySelector('.exercise-image');
     exerciseImage.addEventListener('click', (e) => {
       e.stopPropagation();
-      window.location.href = `exercise.html?id=${exercise._id}`;
+      window.location.href = 'exercise?id=' + exercise.id;
     });
 
     exerciseItem.addEventListener('click', () => {
@@ -270,13 +282,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return exerciseItem;
   }
 
-  // Добавление упражнения либо в программу, либо в тренировку
   function addExerciseToTarget(exercise) {
     sessionStorage.setItem('selectedExercise', JSON.stringify(exercise));
     if (returnTo === 'program') {
-      window.location.href = 'addProgram.html';
+      window.location.href = 'addProgram';
     } else {
-      window.location.href = 'workout.html';
+      window.location.href = 'workout';
     }
   }
 

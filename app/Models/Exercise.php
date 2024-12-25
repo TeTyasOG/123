@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Exercise extends Model
 {
-    // Укажите заполняемые поля
     protected $fillable = [
         'name',
         'video_url',
@@ -18,18 +17,18 @@ class Exercise extends Model
         'description',
     ];
 
-    // Укажите типы данных, если необходимо
     protected $casts = [
-        'min_weight_male' => 'float',
-        'max_weight_male' => 'float',
+        'min_weight_male'   => 'float',
+        'max_weight_male'   => 'float',
         'min_weight_female' => 'float',
         'max_weight_female' => 'float',
     ];
 
     /**
-     * Связь с мышцами через процент нагрузки.
+     * Связь с моделью MusclePercentage (через таблицу exercises_muscles).
+     * Возвращает коллекцию мышц с pivot-полем 'percentages'.
      */
-    public function muscles()
+    public function musclePercentages()
     {
         return $this->belongsToMany(
             MusclePercentage::class,
@@ -40,7 +39,7 @@ class Exercise extends Model
     }
 
     /**
-     * Связь с фильтрами мышц.
+     * Связь с моделью MuscleFilter (через таблицу exercises_muscles_filter).
      */
     public function muscleFilters()
     {
@@ -65,19 +64,24 @@ class Exercise extends Model
         )->withTimestamps();
     }
 
+    /**
+     * Связь с пользователями (пример, если есть user_exercise_experience).
+     */
     public function users()
-{
-    return $this->belongsToMany(
-        User::class,
-        'user_exercise_experience',
-        'exercise_id',
-        'user_id'
-    )->withPivot('experience')->withTimestamps();
-}
-// Связь с тренировочными упражнениями
-public function workoutExercises()
-{
-    return $this->hasMany(WorkoutExercise::class);
-}
+    {
+        return $this->belongsToMany(
+            User::class,
+            'user_exercise_experience',
+            'exercise_id',
+            'user_id'
+        )->withPivot('experience')->withTimestamps();
+    }
 
+    /**
+     * Связь с тренировочными упражнениями (если реализовано через модель WorkoutExercise).
+     */
+    public function workoutExercises()
+    {
+        return $this->hasMany(WorkoutExercise::class);
+    }
 }

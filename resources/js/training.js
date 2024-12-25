@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
       sessionStorage.setItem('currentProgramWorkout', JSON.stringify(selectedProgramToStart));
       // При запуске программы сразу идём в тренировку, и будем добавлять упражнения из программы
       sessionStorage.setItem('returnTo', 'workout');
-      window.location.href = 'workout.html';
+      window.location.href = 'workout';
     }
   });
 

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Тренировка</title>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   @vite(['resources/css/workout.css', 'resources/js/workout.js'])
   <!-- Подключение стилей через Laravel Mix -->
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
