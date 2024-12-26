@@ -104,32 +104,61 @@ document.addEventListener('DOMContentLoaded', async () => {
    * Восстанавливаем данные тренировки из sessionStorage
    */
   async function loadWorkoutState() {
-    
     const workoutStateJSON = sessionStorage.getItem('workoutState');
     if (workoutStateJSON) {
-      // Сессия уже была
-      const workoutState = JSON.parse(workoutStateJSON);
-      workoutStartTime   = new Date(workoutState.workoutStartTime);
-      totalXP            = workoutState.totalXP || 0;
-      totalSetsCompleted = workoutState.totalSetsCompleted || 0;
-      workoutExercises   = workoutState.workoutExercises || [];
-      exercisesDiv.innerHTML = workoutState.exercisesHTML || '';
+      
+        const workoutState = JSON.parse(workoutStateJSON);
+        workoutStartTime   = new Date(workoutState.workoutStartTime);
+        totalXP            = workoutState.totalXP || 0;
+        totalSetsCompleted = workoutState.totalSetsCompleted || 0;
+        workoutExercises   = workoutState.workoutExercises || [];
 
-      xpValue.textContent   = `${Math.round(totalXP)} XP`;
-      setsValue.textContent = totalSetsCompleted;
+  
+        for (const ex of workoutExercises) {
+          const fullExData = await loadFullExerciseData(ex); // Загружаем недостающие данные
+          console.log(`loadWorkoutState: Загруженные данные для упражнения ${ex.id}: ${JSON.stringify(fullExData)}`);
+          Object.assign(ex, fullExData);
+      }
+      
+        
+        exercisesDiv.innerHTML = workoutState.exercisesHTML || '';
 
-      restoreExerciseEventListeners();
-      startWorkoutTimer();
+        xpValue.textContent   = `${Math.round(totalXP)} XP`;
+        setsValue.textContent = totalSetsCompleted;
+
+        // Восстанавливаем значения полей КГ, ПОВТ и RPE
+        workoutExercises.forEach(exercise => {
+            const exerciseItem = exercisesDiv.querySelector(`[data-exercise-id="${exercise.id}"]`);
+            if (exerciseItem) {
+                const setsList = exerciseItem.querySelectorAll('.set-item');
+                exercise.sets.forEach((set, index) => {
+                    const setItem = setsList[index];
+                    if (setItem) {
+                        const weightInput = setItem.querySelector('.input-weight');
+                        const repsInput   = setItem.querySelector('.input-reps');
+                        const rpeInput    = setItem.querySelector('.input-rpe');
+
+                        weightInput.value = set.weight;
+                        repsInput.value   = set.reps;
+                        rpeInput.value    = set.rpe;
+                    }
+                });
+            }
+        });
+
+        restoreExerciseEventListeners();
+        startWorkoutTimer();
     } else {
-      // Нет сохранённого state — новая тренировка
-      workoutStartTime   = new Date();
-      totalXP            = 0;
-      totalSetsCompleted = 0;
-      workoutExercises   = [];
-      exercisesDiv.innerHTML = '';
-      xpValue.textContent   = '0 XP';
-      setsValue.textContent = '0';
-
+        // Инициализация при первой загрузке страницы
+        workoutStartTime   = new Date();
+        totalXP            = 0;
+        totalSetsCompleted = 0;
+        workoutExercises   = [];
+        exercisesDiv.innerHTML = '';
+        xpValue.textContent   = '0 XP';
+        setsValue.textContent = '0';
+        startWorkoutTimer();
+    
       // Если тренировка начата «по программе»
       const currentProgram = sessionStorage.getItem('currentProgramWorkout');
       if (currentProgram) {
@@ -192,61 +221,83 @@ document.addEventListener('DOMContentLoaded', async () => {
    */
   function saveWorkoutState() {
     const workoutState = {
-      workoutStartTime: workoutStartTime.toISOString(),
-      totalXP,
-      totalSetsCompleted,
-      workoutExercises,
-      exercisesHTML: exercisesDiv.innerHTML
+        workoutStartTime: workoutStartTime.toISOString(),
+        totalXP,
+        totalSetsCompleted,
+        workoutExercises: workoutExercises.map(ex => ({
+            id: ex.id,
+            name: ex.name,
+            sets: ex.sets,
+            notes: ex.notes,
+            minWeightMale: ex.minWeightMale,
+maxWeightMale: ex.maxWeightMale,
+minWeightFemale: ex.minWeightFemale,
+maxWeightFemale: ex.maxWeightFemale,
+
+        })),
+        exercisesHTML: exercisesDiv.innerHTML
     };
     sessionStorage.setItem('workoutState', JSON.stringify(workoutState));
-  }
+}
+
 
   /**
    * Собираем из DOM (exercisesDiv) актуальные данные в workoutExercises
    */
+  console.log('Пересчёт XP и обновление DOM...');
+
   function updateWorkoutExercisesFromDOM() {
     const newWorkoutExercises = [];
     const exerciseItems = exercisesDiv.querySelectorAll('.exercise-item');
+
     exerciseItems.forEach(exerciseItem => {
-      const exId   = exerciseItem.dataset.exerciseId;
-      const exName = exerciseItem.dataset.exerciseName;
-      const notes  = exerciseItem.querySelector('.exercise-notes')?.value || '';
+        const exId   = exerciseItem.dataset.exerciseId;
+        const exName = exerciseItem.dataset.exerciseName;
+        const notes  = exerciseItem.querySelector('.exercise-notes')?.value || '';
 
-      const sets = [];
-      const setsList = exerciseItem.querySelectorAll('.set-item');
-      setsList.forEach(setItem => {
-        const weightInput = setItem.querySelector('.input-weight');
-        const repsInput   = setItem.querySelector('.input-reps');
-        const rpeInput    = setItem.querySelector('.input-rpe');
-        const completed   = setItem.classList.contains('completed');
+        const sets = [];
+        const setsList = exerciseItem.querySelectorAll('.set-item');
+        setsList.forEach(setItem => {
+            const weightInput = setItem.querySelector('.input-weight');
+            const repsInput   = setItem.querySelector('.input-reps');
+            const rpeInput    = setItem.querySelector('.input-rpe');
+            const completed   = setItem.classList.contains('completed');
 
-        let wVal = parseFloat(weightInput.value);
-        if (isNaN(wVal)) wVal = 0;
-        wVal = Math.round(wVal);
+            let wVal = parseFloat(weightInput.value);
+            if (isNaN(wVal)) wVal = 0;
+            wVal = Math.round(wVal);
 
-        let rVal = parseInt(repsInput.value);
-        if (isNaN(rVal)) rVal = 0;
+            let rVal = parseInt(repsInput.value);
+            if (isNaN(rVal)) rVal = 0;
 
-        let rpeVal = parseInt(rpeInput.value);
-        if (isNaN(rpeVal)) rpeVal = 5;
+            let rpeVal = parseInt(rpeInput.value);
+            if (isNaN(rpeVal)) rpeVal = 5;
 
-        sets.push({ weight: wVal, reps: rVal, rpe: rpeVal, completed });
-      });
+            sets.push({ weight: wVal, reps: rVal, rpe: rpeVal, completed });
 
-      newWorkoutExercises.push({
-        id: exId,     // ВАЖНО: здесь должно быть число/строка реального ID
-        name: exName,
-        sets,
-        notes
-      });
+            // Добавляем слушатели для сохранения данных
+            weightInput.addEventListener('input', saveWorkoutState);
+            repsInput.addEventListener('input', saveWorkoutState);
+            rpeInput.addEventListener('input', saveWorkoutState);
+        });
+
+        newWorkoutExercises.push({
+            id: exId,
+            name: exName,
+            sets,
+            notes
+        });
     });
     workoutExercises = newWorkoutExercises;
-  }
+    console.log('Синхронизация данных из DOM в workoutExercises завершена:', workoutExercises);
+}
+
 
   /**
    * Восстанавливаем слушатели событий (на сетах, кнопках и т.п.)
    */
   function restoreExerciseEventListeners() {
+    console.log('Восстановление обработчиков событий для упражнений...');
     const exerciseItems = exercisesDiv.querySelectorAll('.exercise-item');
     exerciseItems.forEach(exerciseItem => {
       const exerciseId   = exerciseItem.dataset.exerciseId;
@@ -255,37 +306,52 @@ document.addEventListener('DOMContentLoaded', async () => {
       const notesTextarea = exerciseItem.querySelector('.exercise-notes');
       const exerciseSettingsButton = exerciseItem.querySelector('.exercise-settings-button');
       const exerciseImage = exerciseItem.querySelector('.exercise-image');
-
+      console.log(`Добавляем обработчики для упражнения с ID: ${exerciseId}`);
+  
+      // Убедимся, что кнопка "Добавить сет" добавляет новый сет
+      addSetButton.addEventListener('click', async () => {
+        console.log('Кнопка "Добавить сет" нажата для упражнения:', exerciseId);
+        // ВАЖНО: parseInt, если ID — число
+        const exIdNum = parseInt(exerciseId);
+        const exObj = workoutExercises.find(ex => ex.id === exIdNum);
+        if (!exObj) {
+          console.error('Упражнение не найдено. Возможно, exerciseId и ex.id имеют разные типы.');
+          return;
+        }
+  
+        // Загрузим полные данные об упражнении (если нужно)
+        const fullExData = await loadFullExerciseData({ id: exObj.id, name: exObj.name });
+        addSetToExercise(setsList, exerciseItem, fullExData);
+  
+        // Обновляем опыт и состояние
+        await recalcAndUpdateXP();
+        saveWorkoutState();
+      });
+  
+      // Восстанавливаем события для остальных элементов
       notesTextarea.addEventListener('focus', () => {
         notesTextarea.classList.remove('default-value');
       });
       notesTextarea.addEventListener('input', () => {
         notesTextarea.classList.remove('default-value');
       });
-
-      addSetButton.addEventListener('click', async () => {
-        const exObj = workoutExercises.find(ex => ex.id === exerciseId);
-        if (!exObj) return;
-        // Загрузим полные данные (minWeight, maxWeight) при необходимости
-        const fullExData = await loadFullExerciseData({ id: exObj.id, name: exObj.name });
-        addSetToExercise(setsList, exerciseItem, fullExData);
-      });
-
+  
       exerciseSettingsButton.addEventListener('click', () => {
         openExerciseSettings(exerciseItem, setsList);
       });
-
-      // Переход на страницу упражнения (exercise.html?id=ID)
+  
       exerciseImage.addEventListener('click', () => {
-        window.location.href = `exercise.html?id=${exerciseId}`;
+        window.location.href = `exercise?id=${exerciseId}`;
       });
-
+  
+      // Восстанавливаем события для уже существующих сетов
       const setItems = setsList.querySelectorAll('.set-item');
       setItems.forEach(setItem => {
         restoreSetEventListeners(setItem, exerciseId);
       });
     });
   }
+  
 
   /**
    * Загрузка полной информации об упражнении (если не хватает данных)
@@ -382,6 +448,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     exercisesDiv.appendChild(exerciseItem);
 
+    
     const notesTextarea = exerciseItem.querySelector('.exercise-notes');
     const setsList      = exerciseItem.querySelector('.sets-list');
     const addSetBtn     = exerciseItem.querySelector('.add-set-button');
@@ -397,7 +464,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     addSetBtn.addEventListener('click', () => {
       addSetToExercise(setsList, exerciseItem, exercise);
-    });
+      recalcAndUpdateXP(); // Обновляем общий опыт и сеты
+  });
+  
 
     settingsBtn.addEventListener('click', () => {
       openExerciseSettings(exerciseItem, setsList);
@@ -405,7 +474,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Клик по картинке — переход на страницу упражнения
     exerciseImage.addEventListener('click', () => {
-      window.location.href = `exercise.html?id=${exercise.id}`;
+      window.location.href = `exercise?id=${exercise.id}`;
     });
 
     // Добавляем хотя бы один сет
@@ -415,9 +484,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     workoutExercises.push({
       id: exercise.id,
       name: exercise.name,
+      minWeightMale: exercise.minWeightMale,  // Сохраняем дополнительные данные
+      maxWeightMale: exercise.maxWeightMale,
+      minWeightFemale: exercise.minWeightFemale,
+      maxWeightFemale: exercise.maxWeightFemale,
       sets: [],
       notes: ''
-    });
+  });
+  
+
+    workoutExercises[workoutExercises.length - 1].minWeightMale = exercise.minWeightMale;
+workoutExercises[workoutExercises.length - 1].maxWeightMale = exercise.maxWeightMale;
+workoutExercises[workoutExercises.length - 1].minWeightFemale = exercise.minWeightFemale;
+workoutExercises[workoutExercises.length - 1].maxWeightFemale = exercise.maxWeightFemale;
+
 
     saveWorkoutState();
   }
@@ -523,7 +603,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     exerciseImage.addEventListener('click', () => {
-      window.location.href = `exercise.html?id=${exercise.id}`;
+      window.location.href = `exercise?id=${exercise.id}`;
     });
 
     workoutExercises.push({
@@ -556,7 +636,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>
     `;
     setsList.appendChild(setItem);
-
+    
+    console.log('Добавлен новый сет:', setItem);
     const checkButton  = setItem.querySelector('.check-button');
     const inputWeight  = setItem.querySelector('.input-weight');
     const inputReps    = setItem.querySelector('.input-reps');
@@ -564,6 +645,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const previousSet  = setItem.querySelector('.previous-set');
 
     // Подгружаем предыдущие данные (если есть)
+    console.log(`Добавление сета: exerciseId=${exerciseItem.dataset.exerciseId}, setNumber=${setNumber}`);
+
+    console.log(`Добавлен новый DOM-элемент сета:`, setItem);
+
     loadPreviousSetData(exerciseItem.dataset.exerciseId, setNumber, previousSet, inputWeight, inputReps, inputRpe);
 
     [inputWeight, inputReps, inputRpe].forEach(inp => {
@@ -573,6 +658,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     checkButton.addEventListener('click', () => {
+      
       let wVal   = parseFloat(inputWeight.value);
       let repsVal= parseInt(inputReps.value);
       let rpeVal = parseInt(inputRpe.value);
@@ -605,9 +691,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         inputReps.disabled   = true;
         inputRpe.disabled    = true;
       }
+// Восстанавливаем события для нового сета
+restoreSetEventListeners(setItem, exerciseItem.dataset.exerciseId);
 
       recalcAndUpdateXP();
       saveWorkoutState();
+      console.log(`Обновляем XP: totalXP=${totalXP}, totalSets=${totalSetsCompleted}`);
+      console.log(`Обновление DOM: xpValue=${xpValue.textContent}, setsValue=${setsValue.textContent}`);
+
     });
   }
 
@@ -616,86 +707,113 @@ document.addEventListener('DOMContentLoaded', async () => {
    */
   function restoreSetEventListeners(setItem, exerciseId) {
     const checkButton = setItem.querySelector('.check-button');
+    console.log(`Восстановление событий для сета: exerciseId=${exerciseId}`);
+  
     const inputWeight = setItem.querySelector('.input-weight');
-    const inputReps   = setItem.querySelector('.input-reps');
-    const inputRpe    = setItem.querySelector('.input-rpe');
-
-    [inputWeight, inputReps, inputRpe].forEach(inp => {
-      inp.addEventListener('input', () => {
-        inp.classList.remove('default-value');
+    const inputReps = setItem.querySelector('.input-reps');
+    const inputRpe = setItem.querySelector('.input-rpe');
+  
+    // Удаляем старые обработчики перед добавлением новых
+    checkButton.replaceWith(checkButton.cloneNode(true));
+    const newCheckButton = setItem.querySelector('.check-button');
+  
+    [inputWeight, inputReps, inputRpe].forEach((inp) => {
+      inp.replaceWith(inp.cloneNode(true)); // Удаляем старые обработчики
+      const newInput = setItem.querySelector(`.${inp.className.split(' ').join('.')}`);
+      newInput.addEventListener('input', () => {
+        newInput.classList.remove('default-value');
       });
     });
-
-    checkButton.addEventListener('click', () => {
-      let wVal   = parseFloat(inputWeight.value);
-      let repsVal= parseInt(inputReps.value);
+  
+    // Добавляем новый обработчик для checkButton
+    newCheckButton.addEventListener('click', () => {
+      let wVal = parseFloat(inputWeight.value);
+      let repsVal = parseInt(inputReps.value);
       let rpeVal = parseInt(inputRpe.value);
-
-      if (isNaN(wVal))   wVal = 0;
-      if (isNaN(repsVal))repsVal = 0;
+  
+      if (isNaN(wVal)) wVal = 0;
+      if (isNaN(repsVal)) repsVal = 0;
       if (isNaN(rpeVal)) rpeVal = 5;
-
+  
       if (rpeVal < 5 || rpeVal > 10) {
         alert('RPE должно быть от 5 до 10.');
         return;
       }
-
+  
       if (setItem.classList.contains('completed')) {
         setItem.classList.remove('completed');
-        checkButton.textContent = '';
+        newCheckButton.textContent = '';
         inputWeight.disabled = false;
-        inputReps.disabled   = false;
-        inputRpe.disabled    = false;
+        inputReps.disabled = false;
+        inputRpe.disabled = false;
       } else {
         if (!wVal || !repsVal || !rpeVal) {
           alert('Пожалуйста, заполните все поля перед завершением сета.');
           return;
         }
         setItem.classList.add('completed');
-        checkButton.textContent = '✔';
+        newCheckButton.textContent = '✔';
         inputWeight.disabled = true;
-        inputReps.disabled   = true;
-        inputRpe.disabled    = true;
+        inputReps.disabled = true;
+        inputRpe.disabled = true;
       }
-
+  
       recalcAndUpdateXP();
       saveWorkoutState();
     });
   }
+  
 
   /**
    * Загрузка предыдущего сета (если есть)
    */
   async function loadPreviousSetData(exerciseId, setNumber, previousSetElement, inputWeight, inputReps, inputRpe) {
     if (isProgramStart) {
-      previousSetElement.textContent = 'Нет данных';
-      return;
-    }
-    try {
-      if (!exerciseId || exerciseId === 'undefined') {
         previousSetElement.textContent = 'Нет данных';
         return;
-      }
-      const response = await fetch(`/exerciseHistory?exerciseId=${exerciseId}&setNumber=${setNumber}`, {
-        credentials: 'include'
-      });
-      const data = await response.json();
-      if (data.previousSet) {
-        let { weight, reps, rpe } = data.previousSet;
-        weight = Math.round(weight);
-        previousSetElement.textContent = `${weight}кг x ${reps} повторений @ RPE ${rpe}`;
-        // автозаполняем
-        inputWeight.value = weight;
-        inputReps.value   = reps;
-        inputRpe.value    = rpe;
-      } else {
-        previousSetElement.textContent = 'Нет данных';
-      }
-    } catch (error) {
-      console.error('Ошибка при загрузке предыдущих данных сета:', error);
-      previousSetElement.textContent = 'Нет данных';
     }
-  }
+    try {
+        if (!exerciseId || exerciseId === 'undefined') {
+            previousSetElement.textContent = 'Нет данных';
+            return;
+        }
+
+        // Запрос к серверу для получения только последней тренировки
+        console.log(`Запрос к /lastExerciseSets: exerciseId=${exerciseId}, setNumber=${setNumber}`);
+        const response = await fetch(`/lastExerciseSets?exerciseId=${exerciseId}`, {
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            console.error(`Ошибка при запросе к /lastExerciseSets: ${response.status}`);
+            previousSetElement.textContent = 'Нет данных';
+            return;
+        }
+
+        const data = await response.json();
+        console.log('Ответ от /lastExerciseSets:', data);
+
+        if (data.sets && data.sets.length >= setNumber) {
+            // Берём конкретный сет (по номеру)
+            const previousSet = data.sets[setNumber - 1];
+            let { weight, reps, rpe } = previousSet;
+            weight = Math.round(weight);
+            previousSetElement.textContent = `${weight}кг x ${reps} повторений @ RPE ${rpe}`;
+            
+            // Заполняем поля по умолчанию
+            inputWeight.value = weight;
+            inputReps.value = reps;
+            inputRpe.value = rpe;
+        } else {
+            // Если подход не найден
+            previousSetElement.textContent = 'Нет данных';
+        }
+    } catch (error) {
+        console.error('Ошибка при загрузке предыдущих данных сета:', error);
+        previousSetElement.textContent = 'Нет данных';
+    }
+}
+
 
   /**
    * Окно настроек упражнения (иконка «gear»)
@@ -742,16 +860,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     deleteSetButton.addEventListener('click', () => {
       if (setsList.children.length === 0) {
-        alert('Нет сетов для удаления.');
-        return;
+          alert('Нет сетов для удаления.');
+          return;
       }
       const lastSetItem = setsList.lastElementChild;
       setsList.removeChild(lastSetItem);
-      exerciseSettingsModal.style.display = 'none';
-      document.body.removeChild(exerciseSettingsModal);
-      recalcAndUpdateXP();
+      recalcAndUpdateXP(); // Обновляем после удаления
       saveWorkoutState();
-    });
+  });
+  
   }
 
   /**
@@ -814,34 +931,56 @@ document.addEventListener('DOMContentLoaded', async () => {
   /**
    * Функции расчёта корректировок веса и XP
    */
+  
   function calculateMinWeight(exercise) {
     const userGender = userData.gender || 'male';
     let baseMin = (userGender === 'female') ? exercise.minWeightFemale : exercise.minWeightMale;
     if (typeof baseMin !== 'number') baseMin = 0;
+    console.log(`calculateMinWeight: exercise=${JSON.stringify(exercise)}, baseMin=${baseMin}`);
     let avgWeight = (userGender === 'female') ? 60 : 70;
-    let userW     = userData.weight || avgWeight;
-    const factor  = userW / avgWeight;
-    return baseMin * factor;
+    let userW = userData.weight || avgWeight;
+    const factor = userW / avgWeight;
+    const result = baseMin * factor;
+    console.log(`calculateMinWeight: baseMin=${baseMin}, userW=${userW}, factor=${factor}, result=${result}`);
+    return result;
+}
+
+
+function calculateMaxWeight(exercise) {
+  const userGender = userData.gender || 'male';
+  let baseMax = (userGender === 'female') ? exercise.maxWeightFemale : exercise.maxWeightMale;
+  if (typeof baseMax !== 'number') baseMax = 0;
+  console.log(`calculateMaxWeight: exercise=${JSON.stringify(exercise)}, baseMax=${baseMax}`);
+  let avgWeight = (userGender === 'female') ? 60 : 70;
+  let userW = userData.weight || avgWeight;
+  const factor = userW / avgWeight;
+  const result = baseMax * factor;
+  console.log(`calculateMaxWeight: baseMax=${baseMax}, userW=${userW}, factor=${factor}, result=${result}`);
+  return result;
+}
+
+
+
+function calculateWeightLevel(weight, exercise) {
+  const minWeight = Math.round(calculateMinWeight(exercise));
+  const maxWeight = Math.round(calculateMaxWeight(exercise));
+
+  if (weight <= minWeight) {
+      console.log(`Вес меньше или равен минимальному: weight=${weight}, minWeight=${minWeight}, level=1`);
+      return 1;
+  }
+  if (weight >= maxWeight) {
+      console.log(`Вес больше или равен максимальному: weight=${weight}, maxWeight=${maxWeight}, level=10`);
+      return 10;
   }
 
-  function calculateMaxWeight(exercise) {
-    const userGender = userData.gender || 'male';
-    let baseMax = (userGender === 'female') ? exercise.maxWeightFemale : exercise.maxWeightMale;
-    if (typeof baseMax !== 'number') baseMax = 0;
-    let avgWeight = (userGender === 'female') ? 60 : 70;
-    let userW     = userData.weight || avgWeight;
-    const factor  = userW / avgWeight;
-    return baseMax * factor;
-  }
+  const ratio = (weight - minWeight) / (maxWeight - minWeight);
+  const level = Math.round(ratio * 9 + 1);
+  console.log(`Вес в диапазоне: weight=${weight}, minWeight=${minWeight}, maxWeight=${maxWeight}, level=${level}`);
+  return level;
+}
 
-  function calculateWeightLevel(weight, exercise) {
-    const minW = calculateMinWeight(exercise);
-    const maxW = calculateMaxWeight(exercise);
-    if (weight <= minW) return 1;
-    if (weight >= maxW) return 10;
-    const ratio = (weight - minW) / (maxW - minW);
-    return Math.round(ratio * 9 + 1);
-  }
+
 
   /**
    * Формула XP = ( (weightXP * reps) + RPEBonus ) * multiRepFactor
@@ -869,47 +1008,64 @@ document.addEventListener('DOMContentLoaded', async () => {
       multiRepFactor = 0.5;
     }
 
-    return Math.round((baseXP + rpeBonus) * multiRepFactor);
-  }
+    const setXP = Math.round((baseXP + rpeBonus) * multiRepFactor);
+
+    // Логирование после расчёта опыта
+    console.log(`Рассчитанный опыт: weight=${weight}, reps=${reps}, rpe=${rpe}, xp=${setXP}`);
+
+    return setXP;
+}
 
   /**
    * Подсчитываем общее XP и завершённые сеты
    */
-  function recalculateTotalXPFromWorkoutExercises() {
-    let newTotalXP   = 0;
+  async function recalculateTotalXPFromWorkoutExercises() {
+    let newTotalXP = 0;
     let newTotalSets = 0;
-    workoutExercises.forEach(ex => {
-      ex.sets.forEach(st => {
-        if (st.completed) {
-          // Упрощённо берём заглушку, если нет реальных minWeightMale
-          const exerciseObj = {
-            minWeightMale:   20,
-            maxWeightMale:   100,
-            minWeightFemale: 15,
-            maxWeightFemale: 70
-          };
-          // В реальном проекте можно подгрузить fullExData, если нужно
-          const xpGained = calculateXP(st.weight, st.reps, st.rpe, exerciseObj);
-          newTotalXP += xpGained;
-          newTotalSets++;
+
+    for (let i = 0; i < workoutExercises.length; i++) {
+        const ex = workoutExercises[i];
+
+        // Проверяем, есть ли данные о весах
+        if (!ex.minWeightMale || !ex.maxWeightMale) {
+            console.log(`recalculateTotalXP: Недостаточно данных, загружаем информацию об упражнении id=${ex.id}`);
+            const fullExData = await loadFullExerciseData(ex); // Загружаем недостающие данные
+            Object.assign(ex, fullExData); // Обновляем объект упражнения
         }
-      });
-    });
+
+        ex.sets.forEach(st => {
+            if (st.completed) {
+                console.log(`recalculateTotalXP: Передача упражнения в calculateXP: ${JSON.stringify(ex)}`);
+                const xpGained = calculateXP(st.weight, st.reps, st.rpe, ex);
+                newTotalXP += xpGained;
+                newTotalSets++;
+            }
+        });
+    }
+
     return { newTotalXP, newTotalSets };
-  }
+}
+
+
 
   /**
    * Пересчитываем и обновляем на экране
    */
-  function recalcAndUpdateXP() {
+  async function recalcAndUpdateXP() {
     updateWorkoutExercisesFromDOM();
-    const { newTotalXP, newTotalSets } = recalculateTotalXPFromWorkoutExercises();
-    totalXP            = newTotalXP;
+    const { newTotalXP, newTotalSets } = await recalculateTotalXPFromWorkoutExercises();
+
+    // Обновляем глобальные переменные
+    totalXP = newTotalXP;
     totalSetsCompleted = newTotalSets;
 
-    xpValue.textContent   = `${Math.round(totalXP)} XP`;
+    // Обновляем DOM
+    xpValue.textContent = `${Math.round(totalXP)} XP`;
     setsValue.textContent = totalSetsCompleted;
-  }
+
+    console.log(`Обновлено общее XP=${totalXP}, завершенные сеты=${totalSetsCompleted}`);
+}
+
 
   /**
    * Сохраняем тренировку на бэкенде
@@ -919,6 +1075,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const { newTotalXP, newTotalSets } = recalculateTotalXPFromWorkoutExercises();
     totalXP            = newTotalXP;
     totalSetsCompleted = newTotalSets;
+    console.log(`Обновлено: общее XP=${totalXP}, завершённые сеты=${totalSetsCompleted}`);
+
     xpValue.textContent   = `${Math.round(totalXP)} XP`;
     setsValue.textContent = totalSetsCompleted;
 

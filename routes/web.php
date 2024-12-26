@@ -52,7 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/workout/add', [WorkoutController::class, 'addWorkout']);
     Route::get('/workouts', [WorkoutController::class, 'getWorkouts']);
     Route::get('/workout', [WorkoutController::class, 'getWorkout']);
-    Route::get('/workout/exercise-history', [WorkoutController::class, 'getExerciseHistory']);
+    Route::get('/exercise/history', [WorkoutController::class, 'getExerciseHistory']);
+    Route::get('/lastExerciseSets', [WorkoutController::class, 'getLastExerciseSets']);
+    Route::get('/exercise/last-sets', [WorkoutController::class, 'getLastExerciseSets']);
     Route::get('/workout/exercise-notes', [WorkoutController::class, 'getExerciseNotes']);
     Route::post('/workout/start-program', [WorkoutController::class, 'startProgramWorkout']);
     Route::post('/workout/update', [WorkoutController::class, 'updateWorkout']);

@@ -356,12 +356,14 @@ class WorkoutController extends Controller
                 }
             }
 
+
             $user->save();
 
             return response()->json([
                 'message'       => 'Тренировка успешно сохранена!',
                 'xpGained'      => round($totalXP),
                 'newExperience' => $user->experience,
+                'newLevel'      => $user->level
             ]);
         } catch (\Exception $err) {
             Log::error('Ошибка при сохранении тренировки: ' . $err->getMessage());
@@ -424,41 +426,88 @@ class WorkoutController extends Controller
         }
     }
 
+    public function getExerciseHistory(Request $request)
+{
+    $exerciseId = $request->query('exerciseId');
+    $userId = Auth::id();
+
+    if (!$userId) {
+        return response()->json(['message' => 'Необходима авторизация.'], 401);
+    }
+
+    try {
+        // Получаем историю выполнения упражнения
+        $workoutExercises = WorkoutExercise::where('exercise_id', $exerciseId)
+            ->whereHas('workout', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->orderByDesc('id') // Последние выполненные
+            ->with('sets')
+            ->get();
+
+        $history = $workoutExercises->map(function ($workoutExercise) {
+            return [
+                'workout_id' => $workoutExercise->workout_id,
+                'sets' => $workoutExercise->sets->map(function ($set) {
+                    return [
+                        'weight' => $set->weight,
+                        'reps' => $set->reps,
+                        'rpe' => $set->rpe,
+                    ];
+                }),
+            ];
+        });
+
+        return response()->json(['history' => $history], 200);
+    } catch (\Exception $e) {
+        Log::error('Ошибка при получении истории упражнения: ' . $e->getMessage());
+        return response()->json(['message' => 'Ошибка сервера.'], 500);
+    }
+}
+
     /**
      * Получение истории выполнения конкретного упражнения (последняя тренировка, setNumber-й подход)
      */
-    public function getExerciseHistory(Request $request)
+    public function getLastExerciseSets(Request $request)
     {
+        $exerciseId = $request->query('exerciseId');
+        $userId = Auth::id();
+    
+        if (!$userId) {
+            return response()->json(['message' => 'Необходима авторизация.'], 401);
+        }
+    
         try {
-            $exerciseId = $request->query('exerciseId');
-            $setNumber  = (int)$request->query('setNumber', 1);
-            $userId     = $request->session()->get('userId');
-
-            $workoutExercise = WorkoutExercise::where('exercise_id', $exerciseId)
-                ->whereHas('workout', function($q) use($userId) {
-                    $q->where('user_id', $userId);
+            // Ищем последнюю тренировку с этим упражнением
+            $lastWorkoutExercise = WorkoutExercise::where('exercise_id', $exerciseId)
+                ->whereHas('workout', function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
                 })
-                ->orderByDesc('id')
-                ->with('sets')
+                ->orderByDesc('id') // Последняя запись
+                ->with('sets') // Подгружаем сеты
                 ->first();
-
-            if (!$workoutExercise) {
-                return response()->json(['message' => 'Нет предыдущих данных для этого упражнения.']);
+    
+            if (!$lastWorkoutExercise) {
+                return response()->json(['sets' => [], 'message' => 'Нет предыдущих данных для этого упражнения.'], 200);
             }
-
-            $sets = $workoutExercise->sets;
-            if ($sets->count() < $setNumber) {
-                return response()->json(['message' => 'Нет данных для указанного сета.']);
-            }
-
-            $previousSet = $sets[$setNumber - 1];
-            return response()->json(['previousSet' => $previousSet]);
-        } catch (\Exception $err) {
-            Log::error('Ошибка при получении истории выполнения упражнения: ' . $err->getMessage());
-            return response()->json(['message' => 'Ошибка при получении истории выполнения упражнения.'], 500);
+    
+            // Формируем массив сетов
+            $sets = $lastWorkoutExercise->sets->map(function ($set) {
+                return [
+                    'weight' => $set->weight,
+                    'reps' => $set->reps,
+                    'rpe' => $set->rpe,
+                ];
+            });
+    
+            return response()->json(['sets' => $sets], 200);
+        } catch (\Exception $e) {
+            Log::error('Ошибка при получении данных предыдущего упражнения: ' . $e->getMessage());
+            return response()->json(['message' => 'Ошибка сервера.'], 500);
         }
     }
-
+    
+    
     /**
      * Получение заметок по упражнению (пример).
      * Если вы храните "notes" в workout_exercises, ищем последнюю запись, где exercise_id = ...
@@ -539,23 +588,51 @@ class WorkoutController extends Controller
         $adjMax = $maxW * $factor;
 
         $weightLevel = $this->calculateWeightLevel($weight, $adjMin, $adjMax);
-
+        Log::info("Weight Level Calculated", [
+            'weightLevel' => $weightLevel,
+            'weight' => $weight,
+            'adjMin' => $adjMin,
+            'adjMax' => $adjMax
+        ]);
         $baseXP  = $weightLevel * $reps;
-
+        Log::info("Base XP Calculated", [
+            'baseXP' => $baseXP,
+            'weightLevel' => $weightLevel,
+            'reps' => $reps
+        ]);
         $rpeBonus = 0;
         if ($rpe > 5) {
             $percent = ($rpe - 5) * 0.05;
             $rpeBonus = $baseXP * $percent;
+        } else {
+            $rpeBonus = 0;
         }
+        Log::info("RPE Bonus Calculated", [
+            'rpeBonus' => $rpeBonus,
+            'rpe' => $rpe,
+            'baseXP' => $baseXP
+        ]);
 
         $multiRepFactor = 1.0;
         if ($reps >= 13 && $reps <= 15) {
             $multiRepFactor = 0.8;
         } elseif ($reps >= 16) {
             $multiRepFactor = 0.5;
+        } else {
+            $multiRepFactor = 1.0;
         }
+        Log::info("MultiRep Factor Calculated", [
+            'multiRepFactor' => $multiRepFactor,
+            'reps' => $reps
+        ]);
 
         return round(($baseXP + $rpeBonus) * $multiRepFactor);
+        Log::info("Final Set XP Calculated", [
+            'setXP' => $setXP,
+            'baseXP' => $baseXP,
+            'rpeBonus' => $rpeBonus,
+            'multiRepFactor' => $multiRepFactor
+        ]);
     }
 
     /**
