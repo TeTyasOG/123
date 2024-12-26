@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
   const urlParams = new URLSearchParams(window.location.search);
   const exerciseId = urlParams.get('id');
 
@@ -6,7 +8,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     alert('Идентификатор упражнения не указан.');
     return;
   }
-
+ 
+    
   const backButton = document.getElementById('backButton');
   const videoElem = document.getElementById('exerciseVideo');
   const exerciseNameElem = document.getElementById('exerciseName');
@@ -21,24 +24,34 @@ document.addEventListener('DOMContentLoaded', async () => {
   const bestXPUnit = document.getElementById('bestXPUnit');
   const descriptionElem = document.getElementById('descriptionText');
   const tipsElem = document.getElementById('tipsList');
-
+    
   backButton.addEventListener('click', () => {
     window.history.back();
   });
-
+    
   async function loadExerciseInfo() {
     try {
-      const response = await fetch(`/exerciseInfo?id=${exerciseId}`);
+      const response = await fetch(`/exerciseInfo?id=${exerciseId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken, // Добавляем CSRF токен
+        },
+        credentials: 'include', // Для передачи сессионных куки
+      });
+
       if (!response.ok) {
         alert('Ошибка при загрузке информации об упражнении.');
         return;
       }
 
       const data = await response.json();
+      console.log('Данные об упражнении:', data);
+
 
       // Название упражнения
       exerciseNameElem.textContent = (data.name || '').toUpperCase();
-
+    
       // Настраиваем «gif-like» видео
       videoElem.src = data.videoUrl || '';
       videoElem.loop = true;
@@ -52,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           videoElem.pause();
         }
       });
-
+    
       /**
        * 1) ОТОБРАЖЕНИЕ МЫШЦ
        *    Теперь основная мышца и дополнительные берём из массива muscleFilters.

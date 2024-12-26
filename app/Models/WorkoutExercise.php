@@ -28,6 +28,6 @@ class WorkoutExercise extends Model
     // Связь с сетами
     public function sets()
     {
-        return $this->hasMany(ExerciseSet::class);
+        return $this->hasMany(ExerciseSet::class, 'workout_exercise_id');
     }
 }

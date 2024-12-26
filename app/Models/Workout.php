@@ -30,6 +30,6 @@ class Workout extends Model
     // Связь с упражнениями в тренировке
     public function exercises()
     {
-        return $this->hasMany(WorkoutExercise::class);
+        return $this->hasMany(WorkoutExercise::class, 'workout_id');
     }
 }

@@ -5,6 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Добавить упражнение</title>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   @vite(['resources/css/addExercise.css', 'resources/js/addExercise.js'])
   <link rel="stylesheet" href="{{ asset('css/addExercise.css') }}">
 </head>

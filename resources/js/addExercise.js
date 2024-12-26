@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+  
   const closeButton = document.getElementById('closeButton');
   const searchInput = document.getElementById('searchInput');
   const muscleFilterButton = document.getElementById('muscleFilterButton');
@@ -10,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const muscleOptions = muscleFilterModal.querySelectorAll('.muscle-option');
   const filterOptions = filterModal.querySelectorAll('.filter-option');
   const recentExercisesContainer = document.getElementById('recentExercisesContainer');
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
   let selectedMuscleGroup = 'ВСЕ МЫШЦЫ';
   let selectedFilter = 'alphabetical'; 
@@ -123,7 +125,17 @@ document.addEventListener('DOMContentLoaded', () => {
         url.searchParams.append('muscleGroup', selectedMuscleGroup);
       }
 
-      const response = await fetch(url);
+      url.searchParams.append('sortType', selectedFilter); // Передаём выбранный тип сортировки
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken, // Передаём токен
+        },
+        credentials: 'include', // Для отправки куки
+      });
+      
+
       if (!response.ok) throw new Error('Ошибка при получении упражнений');
       let allData = await response.json();
 
@@ -133,20 +145,30 @@ document.addEventListener('DOMContentLoaded', () => {
       await loadUserExerciseExperience();
       sortExercises();
       renderAllExercises();
-      loadRecentExercises();
+      loadRecentExercises(selectedMuscleGroup, selectedFilter);
     } catch (error) {
       console.error('Ошибка при загрузке упражнений:', error);
     }
   }
 
-  async function loadRecentExercises() {
+  async function loadRecentExercises(selectedMuscleGroup, selectedFilter) {
     try {
       const searchQuery = searchInput.value.trim();
       const url = new URL('/getRecentExercises', window.location.origin);
       if (searchQuery) {
         url.searchParams.append('searchQuery', searchQuery);
       }
-      const response = await fetch(url);
+      url.searchParams.append('sortType', selectedFilter); // Передаём выбранный тип сортировки
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken, // Передаём токен
+        },
+        credentials: 'include', // Для отправки куки
+      });
+      
+
       if (!response.ok) throw new Error('Ошибка при получении последних упражнений');
       let allData = await response.json();
 
@@ -172,11 +194,12 @@ document.addEventListener('DOMContentLoaded', () => {
       exercises.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
     } else if (selectedFilter === 'level') {
       exercises.sort((a, b) => {
-        const levelA = calculateExerciseLevel(a.id);
-        const levelB = calculateExerciseLevel(b.id);
-        return levelB - levelA;
+        const levelA = a.userLevel || 0; // Уровень возвращается сервером
+        const levelB = b.userLevel || 0;
+        return levelB - levelA; // Сортировка по убыванию уровня
       });
     }
+    
   }
 
   function renderAllExercises() {
@@ -213,24 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function calculateExerciseLevel(exerciseId) {
-    const exp = Number(userExerciseExperience[exerciseId] || 0);
-    return calcLevelFromXP(exp);
-  }
 
-  function calcLevelFromXP(experience) {
-    if (experience >= 15000) {
-      return 4; // Алмаз
-    } else if (experience >= 7000) {
-      return 3; // Золото
-    } else if (experience >= 2500) {
-      return 2; // Серебро
-    } else if (experience >= 500) {
-      return 1; // Бронза
-    } else {
-      return 0;
-    }
-  }
 
   function getMainMuscle(exercise) {
     // musclePercentages — объект { 'Грудь': 80, 'Трицепс': 20, ... }
@@ -247,12 +253,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const exerciseItem = document.createElement('div');
     exerciseItem.className = 'exercise-item';
 
-    const level = calculateExerciseLevel(exercise.id);
-    let levelHTML = '';
-    if (level >= 1) levelHTML += '<div class="level-indicator bronze"></div>';
-    if (level >= 2) levelHTML += '<div class="level-indicator silver"></div>';
-    if (level >= 3) levelHTML += '<div class="level-indicator gold"></div>';
-    if (level >= 4) levelHTML += '<div class="level-indicator diamond"></div>';
+    const level = exercise.userLevel || 0;
+
+    const rank = exercise.userRank || 'NONE';
+    let rankHTML = '';
+    if (rank === 'BRONZE') rankHTML = '<div class="level-indicator bronze"></div>';
+    if (rank === 'SILVER') rankHTML = '<div class="level-indicator silver"></div>';
+    if (rank === 'GOLD') rankHTML = '<div class="level-indicator gold"></div>';
+    if (rank === 'DIAMOND') rankHTML = '<div class="level-indicator diamond"></div>';
+    
 
     const exerciseName = (typeof exercise.name === 'string' && exercise.name.trim() !== '')
       ? exercise.name.toUpperCase()
@@ -261,13 +270,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainMuscle = getMainMuscle(exercise);
 
     exerciseItem.innerHTML = `
-      <img src="${exercise.thumbnailUrl || '/default-thumbnail.png'}" alt="${exerciseName}" class="exercise-image">
-      <div class="exercise-details">
-        <div class="exercise-name">${exerciseName}</div>
-        <div class="exercise-muscle">${mainMuscle}</div>
-      </div>
-      <div class="exercise-levels">${levelHTML}</div>
-    `;
+    <img src="${exercise.thumbnailUrl || '/default-thumbnail.png'}" alt="${exerciseName}" class="exercise-image">
+    <div class="exercise-details">
+      <div class="exercise-name">${exerciseName}</div>
+      <div class="exercise-muscle">${mainMuscle}</div>
+    </div>
+    <div class="exercise-levels">${rankHTML}</div>
+  `;
+  
 
     const exerciseImage = exerciseItem.querySelector('.exercise-image');
     exerciseImage.addEventListener('click', (e) => {
