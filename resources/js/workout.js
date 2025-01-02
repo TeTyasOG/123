@@ -17,6 +17,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   let userData           = {};
   let isProgramStart     = false;
 
+// Флажок, говорящий: «Пропустить загрузку предыдущих сетов при первом отображении»
+let skipPreviousSets = sessionStorage.getItem('skipPreviousSets') === 'true';
+if (skipPreviousSets) {
+  console.log('Первый запуск по программе: пропускаем загрузку прошлых сетов');
+}
+
   // При добавлении упражнения (с другой страницы) вернёмся сюда
   sessionStorage.setItem('returnTo', 'workout');
 
@@ -318,7 +324,10 @@ maxWeightFemale: ex.maxWeightFemale,
           console.error('Упражнение не найдено. Возможно, exerciseId и ex.id имеют разные типы.');
           return;
         }
-  
+  if (skipPreviousSets) {
+    skipPreviousSets = false;
+    sessionStorage.setItem('skipPreviousSets', 'false');
+  }
         // Загрузим полные данные об упражнении (если нужно)
         const fullExData = await loadFullExerciseData({ id: exObj.id, name: exObj.name });
         addSetToExercise(setsList, exerciseItem, fullExData);
@@ -768,6 +777,7 @@ restoreSetEventListeners(setItem, exerciseItem.dataset.exerciseId);
    * Загрузка предыдущего сета (если есть)
    */
   async function loadPreviousSetData(exerciseId, setNumber, previousSetElement, inputWeight, inputReps, inputRpe) {
+    
     if (isProgramStart) {
         previousSetElement.textContent = 'Нет данных';
         return;
@@ -1087,7 +1097,12 @@ function calculateWeightLevel(weight, exercise) {
       exercises: [],
       totalWorkoutTime
     };
-
+// --- СНАЧАЛА проверяем, есть ли currentProgram, и добавляем programId ---
+const currentProgram = sessionStorage.getItem('currentProgramWorkout');
+if (currentProgram) {
+  const parsed = JSON.parse(currentProgram);
+  workoutData.programId = parsed.id;
+}
     for (const ex of workoutExercises) {
       if (!ex.id || ex.id === 'undefined') {
         console.error('Некорректный ID упражнения:', ex);
@@ -1142,17 +1157,18 @@ function calculateWeightLevel(weight, exercise) {
         alert('Произошла ошибка при сохранении тренировки.');
       });
 
-    // Если тренировались по программе, увеличим счётчик
-    const currentProgram = sessionStorage.getItem('currentProgramWorkout');
-    if (currentProgram) {
-      const programData = JSON.parse(currentProgram);
-      const key = `programCompletions_${programData.id}`;
-      let val = localStorage.getItem(key);
-      let completions = val ? parseInt(val) : 0;
-      completions++;
-      localStorage.setItem(key, completions.toString());
-      sessionStorage.removeItem('currentProgramWorkout');
-    }
+
+  // Счётчик локального хранилища
+  const key = `programCompletions_${parsedProgram.id}`;
+  let val = localStorage.getItem(key);
+  let completions = val ? parseInt(val) : 0;
+  completions++;
+  localStorage.setItem(key, completions.toString());
+
+  // Чистим sessionStorage
+  sessionStorage.removeItem('currentProgramWorkout');
+}
+
   }
   
-});
+);

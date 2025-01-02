@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(res => res.json())
       .then(programs => {
         userPrograms = programs;
+        console.log('От сервера /program/list получили:', programs);
         displayPrograms(programs);
       })
       .catch(err => {
@@ -88,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
         startProgramMessage.textContent = `ВЫ ХОТИТЕ ЗАПУСТИТЬ ПРОГРАММУ "${program.name.toUpperCase()}"?`;
         startProgramModal.style.display = 'block';
       });
-  
+      
       programList.appendChild(div);
     });
   }
@@ -96,12 +97,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   confirmStartProgram.addEventListener('click', () => {
     if (selectedProgramToStart) {
-      sessionStorage.setItem('currentProgramWorkout', JSON.stringify(selectedProgramToStart));
-      // При запуске программы сразу идём в тренировку, и будем добавлять упражнения из программы
-      sessionStorage.setItem('returnTo', 'workout');
-      window.location.href = 'workout';
+        // Записываем в sessionStorage
+        sessionStorage.setItem('currentProgramWorkout', JSON.stringify(selectedProgramToStart));
+        sessionStorage.setItem('returnTo', 'workout');
+
+        // <-- Добавим флажок «пропустить загрузку прошлых сетов»
+        sessionStorage.setItem('skipPreviousSets', 'true');
+
+        // Переходим на страницу workout
+        window.location.href = 'workout';
     }
-  });
+});
+
 
   cancelStartProgram.addEventListener('click', () => {
     startProgramModal.style.display = 'none';

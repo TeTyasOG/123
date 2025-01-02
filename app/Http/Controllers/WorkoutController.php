@@ -220,6 +220,7 @@ class WorkoutController extends Controller
         try {
             $exercises        = $request->input('exercises', []);
             $totalWorkoutTime = $request->input('totalWorkoutTime', '');
+            $programId        = $request->input('programId');
 
             // Валидируем сеты
             foreach ($exercises as $exerciseEntry) {
@@ -359,17 +360,30 @@ class WorkoutController extends Controller
 
             $user->save();
 
-            return response()->json([
-                'message'       => 'Тренировка успешно сохранена!',
-                'xpGained'      => round($totalXP),
-                'newExperience' => $user->experience,
-                'newLevel'      => $user->level
-            ]);
-        } catch (\Exception $err) {
-            Log::error('Ошибка при сохранении тренировки: ' . $err->getMessage());
-            return response()->json(['message' => 'Ошибка при сохранении тренировки.'], 500);
+            // Если эта тренировка была по программе:
+        if (!empty($programId)) {
+            $program = Program::where('id', $programId)
+                              ->where('user_id', $userId)
+                              ->first();
+
+            if ($program) {
+                $program->times_completed += 1;
+                $program->save();
+                \Log::info("Увеличили счётчик times_completed для Program ID={$programId}");
+            }
         }
+
+        return response()->json([
+            'message'       => 'Тренировка успешно сохранена!',
+            'xpGained'      => round($totalXP),
+            'newExperience' => $user->experience,
+            'newLevel'      => $user->level
+        ]);
+    } catch (\Exception $err) {
+        Log::error('Ошибка при сохранении тренировки: ' . $err->getMessage());
+        return response()->json(['message' => 'Ошибка при сохранении тренировки.'], 500);
     }
+}
 
     /**
      * Пример: получение истории всех тренировок пользователя
@@ -541,6 +555,45 @@ class WorkoutController extends Controller
         }
     }
 
+    public function listPrograms(Request $request)
+{
+
+    Log::debug('Входим в listPrograms...');
+
+    $userId = \Auth::id();
+    if (!$userId) {
+        return response()->json(['message' => 'Требуется авторизация.'], 401);
+    }
+
+    $programs = Program::where('user_id', $userId)
+        ->with('exercises')  // чтобы подгрузить pivot
+        ->get();
+Log::debug('Найдено программ: '. $programs->count());
+    // Трансформируем коллекцию программ в удобный формат
+    $transformed = $programs->map(function($program) {
+        Log::debug('Обрабатываем Program ID='.$program->id);
+        return [
+            'id'              => $program->id,
+            'name'            => $program->name,
+            'experience'      => $program->experience,
+            'times_completed' => $program->times_completed,
+            // Собираем массив упражнений в виде { exerciseId, sets, reps, weight }
+            'exercises'       => $program->exercises->map(function($ex) {
+                Log::debug('Pivot sets='.$ex->pivot->sets);
+                return [
+                    'exerciseId' => $ex->id,
+                    'sets'       => $ex->pivot->sets,
+                    'reps'       => $ex->pivot->reps,
+                    'weight'     => $ex->pivot->weight ?? 0,
+                ];
+            })->toArray()
+        ];
+    });
+    Log::debug('Сформировали массив: '.json_encode($transformed));
+    return response()->json($transformed, 200);
+}
+
+    
     /**
      * Начало тренировки по программе
      */

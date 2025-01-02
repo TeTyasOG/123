@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/program/update', [ProgramController::class, 'updateProgram']);
     Route::delete('/program/delete', [ProgramController::class, 'deleteProgram']);
     Route::get('/program/list', [ProgramController::class, 'listPrograms'])->middleware('auth');
+    Route::get('/program/list', [WorkoutController::class, 'listPrograms']);
 });
 
 // Маршруты профиля пользователя
@@ -61,6 +62,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/workout/start-program', [WorkoutController::class, 'startProgramWorkout']);
     Route::post('/workout/update', [WorkoutController::class, 'updateWorkout']);
     Route::delete('/workout/delete', [WorkoutController::class, 'deleteWorkout']);
+    
 });
 
 // Маршруты без авторизации
