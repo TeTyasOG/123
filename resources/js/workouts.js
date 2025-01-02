@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         displayWorkouts(workouts);
       } else if (response.status === 401) {
         alert('Требуется авторизация. Пожалуйста, войдите в систему.');
-        window.location.href = '/login.html';
+        window.location.href = '/login';
       } else {
         console.error('Ошибка при загрузке тренировок. Статус:', response.status);
         workoutListDiv.textContent = 'Ошибка при загрузке тренировок.';
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
       timeLabel.textContent = 'ВРЕМЯ';
       const timeValue = document.createElement('div');
       timeValue.className = 'info-column-value info-time-value';
-      timeValue.textContent = workout.totalWorkoutTime || '0С'; // Если нет данных, показать 0С
+      timeValue.textContent = workout.total_workout_time || '0С';  // Если нет данных, показать 0С
       timeCol.appendChild(timeLabel);
       timeCol.appendChild(timeValue);
 
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
       xpLabel.textContent = 'ОПЫТ';
       const xpVal = document.createElement('div');
       xpVal.className = 'info-column-value info-xp-value';
-      xpVal.textContent = `${workout.totalXP || 0} XP`; // Если нет данных, 0 XP
+      xpVal.textContent = `${workout.total_experience || 0} XP`;  // Если нет данных, 0 XP
       xpCol.appendChild(xpLabel);
       xpCol.appendChild(xpVal);
 
@@ -124,8 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // При клике на карточку переходим к деталям
       workoutDiv.addEventListener('click', () => {
-        console.log('Переход к тренировке с ID:', workout._id);
-        window.location.href = `/workout_detail.html?id=${workout._id}`;
+        console.log('Переход к тренировке с ID:', workout.id);
+        window.location.href = `/workout_detail?id=${workout.id}`;
       });
 
       workoutListDiv.appendChild(workoutDiv);

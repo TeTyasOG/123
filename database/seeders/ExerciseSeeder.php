@@ -27,7 +27,7 @@ class ExerciseSeeder extends Seeder
         // Связь с мышцами
         $biceps = MusclePercentage::where('name', 'Руки')->first();
         if ($biceps) {
-            $barbellCurl->muscles()->attach($biceps->id, ['percentages' => 100]);
+            $barbellCurl->musclePercentages()->attach($biceps->id, ['percentages' => 100]);
         }
 
         // Связь с фильтрами
@@ -65,7 +65,7 @@ class ExerciseSeeder extends Seeder
         // Связь с мышцами
         $abs = MusclePercentage::where('name', 'Пресс')->first();
         if ($abs) {
-            $cableCrunch->muscles()->attach($abs->id, ['percentages' => 100]);
+            $cableCrunch->musclePercentages()->attach($abs->id, ['percentages' => 100]);
         }
 
         // Связь с фильтрами

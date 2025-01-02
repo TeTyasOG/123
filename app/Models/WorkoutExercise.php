@@ -10,6 +10,7 @@ class WorkoutExercise extends Model
     protected $fillable = [
         'workout_id',
         'exercise_id',
+        'comment',
         'sets_count',
     ];
 

@@ -16,6 +16,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Связь с пользователем
             $table->string('name'); // Название программы
+            $table->integer('experience')->default(0); // Опыт
+            $table->integer('times_completed')->default(0); // Количество пройденных раз
             $table->timestamps();
         });
 

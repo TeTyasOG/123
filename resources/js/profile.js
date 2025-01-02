@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
   const userNickname     = document.getElementById('userNickname');
   const userLevel        = document.getElementById('userLevel');
@@ -8,14 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const measurementsButton   = document.getElementById('measurementsButton');
   const levelProgressText    = document.getElementById('levelProgressText');
 
-  // Было: bigMusclesList = [... 6 элементов ...], smallMusclesList = [... 6 элементов ...]
-  // Стало: теперь 3 крупных, 3 мелких. Итого 6, как в миграции ['Грудь', 'Спина', 'Пресс', 'Ноги', 'Плечи', 'Руки']
-  // Допустим «крупные» = ['Грудь', 'Спина', 'Ноги']
-  //         «мелкие»  = ['Плечи', 'Пресс', 'Руки']
+  // Массивы мышц (пример, у вас 6 мышц)
   const bigMusclesList   = ['Грудь', 'Спина', 'Ноги'];
   const smallMusclesList = ['Плечи', 'Пресс', 'Руки'];
 
-  // Карта иконок (новая, на 6 мышц)
+  // Карта иконок (пример). Подставьте свои картинки.
   const muscleIconsMap = {
     'Грудь':  'chest.png',
     'Спина':  'back.png',
@@ -25,9 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
     'Руки':   'arms.png'
   };
 
-  let userData = {}; // тут будет всё, что пришло с сервера
+  let userData = {}; // данные, загруженные с бэка
   
-  // Логика переключения экранов
+  // Блок переключения экранов
   let currentScreen = 'center';
   const screensContainer = document.querySelector('.screens-container');
   const arrowLeft = document.querySelector('.arrow-left');
@@ -75,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Свайпы
+  // Свайпы на мобильных
   let startX = 0;
   let isSwiping = false;
   screensContainer.addEventListener('touchstart', (e) => {
@@ -84,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   screensContainer.addEventListener('touchmove', (e) => {
     if (!isSwiping) return;
+    // Можно отслеживать движение, если нужно
   });
   screensContainer.addEventListener('touchend', (e) => {
     if (!isSwiping) return;
@@ -106,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   }
 
-  // Функция отрисовки круга прогресса уровня
+  // Рисуем круговой прогресс "уровня игрока"
   function drawProgressCircle() {
     const progressSize     = parseInt(getCSSVariable('--progress-size')) || 200;
     const lineWidth        = parseInt(getCSSVariable('--progress-line-width')) || 10;
@@ -119,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const radius = progressSize / 2;
 
-    // Пришло с бэка: startXP, nextXP, experience
+    // startXP, nextXP, experience
     const experienceIntoLevel  = userData.experience - userData.startXP;
     const levelExperienceRange = userData.nextXP - userData.startXP;
     let progressPercent        = 0;
@@ -131,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     ctx.clearRect(0, 0, progressCanvas.width, progressCanvas.height);
 
-    // Фон круга
+    // Фон круга (серый)
     ctx.beginPath();
     ctx.arc(radius, radius, radius - lineWidth / 2, 0, 2 * Math.PI);
     ctx.strokeStyle = '#ccc';
@@ -139,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.lineCap     = 'round';
     ctx.stroke();
 
-    // Прогресс
+    // Прогресс (цветной круг)
     ctx.beginPath();
     ctx.arc(
       radius,
@@ -153,10 +152,15 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.lineCap     = 'round';
     ctx.stroke();
 
+    // Размер цифры уровня внутри круга
     userLevel.style.fontSize = levelNumberSize;
   }
 
-  // Рендер мышечных карточек (теперь только 6 мышц, опыт без уровней)
+  /**
+   * Рендерим карточки мышц.
+   * Теперь вместо цифр опыта показываем уровень,
+   * а ниже — горизонтальный прогресс бар до следующего уровня.
+   */
   function renderMuscleCards() {
     const leftScreen  = document.querySelector('.left-screen');
     const rightScreen = document.querySelector('.right-screen');
@@ -168,24 +172,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const rightGrid = document.createElement('div');
     rightGrid.className = 'muscle-cards-grid';
 
-    
-    // Из ответа бэка: userData.muscleExperience — массив объектов: [{name, experience}, ...]
-    // Сформируем удобный для поиска объект: { 'Грудь': опыт, 'Спина': опыт, ... }
-    const muscleExpMap = {};
+    // Преобразуем userData.muscleExperience в удобную мапу: { 'Грудь': {...}, 'Спина': {...}, ... }
+    // Там теперь есть: { name, level, startXP, nextXP }
+    const muscleMap = {};
     if (Array.isArray(userData.muscleExperience)) {
       userData.muscleExperience.forEach(m => {
-        muscleExpMap[m.name] = m.experience;
+        muscleMap[m.name] = {
+          level:   m.level,
+          startXP: m.startXP,
+          nextXP:  m.nextXP
+        };
       });
     }
 
-    // Крупные
+    // Крупные мышцы
     bigMusclesList.forEach(muscle => {
-      const card = createMuscleCard(muscle, muscleExpMap[muscle] || 0);
+      const muscleData = muscleMap[muscle] || { level: 1, startXP: 0, nextXP: 500 };
+      const card = createMuscleCard(muscle, muscleData);
       leftGrid.appendChild(card);
     });
-    // Мелкие
+    // Мелкие мышцы
     smallMusclesList.forEach(muscle => {
-      const card = createMuscleCard(muscle, muscleExpMap[muscle] || 0);
+      const muscleData = muscleMap[muscle] || { level: 1, startXP: 0, nextXP: 500 };
+      const card = createMuscleCard(muscle, muscleData);
       rightGrid.appendChild(card);
     });
 
@@ -193,19 +202,62 @@ document.addEventListener('DOMContentLoaded', () => {
     rightScreen.appendChild(rightGrid);
   }
 
-  // Создание одной карточки для мышцы
-  function createMuscleCard(muscleName, experience) {
+  /**
+   * Создаём одну карточку для мышцы.
+   * Внутри:
+   *  - Название мышцы
+   *  - Иконка
+   *  - Текст "Уровень: X"
+   *  - Горизонтальная полоска прогресса (процент)
+   */
+  function createMuscleCard(muscleName, muscleData) {
+    const { level, startXP, nextXP } = muscleData;
+
+    // Для прогресса — вычислим, как далеко мы зашли в "текущий" уровень
+    // По аналогии с уровнем персонажа, нужен опыт мышц. Но на фронте у нас нет «актуального» experience,
+    // так что (startXP, nextXP) — это границы. А весь «опыт мышцы» = ... уже учтён на бэке.
+    // У нас нет rawExp, но мы можем условно сказать, что уже достигли startXP (по определению), 
+    // а от startXP до nextXP — 0..1. Но для показа прогресса мышц достаточно 0%, т.к. формулу мы упростили :)
+    //
+    // Однако, если нужно точнее, то придётся бэк менять, чтобы прислать "muscleExp" отдельно. 
+    // Тогда progress = (muscleExp - startXP) / (nextXP - startXP).
+    // Для наглядности сделаем вариант (если нужно) => добавим сырое поле:
+    //   muscleExp: (rawExp)
+    // В таком случае надо изменить getUserProfile -> map(...), где вернём 'muscleExp' => $muscle->pivot->experience
+    // и тут его используем. 
+    // Для примера считаем, что бэк вернёт: 'muscleExp' => $muscle->pivot->experience
+    // И тогда:
+    // progressPercent = (muscleExp - startXP) / (nextXP - startXP)
+    // (см. чуть ниже)
+    
+    // Для корректности добавим этот шаг:
+    let muscleExp = 0;
+    // Проверим, не отдали ли мы "muscleExp" дополнительно:
+    if (userData.muscleExperience) {
+      // Находим запись
+      const found = userData.muscleExperience.find(m => m.name === muscleName);
+      if (found && typeof found.muscleExp === 'number') {
+        muscleExp = found.muscleExp;
+      }
+    }
+    // Считаем прогресс
+    let progressPercent = 0;
+    const range = nextXP - startXP;
+    if (range > 0 && muscleExp > 0) {
+      progressPercent = (muscleExp - startXP) / range;
+    }
+    if (progressPercent < 0) progressPercent = 0;
+    if (progressPercent > 1) progressPercent = 1;
+    progressPercent = Math.floor(progressPercent * 100);
+
+    // Обёртка-карточка
     const card = document.createElement('div');
     card.className = 'muscle-card';
 
+    // Название мышцы
     const nameEl = document.createElement('div');
     nameEl.className = 'muscle-name';
     nameEl.textContent = muscleName;
-
-    // Опыт
-    const xpEl = document.createElement('div');
-    xpEl.className = 'muscle-xp-text';
-    xpEl.textContent = `Опыт: ${experience}`;
 
     // Иконка
     const iconEl = document.createElement('img');
@@ -213,28 +265,54 @@ document.addEventListener('DOMContentLoaded', () => {
     const iconFile = muscleIconsMap[muscleName] || 'default.png';
     iconEl.src = `/images/muscles/${iconFile}`;
 
+    // Блок "Уровень: X"
+    const levelEl = document.createElement('div');
+    levelEl.className = 'muscle-level-text';
+    levelEl.textContent = `Уровень: ${level}`;
+
+    // Горизонтальный прогресс-бар
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.className = 'muscle-progress-bar-container';
+
+    const progressBar = document.createElement('div');
+    progressBar.className = 'muscle-progress-bar';
+    progressBar.style.width = progressPercent + '%';
+
+    progressBarContainer.appendChild(progressBar);
+
     card.appendChild(nameEl);
-    card.appendChild(xpEl);
     card.appendChild(iconEl);
+    card.appendChild(levelEl);
+    card.appendChild(progressBarContainer);
+    console.log('muscleExperience', userData.muscleExperience);
 
     return card;
   }
 
-  // Загрузка профиля с сервера
+  // Загрузка профиля
   async function loadUserProfile() {
     try {
       const response = await fetch('/getUserProfile');
       if (!response.ok) {
-        console.error('Ошибка при загрузке данных пользователя.');
+        console.error('Ошибка при загрузке данных пользователя с /getUserProfile.');
         return;
       }
-      userData = await response.json(); // тут придёт nickname, level, startXP, nextXP, muscleExperience, etc.
+      userData = await response.json(); 
+      // Ожидаем:
+      // userData = {
+      //   nickname, gender, weight,
+      //   experience, level, startXP, nextXP,
+      //   muscleExperience: [
+      //       { name, level, startXP, nextXP },
+      //       ...
+      //   ]
+      // }
 
       // Заполним UI
       userNickname.textContent = userData.nickname || '—';
       userLevel.textContent     = userData.level    || 1;
 
-      // Расчитываем процент для цифры (не для круга), чтобы писать что-то вроде 75%
+      // Текстовый прогресс в %
       const experienceIntoLevel  = userData.experience - userData.startXP;
       const levelExperienceRange = userData.nextXP - userData.startXP;
       let progressPercent        = 0;
@@ -249,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderMuscleCards();
       updateArrowsVisibility();
     } catch (error) {
-      console.error('Ошибка:', error);
+      console.error('Ошибка при загрузке профиля:', error);
     }
   }
 
@@ -263,8 +341,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
       if (response.ok) {
-        // Было: window.location.href = '/login.html';
-        // Стало (переходим на /login):
         window.location.href = '/login';
       } else {
         alert('Ошибка при выходе.');
@@ -288,6 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.href = '/measurements';
   });
 
-  // Старт
+  // Инициируем стартовую загрузку
   loadUserProfile();
 });
+

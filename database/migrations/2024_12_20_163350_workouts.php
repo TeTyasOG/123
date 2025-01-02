@@ -27,6 +27,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('workout_id')->constrained('workouts')->onDelete('cascade'); // Связь с тренировкой
             $table->foreignId('exercise_id')->constrained('exercises')->onDelete('cascade'); // Связь с упражнением
+            $table->text('comment')->nullable(); // Поле для комментариев
             $table->integer('sets_count')->default(0); // Количество сетов в упражнении
             $table->timestamps();
         });

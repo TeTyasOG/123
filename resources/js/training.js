@@ -25,18 +25,21 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.href = 'addProgram';
   });
 
-  // Загрузка программ пользователя из localStorage
+  // Загрузка программ пользователя 
   function loadPrograms() {
-    const storedPrograms = localStorage.getItem('userPrograms');
-    if (storedPrograms) {
-      userPrograms = JSON.parse(storedPrograms);
-    } else {
-      userPrograms = [];
-    }
-
-    // Отображаем все программы (поиск убран)
-    displayPrograms(userPrograms);
+    fetch('/program/list', { credentials: 'include' })
+      .then(res => res.json())
+      .then(programs => {
+        userPrograms = programs;
+        displayPrograms(programs);
+      })
+      .catch(err => {
+        console.error('Ошибка при получении списка программ:', err);
+        userPrograms = [];
+        displayPrograms([]);
+      });
   }
+  
 
   // Функция для получения количества выполнений программы
   function getProgramCompletions(programId) {
@@ -58,9 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function displayPrograms(programs) {
     programList.innerHTML = '';
     programs.forEach(program => {
-      const completions = getProgramCompletions(program.id);
-      const xp = calculateProgramXP(program);
-
+      // program.id
+      // program.name
+      // program.experience
+      // program.times_completed
+  
       const div = document.createElement('div');
       div.className = 'program-item';
       div.innerHTML = `
@@ -68,25 +73,26 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="program-stats-row">
           <div class="program-stat-block">
             <div class="program-stat-label">ВЫПОЛН.</div>
-            <div class="program-stat-value" style="color:var(--program-value-color);">${completions}</div>
+            <div class="program-stat-value">${program.times_completed || 0}</div>
           </div>
           <div class="program-stat-block">
             <div class="program-stat-label">ОПЫТ</div>
-            <div class="program-stat-value xp-value">${xp}</div>
+            <div class="program-stat-value xp-value">${program.experience || 0}</div>
           </div>
         </div>
       `;
-
-      // Нажатие на карточку программы
+  
+      // Клик на программу => начать тренировку (или открыть модалку "начать?")
       div.addEventListener('click', () => {
         selectedProgramToStart = program;
         startProgramMessage.textContent = `ВЫ ХОТИТЕ ЗАПУСТИТЬ ПРОГРАММУ "${program.name.toUpperCase()}"?`;
         startProgramModal.style.display = 'block';
       });
-
+  
       programList.appendChild(div);
     });
   }
+  
 
   confirmStartProgram.addEventListener('click', () => {
     if (selectedProgramToStart) {

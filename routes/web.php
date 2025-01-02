@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\MeasurementController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\UserController;
@@ -26,6 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/program/add', [ProgramController::class, 'addProgram']);
     Route::post('/program/update', [ProgramController::class, 'updateProgram']);
     Route::delete('/program/delete', [ProgramController::class, 'deleteProgram']);
+    Route::get('/program/list', [ProgramController::class, 'listPrograms'])->middleware('auth');
 });
 
 // Маршруты профиля пользователя
@@ -45,7 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/addWorkout', [WorkoutController::class, 'addWorkout'])
     ->middleware('web');
     Route::get('/getWorkouts', [WorkoutController::class, 'getWorkouts']);
-    Route::get('/getWorkout', [WorkoutController::class, 'getWorkout']);
+    Route::get('/getWorkout', [WorkoutController::class, 'getWorkout'])->name('getWorkout');
     Route::get('/exerciseHistory', [WorkoutController::class, 'getExerciseHistory']);
     Route::get('/getExerciseNotes', [WorkoutController::class, 'getExerciseNotes']);
     Route::post('/startProgramWorkout', [WorkoutController::class, 'startProgramWorkout']);

@@ -73,7 +73,22 @@
     z-index: 10; /* Поверх других элементов */
   }
   
-  
+  .muscle-progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: #ddd;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.muscle-progress-bar {
+  height: 100%;
+  background-color: #152ac7; /* зелёный или другой цвет */
+  border-radius: 4px;
+  width: 0; /* динамически меняется */
+  transition: width 0.3s ease;
+}
+
   .icon-button {
     position: absolute;
     top: 50%;

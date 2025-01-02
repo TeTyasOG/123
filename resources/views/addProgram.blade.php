@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Создать программу</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite(['resources/css/addProgram.css', 'resources/js/addProgram.js'])
     <link rel="stylesheet" href="{{ asset('css/addProgram.css') }}">
     <style>

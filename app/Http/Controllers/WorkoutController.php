@@ -109,7 +109,7 @@ class WorkoutController extends Controller
     {
         try {
             $exerciseId = $request->query('id');
-            $userId     = $request->session()->get('userId');
+            $userId = Auth::id();
 
             $exercise = Exercise::find($exerciseId);
             if (!$exercise) {
@@ -408,7 +408,7 @@ class WorkoutController extends Controller
     {
         try {
             $workoutId = $request->query('id');
-            $userId    = $request->session()->get('userId');
+            $userId = Auth::id();
 
             $workout = Workout::where('id', $workoutId)
                 ->where('user_id', $userId)
@@ -516,7 +516,7 @@ class WorkoutController extends Controller
     {
         try {
             $exerciseId = $request->query('exerciseId');
-            $userId     = $request->session()->get('userId');
+            $userId = Auth::id();
 
             $workoutExercise = WorkoutExercise::where('exercise_id', $exerciseId)
                 ->whereHas('workout', function($q) use($userId) {
@@ -548,7 +548,7 @@ class WorkoutController extends Controller
     {
         try {
             $programId = $request->input('programId');
-            $userId    = $request->session()->get('userId');
+            $userId = Auth::id();
 
             $program = Program::where('id', $programId)
                 ->where('user_id', $userId)

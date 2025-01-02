@@ -13,11 +13,15 @@ class Program extends Model
     protected $fillable = [
         'user_id',
         'name',
+        'experience',
+        'times_completed',
     ];
 
     // Указываем типы данных для атрибутов
     protected $casts = [
         'user_id' => 'integer',
+        'experience' => 'integer',
+        'times_completed' => 'integer',
     ];
 
     // Определяем связи
