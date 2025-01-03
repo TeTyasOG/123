@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const startWorkoutButton = document.getElementById('startWorkoutButton');
   const createProgramButton = document.getElementById('createProgramButton');
   const programList = document.getElementById('programList');
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalText = document.getElementById('modalText');
+  const modalOkButton = document.getElementById('modalOkButton');
 
   const startProgramModal = document.getElementById('startProgramModal');
   const startProgramMessage = document.getElementById('startProgramMessage');
@@ -10,6 +13,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let userPrograms = [];
   let selectedProgramToStart = null;
+
+  function showModal(text, onClose) {
+    modalText.textContent = text;
+    modalOverlay.style.display = 'block';
+
+    // Закрытие по кнопке "ОК"
+    modalOkButton.onclick = () => {
+      closeModal();
+      if (onClose) onClose();
+    };
+
+    // Закрытие по фону
+    modalOverlay.addEventListener('click', function overlayHandler(e) {
+      if (e.target === modalOverlay) {
+        closeModal();
+        modalOverlay.removeEventListener('click', overlayHandler); // Убираем обработчик
+        if (onClose) onClose();
+      }
+    });
+  }
+
+  function closeModal() {
+    modalOverlay.style.display = 'none';
+  }
 
   // Нажатие на кнопку "НАЧАТЬ ТРЕНИРОВКУ" — начинаем тренировку без программы
   startWorkoutButton.addEventListener('click', () => {
@@ -37,6 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Ошибка при получении списка программ:', err);
         userPrograms = [];
         displayPrograms([]);
+        showModal('Ошибка при загрузке списка программ.');
       });
   }
   

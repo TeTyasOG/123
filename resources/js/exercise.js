@@ -1,11 +1,32 @@
 document.addEventListener('DOMContentLoaded', async () => {
+
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalText = document.getElementById('modalText');
+  const modalOkButton = document.getElementById('modalOkButton');
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
   const urlParams = new URLSearchParams(window.location.search);
   const exerciseId = urlParams.get('id');
 
+  function showModal(text) {
+    modalText.textContent = text;
+    modalOverlay.style.display = 'block';
+
+    modalOkButton.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', function overlayHandler(e) {
+      if (e.target === modalOverlay) {
+        closeModal();
+        modalOverlay.removeEventListener('click', overlayHandler);
+      }
+    });
+  }
+
+  function closeModal() {
+    modalOverlay.style.display = 'none';
+  }
+
   if (!exerciseId) {
-    alert('Идентификатор упражнения не указан.');
+    showModal('Идентификатор упражнения не указан.');
     return;
   }
  
@@ -41,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
 
       if (!response.ok) {
-        alert('Ошибка при загрузке информации об упражнении.');
+        showModal('Ошибка при загрузке информации об упражнении.');
         return;
       }
 
@@ -155,6 +176,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     } catch (error) {
       console.error('Ошибка:', error);
+      showModal('Произошла ошибка при загрузке информации об упражнении.');
     }
   }
 

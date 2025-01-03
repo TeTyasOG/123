@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // ------------------------------------------------
     // Глобальные переменные
     // ------------------------------------------------
+    const modalOverlay = document.getElementById('modalOverlay');
+  const modalText = document.getElementById('modalText');
+  const modalOkButton = document.getElementById('modalOkButton');
     const cancelButton       = document.getElementById('cancelButton');
     const finishButton       = document.getElementById('finishButton');
     const confirmCancel      = document.getElementById('confirmCancel');
@@ -23,6 +26,24 @@ document.addEventListener('DOMContentLoaded', () => {
   
     // Данные пользователя (пол, вес и т.д.), полученные с бэка
     let userData = null;
+
+    function showModal(text) {
+      modalText.textContent = text;
+      modalOverlay.style.display = 'block';
+  
+      modalOkButton.addEventListener('click', closeModal);
+  
+      modalOverlay.addEventListener('click', function overlayHandler(e) {
+        if (e.target === modalOverlay) {
+          closeModal();
+          modalOverlay.removeEventListener('click', overlayHandler);
+        }
+      });
+    }
+  
+    function closeModal() {
+      modalOverlay.style.display = 'none';
+    }
   
     // ------------------------------------------------
     // 1) Сначала загружаем состояние из localStorage
@@ -90,12 +111,12 @@ document.addEventListener('DOMContentLoaded', () => {
     confirmFinish.addEventListener('click', () => {
       const programName = programNameInput.value.trim();
       if (!programName) {
-        alert('Пожалуйста, введите название программы.');
+        showModal('Пожалуйста, введите название программы.');
         finishModal.style.display = 'none';
         return;
       }
       if (exercises.length === 0) {
-        alert('Добавьте хотя бы одно упражнение.');
+        showModal('Добавьте хотя бы одно упражнение.');
         finishModal.style.display = 'none';
         return;
       }
@@ -124,11 +145,11 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(response => response.json())
       .then(data => {
         if (!data.message) {
-          alert('Произошла ошибка при сохранении программы.');
+          showModal('Произошла ошибка при сохранении программы.');
           finishModal.style.display = 'none';
           return;
         }
-        alert(data.message);
+        showModal(data.message);
   
         // Если всё удачно, очищаем localStorage
         localStorage.removeItem('tempProgramData');
@@ -137,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .catch(err => {
         console.error(err);
-        alert('Ошибка при отправке данных на сервер.');
+        showModal('Ошибка при отправке данных на сервер.');
         finishModal.style.display = 'none';
       });
     });

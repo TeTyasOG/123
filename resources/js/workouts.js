@@ -1,6 +1,29 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalText = document.getElementById('modalText');
+  const modalOkButton = document.getElementById('modalOkButton');
   const workoutListDiv = document.getElementById('workoutList');
   const backButton = document.getElementById('backButton');
+
+  function showModal(text) {
+    modalText.textContent = text;
+    modalOverlay.style.display = 'block';
+
+    // Закрытие по кнопке "ОК"
+    modalOkButton.addEventListener('click', closeModal);
+
+    // Закрытие при клике на фон
+    modalOverlay.addEventListener('click', function overlayHandler(e) {
+      if (e.target === modalOverlay) {
+        closeModal();
+        modalOverlay.removeEventListener('click', overlayHandler); // Убираем обработчик после закрытия
+      }
+    });
+  }
+
+  function closeModal() {
+    modalOverlay.style.display = 'none';
+  }
 
   backButton.addEventListener('click', () => {
     window.location.href = 'profile';
@@ -15,15 +38,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         displayWorkouts(workouts);
       } else if (response.status === 401) {
-        alert('Требуется авторизация. Пожалуйста, войдите в систему.');
+        showModal('Требуется авторизация. Пожалуйста, войдите в систему.');
         window.location.href = '/login';
       } else {
         console.error('Ошибка при загрузке тренировок. Статус:', response.status);
-        workoutListDiv.textContent = 'Ошибка при загрузке тренировок.';
+        showModal('Ошибка при загрузке тренировок.');
       }
     } catch (error) {
       console.error('Ошибка:', error);
-      workoutListDiv.textContent = 'Ошибка при загрузке тренировок.';
+      showModal('Ошибка при загрузке тренировок.');
     }
   }
 

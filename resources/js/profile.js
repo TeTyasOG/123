@@ -8,6 +8,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const workoutHistoryButton = document.getElementById('workoutHistoryButton');
   const measurementsButton   = document.getElementById('measurementsButton');
   const levelProgressText    = document.getElementById('levelProgressText');
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalText = document.getElementById('modalText');
+  const modalOkButton = document.getElementById('modalOkButton');
+
+  function showModal(message) {
+    modalText.textContent = message;
+    modalOverlay.style.display = 'block';
+
+    // Закрытие по кнопке "ОК"
+    modalOkButton.onclick = closeModal;
+
+    // Закрытие при клике на фон
+    modalOverlay.addEventListener('click', function overlayHandler(e) {
+      if (e.target === modalOverlay) {
+        closeModal();
+        modalOverlay.removeEventListener('click', overlayHandler);
+      }
+    });
+  }
+
+  function closeModal() {
+    modalOverlay.style.display = 'none';
+  }
 
   // Массивы мышц (пример, у вас 6 мышц)
   const bigMusclesList   = ['Грудь', 'Спина', 'Ноги'];
@@ -327,6 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
       updateArrowsVisibility();
     } catch (error) {
       console.error('Ошибка при загрузке профиля:', error);
+      showModal('Произошла ошибка при загрузке профиля.');
     }
   }
 
@@ -342,11 +366,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (response.ok) {
         window.location.href = '/login';
       } else {
-        alert('Ошибка при выходе.');
+        showModal('Ошибка при выходе.');
       }
     } catch (error) {
       console.error('Ошибка:', error);
-      alert('Произошла ошибка при выходе.');
+      showModal('Произошла ошибка при выходе.');
     }
   });
 

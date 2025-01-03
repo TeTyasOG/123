@@ -63,6 +63,57 @@ Route::middleware('auth')->group(function () {
     Route::post('/workout/update', [WorkoutController::class, 'updateWorkout']);
     Route::delete('/workout/delete', [WorkoutController::class, 'deleteWorkout']);
     
+    Route::get('/profile', function () {
+        return view('profile');
+    })->name('profile');
+
+    Route::get('/shop', function () {
+        return view('shop');
+    })->name('shop');
+    
+    Route::get('/training', function () {
+        return view('training');
+    })->name('training');
+    
+    Route::get('/workout/history', function () {
+        return view('workout_history');
+    })->name('workout.history');
+    
+    Route::get('/workout', function () {
+        return view('workout');
+    })->name('workout');
+    
+    Route::get('/workouts', function () {
+        return view('workouts');
+    })->name('workouts');
+    
+    Route::get('/exercise', function () {
+        return view('exercise');
+    })->name('exercise');
+    
+    Route::get('/exercises', function () {
+        return view('exercises');
+    })->name('exercises');
+    
+    Route::get('/measurements', function () {
+        return view('measurements');
+    })->name('measurements');
+    
+    Route::get('/workout_detail', function () {
+        return view('workout_detail');
+    })->name('workout_detail');
+    
+    Route::get('/profile_settings', function () {
+        return view('profile_settings');
+    })->name('profile_settings');
+    
+    Route::get('/addProgram', function () {
+        return view('addProgram');
+    })->name('addProgram');
+    
+    Route::get('/addExercise', function () {
+        return view('addExercise');
+    })->name('addExercise');
 });
 
 // Маршруты без авторизации
@@ -74,62 +125,12 @@ Route::get('/exercise/info', [ExerciseController::class, 'getExerciseInfo']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout']);
-Route::get('/profile', function () {
-    return view('profile');
-})->name('profile');
-
-Route::get('/register', function () {
-    return view('register');
-})->name('register');
-
-Route::get('/shop', function () {
-    return view('shop');
-})->name('shop');
-
-Route::get('/training', function () {
-    return view('training');
-})->name('training');
-
-Route::get('/workout/history', function () {
-    return view('workout_history');
-})->name('workout.history');
-
-Route::get('/workout', function () {
-    return view('workout');
-})->name('workout');
-
-Route::get('/workouts', function () {
-    return view('workouts');
-})->name('workouts');
-
-Route::get('/exercise', function () {
-    return view('exercise');
-})->name('exercise');
-
-Route::get('/exercises', function () {
-    return view('exercises');
-})->name('exercises');
 
 Route::get('/login', function () {
     return view('login');
 })->name('login');
 
-Route::get('/measurements', function () {
-    return view('measurements');
-})->name('measurements');
+Route::get('/register', function () {
+    return view('register');
+})->name('register');
 
-Route::get('/workout_detail', function () {
-    return view('workout_detail');
-})->name('workout_detail');
-
-Route::get('/profile_settings', function () {
-    return view('profile_settings');
-})->name('profile_settings');
-
-Route::get('/addProgram', function () {
-    return view('addProgram');
-})->name('addProgram');
-
-Route::get('/addExercise', function () {
-    return view('addExercise');
-})->name('addExercise');

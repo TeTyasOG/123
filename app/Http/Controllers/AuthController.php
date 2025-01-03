@@ -59,9 +59,8 @@ class AuthController extends Controller
         // Авторизация пользователя
         Auth::login($user);
 
-        return response()->json([
-            'redirect' => route('profile') // URL для редиректа
-        ]);
+        return redirect()->route('profile');// URL для редиректа
+        ;
     }
 
     // Выход из системы

@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalText = document.getElementById('modalText');
+  const modalOkButton = document.getElementById('modalOkButton');
   const backButton = document.getElementById('backButton');
   const exercisesDiv = document.getElementById('exercises');
   const timeValue = document.getElementById('timeValue');
@@ -8,11 +11,33 @@ document.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const workoutId = urlParams.get('id');
 
+  function showModal(text, redirectUrl = null) {
+    modalText.textContent = text;
+    modalOverlay.style.display = 'block';
+
+    modalOkButton.onclick = () => {
+      closeModal();
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
+      }
+    };
+
+    modalOverlay.onclick = (e) => {
+      if (e.target === modalOverlay) {
+        closeModal();
+      }
+    };
+  }
+
+  function closeModal() {
+    modalOverlay.style.display = 'none';
+  }
+
   if (!workoutId) {
-    alert('Идентификатор тренировки не указан.');
-    window.location.href = '/workouts';
+    showModal('Идентификатор тренировки не указан.', '/workouts');
     return;
   }
+  
 
   // При нажатии назад переходим на workouts
   backButton.addEventListener('click', () => {
@@ -28,13 +53,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const workout = await response.json();
         displayWorkoutData(workout);
       } else {
-        alert('Ошибка при загрузке данных тренировки.');
-        window.location.href = '/workouts';
+        showModal('Ошибка при загрузке данных тренировки.', '/workouts');
       }
     } catch (error) {
       console.error('Ошибка:', error);
-      alert('Произошла ошибка при загрузке тренировки.');
-      window.location.href = '/workouts';
+      showModal('Произошла ошибка при загрузке тренировки.', '/workouts');
     }
   }
 

@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalText = document.getElementById('modalText');
+  const modalOkButton = document.getElementById('modalOkButton');
+
   const backButton = document.getElementById('backButton');
   const addButton = document.getElementById('addButton');
   const measurementsHistory = document.getElementById('measurementsHistory');
@@ -7,6 +11,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const cancelModalButton = document.getElementById('cancelModalButton');
   const applyChangesButton = document.getElementById('applyChangesButton');
   const measurementsForm = document.getElementById('measurementsForm');
+
+  function showModal(text) {
+    modalText.textContent = text;
+    modalOverlay.style.display = 'block';
+
+    // Закрытие по кнопке "ОК"
+    modalOkButton.addEventListener('click', closeModal);
+
+    // Закрытие при клике на фон
+    modalOverlay.addEventListener('click', function overlayHandler(e) {
+      if (e.target === modalOverlay) {
+        closeModal();
+        modalOverlay.removeEventListener('click', overlayHandler); // Убираем обработчик после закрытия
+      }
+    });
+  }
+
+  function closeModal() {
+    modalOverlay.style.display = 'none';
+  }
 
   const measurementParameters = [
     'Масса тела (кг)',
@@ -99,17 +123,17 @@ document.addEventListener('DOMContentLoaded', () => {
             userData.weight = measurementEntry.measurements['Масса тела (кг)'];
           }
         } else {
-          console.error('Ошибка при сохранении замера на сервере.');
+          showModal('Ошибка при сохранении замера на сервере.');
           // Можно показать модалку ошибки, если нужно
         }
       } catch (error) {
-        console.error('Ошибка сети:', error);
+        showModal('Ошибка сети. Пожалуйста, проверьте соединение.');
         // Можно показать модалку ошибки, если нужно
       }
     } else {
       // Можно сделать модальное уведомление о том, что нужно ввести хотя бы один параметр.
       // Для простоты оставим alert:
-      alert('Пожалуйста, введите хотя бы один замер.');
+      showModal('Пожалуйста, введите хотя бы один замер.');
     }
   });
 
@@ -212,10 +236,10 @@ async function loadMeasurementsFromServer() {
             // Вызываем рендер с отсортированными данными
             renderMeasurementsHistory();
         } else {
-            console.error('Ошибка при загрузке замеров с сервера.');
+          showModal('Ошибка при загрузке замеров с сервера.');
         }
     } catch (error) {
-        console.error('Ошибка сети:', error);
+      showModal('Ошибка сети при загрузке данных. Проверьте подключение к интернету.');
     }
 }
 
@@ -226,10 +250,10 @@ async function loadUserDataFromServer() {
         if (response.ok) {
             userData = await response.json();
         } else {
-            console.error('Ошибка при загрузке данных пользователя.');
+          showModal('Ошибка при загрузке данных пользователя.');
         }
     } catch (error) {
-        console.error('Ошибка сети:', error);
+      showModal('Ошибка сети:', error);
     }
 }
 

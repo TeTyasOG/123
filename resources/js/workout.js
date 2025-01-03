@@ -22,6 +22,27 @@ let skipPreviousSets = sessionStorage.getItem('skipPreviousSets') === 'true';
 if (skipPreviousSets) {
 }
 
+function showModal(text) {
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalText = document.getElementById('modalText');
+  const modalOkButton = document.getElementById('modalOkButton');
+
+  modalText.textContent = text;
+  modalOverlay.style.display = 'block';
+
+  modalOkButton.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', function overlayHandler(e) {
+    if (e.target === modalOverlay) {
+      closeModal();
+      modalOverlay.removeEventListener('click', overlayHandler);
+    }
+  });
+
+  function closeModal() {
+    modalOverlay.style.display = 'none';
+  }
+}
+
   // При добавлении упражнения (с другой страницы) вернёмся сюда
   sessionStorage.setItem('returnTo', 'workout');
 
@@ -38,7 +59,7 @@ if (skipPreviousSets) {
   /** Кнопка «Завершить тренировку» */
   finishButton.addEventListener('click', () => {
     if (hasIncompleteSets()) {
-      alert('Есть невыполненные сеты. Завершите или удалите их прежде чем закончить тренировку.');
+      showModal('Есть невыполненные сеты. Завершите или удалите их прежде чем закончить тренировку.');
       return;
     }
     openConfirmationModal('Вы точно хотите завершить тренировку?', () => {
@@ -667,7 +688,8 @@ workoutExercises[workoutExercises.length - 1].maxWeightFemale = exercise.maxWeig
       if (isNaN(rpeVal)) rpeVal = 5;
 
       if (rpeVal < 5 || rpeVal > 10) {
-        alert('RPE должно быть от 5 до 10.');
+        showModal('RPE должно быть от 5 до 10.');
+
         return;
       }
 
@@ -681,7 +703,8 @@ workoutExercises[workoutExercises.length - 1].maxWeightFemale = exercise.maxWeig
       } else {
         // Отмечаем как completed
         if (!wVal || !repsVal || !rpeVal) {
-          alert('Пожалуйста, заполните все поля перед завершением сета.');
+          showModal('Пожалуйста, заполните все поля перед завершением сета.');
+
           return;
         }
         setItem.classList.add('completed');
@@ -734,7 +757,8 @@ restoreSetEventListeners(setItem, exerciseItem.dataset.exerciseId);
       if (isNaN(rpeVal)) rpeVal = 5;
   
       if (rpeVal < 5 || rpeVal > 10) {
-        alert('RPE должно быть от 5 до 10.');
+        showModal('RPE должно быть от 5 до 10.');
+
         return;
       }
   
@@ -746,7 +770,8 @@ restoreSetEventListeners(setItem, exerciseItem.dataset.exerciseId);
         inputRpe.disabled = false;
       } else {
         if (!wVal || !repsVal || !rpeVal) {
-          alert('Пожалуйста, заполните все поля перед завершением сета.');
+          showModal('Пожалуйста, заполните все поля перед завершением сета.');
+
           return;
         }
         setItem.classList.add('completed');
@@ -858,7 +883,7 @@ restoreSetEventListeners(setItem, exerciseItem.dataset.exerciseId);
 
     deleteSetButton.addEventListener('click', () => {
       if (setsList.children.length === 0) {
-          alert('Нет сетов для удаления.');
+        showModal('Нет сетов для удаления.');
           return;
       }
       const lastSetItem = setsList.lastElementChild;
@@ -1096,7 +1121,8 @@ function saveWorkout() {
   for (const ex of workoutExercises) {
     if (!ex.id || ex.id === 'undefined') {
       console.error('Некорректный ID упражнения:', ex);
-      alert('Ошибка: Есть упражнение с некорректным ID. Удалите и добавьте заново.');
+      showModal('Ошибка: Есть упражнение с некорректным ID. Удалите и добавьте заново.');
+
       return;
     }
     workoutData.exercises.push({
@@ -1110,7 +1136,8 @@ function saveWorkout() {
   const csrfMeta = document.querySelector('meta[name="csrf-token"]');
   if (!csrfMeta) {
     console.error('CSRF токен отсутствует!');
-    alert('Ошибка: CSRF токен не найден. Попробуйте обновить страницу.');
+    showModal('Ошибка: CSRF токен не найден. Попробуйте обновить страницу.');
+
     return;
   }
   const csrfToken = csrfMeta.getAttribute('content');
@@ -1132,7 +1159,8 @@ function saveWorkout() {
       return response.json();
     })
     .then(data => {
-      alert(`Тренировка сохранена! Вы заработали ${data.xpGained} опыта.`);
+      showModal(`Тренировка сохранена! Вы заработали ${data.xpGained} опыта.`);
+
       sessionStorage.removeItem('workoutState');
 
       // Если это была программа — дополним локальный счётчик и уберём currentProgramWorkout
@@ -1153,7 +1181,8 @@ function saveWorkout() {
     })
     .catch(error => {
       console.error('Ошибка при сохранении тренировки:', error);
-      alert('Произошла ошибка при сохранении тренировки.');
+      showModal('Произошла ошибка при сохранении тренировки.');
+
     });
 }
 

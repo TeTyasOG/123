@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-  
+
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalText = document.getElementById('modalText');
+  const modalOkButton = document.getElementById('modalOkButton');
   const closeButton = document.getElementById('closeButton');
   const searchInput = document.getElementById('searchInput');
   const muscleFilterButton = document.getElementById('muscleFilterButton');
@@ -18,6 +21,29 @@ document.addEventListener('DOMContentLoaded', () => {
   let exercises = [];
   let recentExercises = [];
   let userExerciseExperience = {};
+
+
+  // Функция для отображения модального окна
+  function showModal(text) {
+    modalText.textContent = text;
+    modalOverlay.style.display = 'block';
+
+    // Закрытие окна по кнопке "ОК"
+    modalOkButton.addEventListener('click', closeModal);
+
+    // Закрытие окна при клике на фон
+    modalOverlay.addEventListener('click', function overlayHandler(e) {
+      if (e.target === modalOverlay) {
+        closeModal();
+        modalOverlay.removeEventListener('click', overlayHandler);
+      }
+    });
+  }
+
+  // Функция для закрытия модального окна
+  function closeModal() {
+    modalOverlay.style.display = 'none';
+  }
 
   // Считываем, куда возвращаться после выбора упражнения
   const returnTo = sessionStorage.getItem('returnTo') || 'workout'; 
@@ -110,6 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
       userExerciseExperience = userData.exerciseExperience || {};
     } catch (error) {
       console.error('Ошибка при загрузке данных пользователя:', error);
+      showModal('Ошибка при загрузке данных пользователя.');
     }
   }
 
@@ -148,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loadRecentExercises(selectedMuscleGroup, selectedFilter);
     } catch (error) {
       console.error('Ошибка при загрузке упражнений:', error);
+      showModal('Ошибка при загрузке упражнений. Попробуйте позже.');
     }
   }
 
@@ -186,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderRecentExercises();
     } catch (error) {
       console.error('Ошибка при загрузке последних упражнений:', error);
+      showModal('Ошибка при загрузке последних упражнений. Попробуйте позже.');
     }
   }
 
