@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Флажок, говорящий: «Пропустить загрузку предыдущих сетов при первом отображении»
 let skipPreviousSets = sessionStorage.getItem('skipPreviousSets') === 'true';
 if (skipPreviousSets) {
-  console.log('Первый запуск по программе: пропускаем загрузку прошлых сетов');
 }
 
   // При добавлении упражнения (с другой страницы) вернёмся сюда
@@ -100,7 +99,6 @@ if (skipPreviousSets) {
         throw new Error(`Ошибка при загрузке профиля пользователя (код ${response.status})`);
       }
       userData = await response.json();
-      console.log('Данные пользователя загружены:', userData);
     } catch (error) {
       console.error('Ошибка при загрузке данных пользователя:', error);
     }
@@ -122,7 +120,6 @@ if (skipPreviousSets) {
   
         for (const ex of workoutExercises) {
           const fullExData = await loadFullExerciseData(ex); // Загружаем недостающие данные
-          console.log(`loadWorkoutState: Загруженные данные для упражнения ${ex.id}: ${JSON.stringify(fullExData)}`);
           Object.assign(ex, fullExData);
       }
       
@@ -250,7 +247,6 @@ maxWeightFemale: ex.maxWeightFemale,
   /**
    * Собираем из DOM (exercisesDiv) актуальные данные в workoutExercises
    */
-  console.log('Пересчёт XP и обновление DOM...');
 
   function updateWorkoutExercisesFromDOM() {
     const newWorkoutExercises = [];
@@ -295,7 +291,6 @@ maxWeightFemale: ex.maxWeightFemale,
         });
     });
     workoutExercises = newWorkoutExercises;
-    console.log('Синхронизация данных из DOM в workoutExercises завершена:', workoutExercises);
 }
 
 
@@ -303,7 +298,6 @@ maxWeightFemale: ex.maxWeightFemale,
    * Восстанавливаем слушатели событий (на сетах, кнопках и т.п.)
    */
   function restoreExerciseEventListeners() {
-    console.log('Восстановление обработчиков событий для упражнений...');
     const exerciseItems = exercisesDiv.querySelectorAll('.exercise-item');
     exerciseItems.forEach(exerciseItem => {
       const exerciseId   = exerciseItem.dataset.exerciseId;
@@ -312,11 +306,10 @@ maxWeightFemale: ex.maxWeightFemale,
       const notesTextarea = exerciseItem.querySelector('.exercise-notes');
       const exerciseSettingsButton = exerciseItem.querySelector('.exercise-settings-button');
       const exerciseImage = exerciseItem.querySelector('.exercise-image');
-      console.log(`Добавляем обработчики для упражнения с ID: ${exerciseId}`);
+
   
       // Убедимся, что кнопка "Добавить сет" добавляет новый сет
       addSetButton.addEventListener('click', async () => {
-        console.log('Кнопка "Добавить сет" нажата для упражнения:', exerciseId);
         // ВАЖНО: parseInt, если ID — число
         const exIdNum = parseInt(exerciseId);
         const exObj = workoutExercises.find(ex => ex.id === exIdNum);
@@ -646,7 +639,6 @@ workoutExercises[workoutExercises.length - 1].maxWeightFemale = exercise.maxWeig
     `;
     setsList.appendChild(setItem);
     
-    console.log('Добавлен новый сет:', setItem);
     const checkButton  = setItem.querySelector('.check-button');
     const inputWeight  = setItem.querySelector('.input-weight');
     const inputReps    = setItem.querySelector('.input-reps');
@@ -654,9 +646,7 @@ workoutExercises[workoutExercises.length - 1].maxWeightFemale = exercise.maxWeig
     const previousSet  = setItem.querySelector('.previous-set');
 
     // Подгружаем предыдущие данные (если есть)
-    console.log(`Добавление сета: exerciseId=${exerciseItem.dataset.exerciseId}, setNumber=${setNumber}`);
 
-    console.log(`Добавлен новый DOM-элемент сета:`, setItem);
 
     loadPreviousSetData(exerciseItem.dataset.exerciseId, setNumber, previousSet, inputWeight, inputReps, inputRpe);
 
@@ -705,8 +695,7 @@ restoreSetEventListeners(setItem, exerciseItem.dataset.exerciseId);
 
       recalcAndUpdateXP();
       saveWorkoutState();
-      console.log(`Обновляем XP: totalXP=${totalXP}, totalSets=${totalSetsCompleted}`);
-      console.log(`Обновление DOM: xpValue=${xpValue.textContent}, setsValue=${setsValue.textContent}`);
+
 
     });
   }
@@ -716,7 +705,7 @@ restoreSetEventListeners(setItem, exerciseItem.dataset.exerciseId);
    */
   function restoreSetEventListeners(setItem, exerciseId) {
     const checkButton = setItem.querySelector('.check-button');
-    console.log(`Восстановление событий для сета: exerciseId=${exerciseId}`);
+
   
     const inputWeight = setItem.querySelector('.input-weight');
     const inputReps = setItem.querySelector('.input-reps');
@@ -789,7 +778,6 @@ restoreSetEventListeners(setItem, exerciseItem.dataset.exerciseId);
         }
 
         // Запрос к серверу для получения только последней тренировки
-        console.log(`Запрос к /lastExerciseSets: exerciseId=${exerciseId}, setNumber=${setNumber}`);
         const response = await fetch(`/lastExerciseSets?exerciseId=${exerciseId}`, {
             credentials: 'include'
         });
@@ -801,7 +789,7 @@ restoreSetEventListeners(setItem, exerciseItem.dataset.exerciseId);
         }
 
         const data = await response.json();
-        console.log('Ответ от /lastExerciseSets:', data);
+
 
         if (data.sets && data.sets.length >= setNumber) {
             // Берём конкретный сет (по номеру)
@@ -946,12 +934,12 @@ restoreSetEventListeners(setItem, exerciseItem.dataset.exerciseId);
     const userGender = userData.gender || 'male';
     let baseMin = (userGender === 'female') ? exercise.minWeightFemale : exercise.minWeightMale;
     if (typeof baseMin !== 'number') baseMin = 0;
-    console.log(`calculateMinWeight: exercise=${JSON.stringify(exercise)}, baseMin=${baseMin}`);
+
     let avgWeight = (userGender === 'female') ? 60 : 70;
     let userW = userData.weight || avgWeight;
     const factor = userW / avgWeight;
     const result = baseMin * factor;
-    console.log(`calculateMinWeight: baseMin=${baseMin}, userW=${userW}, factor=${factor}, result=${result}`);
+
     return result;
 }
 
@@ -960,12 +948,12 @@ function calculateMaxWeight(exercise) {
   const userGender = userData.gender || 'male';
   let baseMax = (userGender === 'female') ? exercise.maxWeightFemale : exercise.maxWeightMale;
   if (typeof baseMax !== 'number') baseMax = 0;
-  console.log(`calculateMaxWeight: exercise=${JSON.stringify(exercise)}, baseMax=${baseMax}`);
+
   let avgWeight = (userGender === 'female') ? 60 : 70;
   let userW = userData.weight || avgWeight;
   const factor = userW / avgWeight;
   const result = baseMax * factor;
-  console.log(`calculateMaxWeight: baseMax=${baseMax}, userW=${userW}, factor=${factor}, result=${result}`);
+
   return result;
 }
 
@@ -976,17 +964,15 @@ function calculateWeightLevel(weight, exercise) {
   const maxWeight = Math.round(calculateMaxWeight(exercise));
 
   if (weight <= minWeight) {
-      console.log(`Вес меньше или равен минимальному: weight=${weight}, minWeight=${minWeight}, level=1`);
       return 1;
   }
   if (weight >= maxWeight) {
-      console.log(`Вес больше или равен максимальному: weight=${weight}, maxWeight=${maxWeight}, level=10`);
       return 10;
   }
 
   const ratio = (weight - minWeight) / (maxWeight - minWeight);
   const level = Math.round(ratio * 9 + 1);
-  console.log(`Вес в диапазоне: weight=${weight}, minWeight=${minWeight}, maxWeight=${maxWeight}, level=${level}`);
+
   return level;
 }
 
@@ -1020,8 +1006,7 @@ function calculateWeightLevel(weight, exercise) {
 
     const setXP = Math.round((baseXP + rpeBonus) * multiRepFactor);
 
-    // Логирование после расчёта опыта
-    console.log(`Рассчитанный опыт: weight=${weight}, reps=${reps}, rpe=${rpe}, xp=${setXP}`);
+
 
     return setXP;
 }
@@ -1038,14 +1023,14 @@ function calculateWeightLevel(weight, exercise) {
 
         // Проверяем, есть ли данные о весах
         if (!ex.minWeightMale || !ex.maxWeightMale) {
-            console.log(`recalculateTotalXP: Недостаточно данных, загружаем информацию об упражнении id=${ex.id}`);
+
             const fullExData = await loadFullExerciseData(ex); // Загружаем недостающие данные
             Object.assign(ex, fullExData); // Обновляем объект упражнения
         }
 
         ex.sets.forEach(st => {
             if (st.completed) {
-                console.log(`recalculateTotalXP: Передача упражнения в calculateXP: ${JSON.stringify(ex)}`);
+
                 const xpGained = calculateXP(st.weight, st.reps, st.rpe, ex);
                 newTotalXP += xpGained;
                 newTotalSets++;
@@ -1073,101 +1058,105 @@ function calculateWeightLevel(weight, exercise) {
     xpValue.textContent = `${Math.round(totalXP)} XP`;
     setsValue.textContent = totalSetsCompleted;
 
-    console.log(`Обновлено общее XP=${totalXP}, завершенные сеты=${totalSetsCompleted}`);
+
 }
 
 
-  /**
-   * Сохраняем тренировку на бэкенде
-   */
-  function saveWorkout() {
-    updateWorkoutExercisesFromDOM();
-    const { newTotalXP, newTotalSets } = recalculateTotalXPFromWorkoutExercises();
-    totalXP            = newTotalXP;
-    totalSetsCompleted = newTotalSets;
-    console.log(`Обновлено: общее XP=${totalXP}, завершённые сеты=${totalSetsCompleted}`);
+/**
+ * Сохраняем тренировку на бэкенде
+ */
+function saveWorkout() {
+  // 1) Собираем и пересчитываем данные
+  updateWorkoutExercisesFromDOM();
+  const { newTotalXP, newTotalSets } = recalculateTotalXPFromWorkoutExercises();
+  totalXP            = newTotalXP;
+  totalSetsCompleted = newTotalSets;
 
-    xpValue.textContent   = `${Math.round(totalXP)} XP`;
-    setsValue.textContent = totalSetsCompleted;
+  xpValue.textContent   = `${Math.round(totalXP)} XP`;
+  setsValue.textContent = totalSetsCompleted;
 
-    const totalWorkoutTime = timeValue.textContent || '';
+  const totalWorkoutTime = timeValue.textContent || '';
 
-    // Формируем объект для отправки
-    const workoutData = {
-      exercises: [],
-      totalWorkoutTime
-    };
-// --- СНАЧАЛА проверяем, есть ли currentProgram, и добавляем programId ---
-const currentProgram = sessionStorage.getItem('currentProgramWorkout');
-if (currentProgram) {
-  const parsed = JSON.parse(currentProgram);
-  workoutData.programId = parsed.id;
-}
-    for (const ex of workoutExercises) {
-      if (!ex.id || ex.id === 'undefined') {
-        console.error('Некорректный ID упражнения:', ex);
-        alert('Ошибка: Есть упражнение с некорректным ID. Удалите и добавьте заново.');
-        return;
-      }
-      workoutData.exercises.push({
-        exerciseId: ex.id,
-        sets: ex.sets,
-        notes: ex.notes || ''
-      });
-    }
+  // 2) Формируем объект для отправки
+  const workoutData = {
+    exercises: [],
+    totalWorkoutTime
+  };
 
-    console.log('Данные для отправки:', workoutData);
+  // 3) Проверяем, есть ли программа в sessionStorage
+  let parsedProgram = null;
+  const currentProgram = sessionStorage.getItem('currentProgramWorkout');
+  if (currentProgram) {
+    parsedProgram = JSON.parse(currentProgram);
+    // Добавляем programId в workoutData
+    workoutData.programId = parsedProgram.id;
+  }
 
-    // Проверка наличия meta[name="csrf-token"]
-    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-    if (!csrfMeta) {
-      console.error('CSRF токен отсутствует!');
-      alert('Ошибка: CSRF токен не найден. Попробуйте обновить страницу.');
+  // 4) Заполняем массив упражнений
+  for (const ex of workoutExercises) {
+    if (!ex.id || ex.id === 'undefined') {
+      console.error('Некорректный ID упражнения:', ex);
+      alert('Ошибка: Есть упражнение с некорректным ID. Удалите и добавьте заново.');
       return;
     }
-    const csrfToken = csrfMeta.getAttribute('content');
-    console.log('Извлечён CSRF токен:', csrfToken);
+    workoutData.exercises.push({
+      exerciseId: ex.id,
+      sets: ex.sets,
+      notes: ex.notes || ''
+    });
+  }
 
-    fetch('/addWorkout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': csrfToken
-      },
-      // ВАЖНО: чтобы Laravel сессия передавалась, указываем credentials
-      credentials: 'include',
-      body: JSON.stringify(workoutData)
+  // 5) Ищем CSRF-токен
+  const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+  if (!csrfMeta) {
+    console.error('CSRF токен отсутствует!');
+    alert('Ошибка: CSRF токен не найден. Попробуйте обновить страницу.');
+    return;
+  }
+  const csrfToken = csrfMeta.getAttribute('content');
+
+  // 6) Отправляем данные на сервер
+  fetch('/addWorkout', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': csrfToken
+    },
+    credentials: 'include',
+    body: JSON.stringify(workoutData)
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Ошибка сети: ${response.statusText}`);
+      }
+      return response.json();
     })
-      .then(response => {
-        console.log('Статус ответа:', response.status);
-        if (!response.ok) {
-          throw new Error(`Ошибка сети: ${response.statusText}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Ответ сервера:', data);
-        alert(`Тренировка сохранена! Вы заработали ${data.xpGained} опыта.`);
-        sessionStorage.removeItem('workoutState');
-        // Переходим, например, в профиль
-        window.location.href = 'profile';
-      })
-      .catch(error => {
-        console.error('Ошибка при сохранении тренировки:', error);
-        alert('Произошла ошибка при сохранении тренировки.');
-      });
+    .then(data => {
+      alert(`Тренировка сохранена! Вы заработали ${data.xpGained} опыта.`);
+      sessionStorage.removeItem('workoutState');
 
+      // Если это была программа — дополним локальный счётчик и уберём currentProgramWorkout
+      if (parsedProgram) {
+        // Локальное хранилище для вывода "ВЫПОЛН." (если нужно)
+        const key = `programCompletions_${parsedProgram.id}`;
+        let val = localStorage.getItem(key);
+        let completions = val ? parseInt(val) : 0;
+        completions++;
+        localStorage.setItem(key, completions.toString());
 
-  // Счётчик локального хранилища
-  const key = `programCompletions_${parsedProgram.id}`;
-  let val = localStorage.getItem(key);
-  let completions = val ? parseInt(val) : 0;
-  completions++;
-  localStorage.setItem(key, completions.toString());
+        // Удаляем привязку к программе
+        sessionStorage.removeItem('currentProgramWorkout');
+      }
 
-  // Чистим sessionStorage
-  sessionStorage.removeItem('currentProgramWorkout');
+      // Переходим, например, на страницу профиля
+      window.location.href = 'profile';
+    })
+    .catch(error => {
+      console.error('Ошибка при сохранении тренировки:', error);
+      alert('Произошла ошибка при сохранении тренировки.');
+    });
 }
+
 
   }
   

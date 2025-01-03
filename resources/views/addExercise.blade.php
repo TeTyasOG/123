@@ -59,15 +59,17 @@
       @foreach ([
         ['ВСЕ МЫШЦЫ', 'all_muscles.png'],
         ['ГРУДЬ', 'chest.png'],
-        ['НОГИ', 'legs.png'],
+        ['ВЕРХНЯЯ ЧАСТЬ СПИНЫ', 'back.png'],
+        ['НИЖНЯЯ ЧАСТЬ СПИНЫ', 'back.png'],
+        ['ИКРЫ', 'calves.png'],
+        ['ПРЕСС', 'abs.png'],
+        ['КВАДРИЦЕПС', 'legs.png'],
         ['ПЛЕЧИ', 'shoulders.png'],
-        ['СПИНА', 'back.png'],
         ['ЯГОДИЦЫ', 'glutes.png'],
         ['БИЦЕПС', 'biceps.png'],
-        ['ПРЕСС', 'abs.png'],
         ['ТРАПЕЦИИ', 'traps.png'],
-        ['ИКРЫ', 'calves.png'],
-        ['ПОДКОЛЕННЫЕ', 'hamstrings.png'],
+        ['ШИРОЧАЙШИЕ', 'back.png'],
+        ['ПОДКОЛЕННЫЕ СУХОЖИЛИЯ', 'hamstrings.png'],
         ['ТРИЦЕПС', 'triceps.png'],
         ['ПРЕДПЛЕЧЬЯ', 'forearms.png']
       ] as [$muscle, $image])

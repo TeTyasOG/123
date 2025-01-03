@@ -41,7 +41,6 @@ class WorkoutController extends Controller
             $exercises = $query->get();
             return response()->json($exercises);
         } catch (\Exception $err) {
-            Log::error('Ошибка при получении упражнений: ' . $err->getMessage());
             return response()->json(['message' => 'Ошибка при получении упражнений.'], 500);
         }
     }
@@ -96,7 +95,6 @@ class WorkoutController extends Controller
 
             return response()->json($recentExercises);
         } catch (\Exception $err) {
-            Log::error('Ошибка при получении последних упражнений: ' . $err->getMessage());
             return response()->json(['message' => 'Ошибка при получении последних упражнений.'], 500);
         }
     }
@@ -193,7 +191,6 @@ class WorkoutController extends Controller
                 'bestXP'            => $bestXP
             ]);
         } catch (\Exception $err) {
-            Log::error('Ошибка при получении информации об упражнении: ' . $err->getMessage());
             return response()->json(['message' => 'Ошибка при получении информации об упражнении.'], 500);
         }
     }
@@ -209,11 +206,9 @@ class WorkoutController extends Controller
      */
     public function addWorkout(Request $request)
     {
-        Log::info('Получен запрос на добавление тренировки:', $request->all());
 
         $userId = Auth::id();
         if (!$userId) {
-            Log::warning('Попытка доступа без авторизации.');
             return response()->json(['message' => 'Необходима авторизация.'], 401);
         }
 
@@ -369,7 +364,6 @@ class WorkoutController extends Controller
             if ($program) {
                 $program->times_completed += 1;
                 $program->save();
-                \Log::info("Увеличили счётчик times_completed для Program ID={$programId}");
             }
         }
 
@@ -380,7 +374,6 @@ class WorkoutController extends Controller
             'newLevel'      => $user->level
         ]);
     } catch (\Exception $err) {
-        Log::error('Ошибка при сохранении тренировки: ' . $err->getMessage());
         return response()->json(['message' => 'Ошибка при сохранении тренировки.'], 500);
     }
 }
@@ -394,7 +387,6 @@ class WorkoutController extends Controller
         try {
             $userId = Auth::id();
             if (!$userId) {
-                Log::info('Попытка доступа без авторизации getWorkouts');
                 return response()->json(['message' => 'Необходима авторизация.'], 401);
             }
 
@@ -410,7 +402,6 @@ class WorkoutController extends Controller
 
             return response()->json($workouts);
         } catch (\Exception $err) {
-            Log::error('Ошибка при получении тренировок: ' . $err->getMessage());
             return response()->json(['message' => 'Ошибка при получении тренировок.'], 500);
         }
     }
@@ -435,7 +426,6 @@ class WorkoutController extends Controller
 
             return response()->json($workout);
         } catch (\Exception $err) {
-            Log::error('Ошибка при получении тренировки: ' . $err->getMessage());
             return response()->json(['message' => 'Ошибка при получении тренировки.'], 500);
         }
     }
@@ -474,7 +464,6 @@ class WorkoutController extends Controller
 
         return response()->json(['history' => $history], 200);
     } catch (\Exception $e) {
-        Log::error('Ошибка при получении истории упражнения: ' . $e->getMessage());
         return response()->json(['message' => 'Ошибка сервера.'], 500);
     }
 }
@@ -516,7 +505,6 @@ class WorkoutController extends Controller
     
             return response()->json(['sets' => $sets], 200);
         } catch (\Exception $e) {
-            Log::error('Ошибка при получении данных предыдущего упражнения: ' . $e->getMessage());
             return response()->json(['message' => 'Ошибка сервера.'], 500);
         }
     }
@@ -550,7 +538,6 @@ class WorkoutController extends Controller
             return response()->json(['notes' => ''], 200);
 
         } catch (\Exception $error) {
-            Log::error('Ошибка при получении заметок по упражнению: ' . $error->getMessage());
             return response()->json(['message' => 'Ошибка сервера при получении заметок.'], 500);
         }
     }
@@ -558,7 +545,7 @@ class WorkoutController extends Controller
     public function listPrograms(Request $request)
 {
 
-    Log::debug('Входим в listPrograms...');
+
 
     $userId = \Auth::id();
     if (!$userId) {
@@ -568,10 +555,10 @@ class WorkoutController extends Controller
     $programs = Program::where('user_id', $userId)
         ->with('exercises')  // чтобы подгрузить pivot
         ->get();
-Log::debug('Найдено программ: '. $programs->count());
+
     // Трансформируем коллекцию программ в удобный формат
     $transformed = $programs->map(function($program) {
-        Log::debug('Обрабатываем Program ID='.$program->id);
+
         return [
             'id'              => $program->id,
             'name'            => $program->name,
@@ -579,7 +566,7 @@ Log::debug('Найдено программ: '. $programs->count());
             'times_completed' => $program->times_completed,
             // Собираем массив упражнений в виде { exerciseId, sets, reps, weight }
             'exercises'       => $program->exercises->map(function($ex) {
-                Log::debug('Pivot sets='.$ex->pivot->sets);
+
                 return [
                     'exerciseId' => $ex->id,
                     'sets'       => $ex->pivot->sets,
@@ -589,7 +576,7 @@ Log::debug('Найдено программ: '. $programs->count());
             })->toArray()
         ];
     });
-    Log::debug('Сформировали массив: '.json_encode($transformed));
+
     return response()->json($transformed, 200);
 }
 
@@ -614,7 +601,7 @@ Log::debug('Найдено программ: '. $programs->count());
 
             return response()->json(['program' => $program]);
         } catch (\Exception $err) {
-            Log::error('Ошибка при начале тренировки по программе: ' . $err->getMessage());
+
             return response()->json(['message' => 'Ошибка при начале тренировки по программе.'], 500);
         }
     }
@@ -641,18 +628,7 @@ Log::debug('Найдено программ: '. $programs->count());
         $adjMax = $maxW * $factor;
 
         $weightLevel = $this->calculateWeightLevel($weight, $adjMin, $adjMax);
-        Log::info("Weight Level Calculated", [
-            'weightLevel' => $weightLevel,
-            'weight' => $weight,
-            'adjMin' => $adjMin,
-            'adjMax' => $adjMax
-        ]);
         $baseXP  = $weightLevel * $reps;
-        Log::info("Base XP Calculated", [
-            'baseXP' => $baseXP,
-            'weightLevel' => $weightLevel,
-            'reps' => $reps
-        ]);
         $rpeBonus = 0;
         if ($rpe > 5) {
             $percent = ($rpe - 5) * 0.05;
@@ -660,11 +636,6 @@ Log::debug('Найдено программ: '. $programs->count());
         } else {
             $rpeBonus = 0;
         }
-        Log::info("RPE Bonus Calculated", [
-            'rpeBonus' => $rpeBonus,
-            'rpe' => $rpe,
-            'baseXP' => $baseXP
-        ]);
 
         $multiRepFactor = 1.0;
         if ($reps >= 13 && $reps <= 15) {
@@ -674,18 +645,10 @@ Log::debug('Найдено программ: '. $programs->count());
         } else {
             $multiRepFactor = 1.0;
         }
-        Log::info("MultiRep Factor Calculated", [
-            'multiRepFactor' => $multiRepFactor,
-            'reps' => $reps
-        ]);
+
 
         return round(($baseXP + $rpeBonus) * $multiRepFactor);
-        Log::info("Final Set XP Calculated", [
-            'setXP' => $setXP,
-            'baseXP' => $baseXP,
-            'rpeBonus' => $rpeBonus,
-            'multiRepFactor' => $multiRepFactor
-        ]);
+
     }
 
     /**

@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(res => res.json())
       .then(programs => {
         userPrograms = programs;
-        console.log('От сервера /program/list получили:', programs);
         displayPrograms(programs);
       })
       .catch(err => {

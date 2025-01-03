@@ -20,7 +20,6 @@ class AuthController extends Controller
         'weight' => 'required|numeric|min:1',
     ]);
 
-    \Log::info('Данные для создания пользователя:', $validatedData);
 
     try {
         $user = User::create([
@@ -35,8 +34,6 @@ class AuthController extends Controller
 
         return redirect()->route('profile'); // Редирект на страницу профиля
     } catch (\Exception $e) {
-        \Log::error('Ошибка при регистрации: ' . $e->getMessage());
-        return response()->json(['message' => 'Ошибка при регистрации.'], 500);
     }
 }
 
@@ -76,4 +73,5 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Вы успешно вышли из системы.']);
     }
+    
 }

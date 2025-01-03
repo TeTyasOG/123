@@ -284,7 +284,6 @@ document.addEventListener('DOMContentLoaded', () => {
     card.appendChild(iconEl);
     card.appendChild(levelEl);
     card.appendChild(progressBarContainer);
-    console.log('muscleExperience', userData.muscleExperience);
 
     return card;
   }

@@ -21,9 +21,6 @@ class ExerciseController extends Controller
         $muscleGroup = $request->query('muscleGroup');
         $searchQuery = $request->query('searchQuery');
 
-        // Лог для отладки
-        logger()->info('[getExercises] muscleGroup=' . $muscleGroup . ', searchQuery=' . $searchQuery);
-
         // Фильтрация по группе мышц через связь muscleFilters
         if ($muscleGroup && $muscleGroup !== '' && $muscleGroup !== 'ВСЕ МЫШЦЫ') {
             $query->whereHas('muscleFilters', function ($q) use ($muscleGroup) {
@@ -64,9 +61,7 @@ class ExerciseController extends Controller
                 'userRank' => $rank,
             ];
         });
-        
-
-        logger()->info('[getExercises] Found exercises count=' . $mapped->count());
+    
 
         return response()->json($mapped);
     }
@@ -88,7 +83,6 @@ public function getRecentExercises(Request $request)
 {
     // 1. Определяем пользователя
     $userId = \Auth::id();
-    logger()->info('[getRecentExercises] userId=' . print_r($userId, true));
 
     if (!$userId) {
         logger()->warning('[getRecentExercises] Нет авторизованного пользователя');
@@ -100,8 +94,6 @@ public function getRecentExercises(Request $request)
     $muscleGroup = $request->query('muscleGroup', 'ВСЕ МЫШЦЫ');
     $sortType    = $request->query('sortType', 'alphabetical'); // «alphabetical», «experience» и т.д.
 
-    logger()->info("[getRecentExercises] searchQuery={$searchQuery}, muscleGroup={$muscleGroup}, sortType={$sortType}");
-
     // 3. Получаем последние 10 тренировок
     //    Важно: у вас в таблице workouts поле называется user_id
     //    Если оно называется иначе, подкорректируйте
@@ -110,12 +102,9 @@ public function getRecentExercises(Request $request)
         ->limit(10)
         ->get();
 
-    logger()->info('[getRecentExercises] Found workouts count=' . $workouts->count());
-
     // 4. Собираем все ID тренировок, чтобы найти упражнения из workout_exercises
     $workoutIds = $workouts->pluck('id');
     if ($workoutIds->isEmpty()) {
-        logger()->info('[getRecentExercises] Нет последних тренировок => пустой массив');
         return response()->json([]);
     }
 
@@ -135,8 +124,6 @@ public function getRecentExercises(Request $request)
         ])
         ->get();
 
-    logger()->info('[getRecentExercises] Found workoutExercises count=' . $workoutExercises->count());
-
     // 6. Из коллекции $workoutExercises вытащим сами упражнения (Exercise),
     //    уберём дубликаты (unique('exercise_id') или unique(fn($we) => $we->exercise_id)),
     //    но для удобства сначала просто map на ->exercise, а потом unique('id').
@@ -149,14 +136,11 @@ public function getRecentExercises(Request $request)
     // Убираем дубли по id
     $exerciseCollection = $exerciseCollection->unique('id');
 
-    logger()->info('[getRecentExercises] Unique exercises after workouts = ' . $exerciseCollection->count());
-
     // 7. Фильтрация по названию (searchQuery)
     if ($searchQuery && $searchQuery !== '') {
         $exerciseCollection = $exerciseCollection->filter(function ($ex) use ($searchQuery) {
             return stripos($ex->name, $searchQuery) !== false;
         });
-        logger()->info('[getRecentExercises] Count after searchQuery filter=' . $exerciseCollection->count());
     }
 
     // 8. Фильтрация по мышечной группе, если muscleGroup != 'ВСЕ МЫШЦЫ'
@@ -166,7 +150,6 @@ public function getRecentExercises(Request $request)
             $filters = $ex->muscleFilters->pluck('name')->map(function($n){ return mb_strtoupper($n); });
             return $filters->contains(mb_strtoupper($muscleGroup));
         });
-        logger()->info('[getRecentExercises] Count after muscleGroup filter=' . $exerciseCollection->count());
     }
 
     // 9. Сортировка
@@ -223,8 +206,6 @@ public function getRecentExercises(Request $request)
         ];
     });
 
-    logger()->info('[getRecentExercises] Final count=' . $mapped->count());
-
     return response()->json($mapped);
 }
 
@@ -271,7 +252,6 @@ private function getRankByXP($xp)
         $exerciseId = $request->query('id');
         $userId = \Auth::id();
 
-        logger()->info('[getExerciseInfo] exerciseId=' . $exerciseId . ', userId=' . print_r($userId, true));
 
         $exercise = Exercise::find($exerciseId);
         if (!$exercise) {
@@ -286,9 +266,7 @@ private function getRankByXP($xp)
         }
     
         $userExerciseXP = $exercise->users()->where('user_id', $userId)->first()->pivot->experience ?? 0;
-    
-        logger()->info('[getExerciseInfo] userExerciseXP=' . $userExerciseXP);
-    
+
         // Рассчитываем ранг на основе опыта
         $rankName = 'НЕТУ';
         if ($userExerciseXP >= 15000) {
@@ -300,8 +278,6 @@ private function getRankByXP($xp)
         } elseif ($userExerciseXP >= 500) {
             $rankName = 'BRONZE';
         }
-    
-        logger()->info('[getExerciseInfo] Calculated rankName=' . $rankName);
                 
 
         // Значения по умолчанию
@@ -319,15 +295,11 @@ private function getRankByXP($xp)
             // Если у вас реально userId — поменяйте на ->where('userId', $userId)
             $workoutIds = Workout::where('user_id', $userId)->pluck('id');
 
-            logger()->info('[getExerciseInfo] Fetched $workoutIds: ' . $workoutIds->implode(','));
-
             $pivotRecords = WorkoutExercise::whereIn('workout_id', $workoutIds)
                 ->where('exercise_id', $exerciseId)
                 // Связь называется sets() в модели WorkoutExercise
                 ->with('sets')
                 ->get();
-
-            logger()->info('[getExerciseInfo] Found pivotRecords count=' . $pivotRecords->count());
 
             // Подготовим факторы для определения уровня:
             $gender = ($user->gender === 'female') ? 'female' : 'male';
@@ -347,7 +319,6 @@ private function getRankByXP($xp)
             $adjMinWeight = $minW * $weightFactor;
             $adjMaxWeight = $maxW * $weightFactor;
 
-            logger()->info('[getExerciseInfo] adjMinWeight=' . $adjMinWeight . ', adjMaxWeight=' . $adjMaxWeight);
 
             // Перебираем все подходы
             foreach ($pivotRecords as $pivot) {
@@ -359,7 +330,6 @@ private function getRankByXP($xp)
                     $reps   = $set->reps;
                     $rpe    = $set->rpe;
 
-                    logger()->info('[getExerciseInfo] Checking set => weight=' . $weight . ', reps=' . $reps . ', rpe=' . $rpe);
 
                     // ЛУЧШИЙ ВЕС
                     if ($weight > $bestWeight) {
@@ -401,8 +371,6 @@ private function getRankByXP($xp)
                 }
             }
         }
-
-        logger()->info('[getExerciseInfo] Final bestWeight=' . $bestWeight . ', bestLevel=' . $bestLevel . ', bestXP=' . $bestXP);
 
         // Возвращаем всю нужную информацию об упражнении
         return response()->json([

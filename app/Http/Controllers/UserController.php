@@ -13,15 +13,11 @@ class UserController extends Controller
      */
     public function getUserProfile()
     {
-        \Log::info('Запрос профиля пользователя'); // Логируем вход в метод
         try {
             $userId = Auth::id(); 
-            \Log::debug("User ID: $userId - запрошен профиль");
-            
             $user = User::with(['muscles', 'exercises', 'achievements'])->find($userId);
 
             if (!$user) {
-                \Log::warning("User ID: $userId не найден в БД");
                 return response()->json(['message' => 'Пользователь не найден.'], 404);
             }
 
@@ -42,8 +38,6 @@ class UserController extends Controller
                 ];
             });
             
-
-            \Log::debug("User ID: $userId - уровень игрока: {$userLevelData['level']}");
 
             return response()->json([
                 'nickname' => $user->nickname,
@@ -78,7 +72,6 @@ class UserController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Ошибка при получении данных профиля пользователя: ' . $e->getMessage());
             return response()->json(['message' => 'Ошибка при получении данных профиля пользователя.'], 500);
         }
     }
@@ -88,7 +81,6 @@ class UserController extends Controller
      */
     public function updateProfile(Request $request)
     {
-        \Log::info('Запрос обновления профиля пользователя'); // Логируем вход в метод
         try {
             $request->validate([
                 'nickname' => 'required|string|max:255',
@@ -100,7 +92,7 @@ class UserController extends Controller
             $user = User::find($userId);
     
             if (!$user) {
-                \Log::warning("User ID: $userId не найден в БД при обновлении профиля");
+
                 return response()->json(['message' => 'Пользователь не найден.'], 404);
             }
     
@@ -109,7 +101,6 @@ class UserController extends Controller
                                 ->where('id', '!=', $userId)
                                 ->first();
             if ($existingUser) {
-                \Log::warning("User ID: $userId - никнейм {$request->nickname} уже используется");
                 return response()->json(['message' => 'Пользователь с таким никнеймом уже существует.'], 400);
             }
     
@@ -118,10 +109,8 @@ class UserController extends Controller
             $user->weight   = $request->weight;
             $user->save();
     
-            \Log::debug("User ID: $userId - профиль успешно обновлён");
             return response()->json(['message' => 'Профиль успешно обновлён.']);
         } catch (\Exception $e) {
-            \Log::error('Ошибка при обновлении профиля: ' . $e->getMessage());
             return response()->json(['message' => 'Ошибка при обновлении профиля.'], 500);
         }
     }

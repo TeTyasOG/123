@@ -7,12 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   async function loadWorkouts() {
-    console.log('Запуск функции loadWorkouts');
+
     try {
       const response = await fetch('/getWorkouts'); // Предполагается, что маршрут возвращает список завершённых тренировок
       if (response.ok) {
         const workouts = await response.json();
-        console.log('Данные от сервера:', workouts);
+
         displayWorkouts(workouts);
       } else if (response.status === 401) {
         alert('Требуется авторизация. Пожалуйста, войдите в систему.');
@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Функция для отображения списка тренировок
   function displayWorkouts(workouts) {
-    console.log('Отображаем тренировки:', workouts);
     if (!workouts || workouts.length === 0) {
       workoutListDiv.textContent = 'У вас нет сохранённых тренировок.';
       return;
@@ -124,7 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // При клике на карточку переходим к деталям
       workoutDiv.addEventListener('click', () => {
-        console.log('Переход к тренировке с ID:', workout.id);
         window.location.href = `/workout_detail?id=${workout.id}`;
       });
 

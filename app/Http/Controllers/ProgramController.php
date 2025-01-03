@@ -20,10 +20,6 @@ class ProgramController extends Controller
 
             // Загружаем данные пользователя (пол, вес)
             $user = User::find($userId);
-            if (!$user) {
-                \Log::warning("addProgram: Пользователь с ID={$userId} не найден.");
-                return response()->json(['message' => 'Пользователь не найден.'], 404);
-            }
 
             $name      = $request->input('name');
             $exercises = $request->input('exercises'); 
@@ -47,11 +43,6 @@ class ProgramController extends Controller
                 // Если в будущем придёт RPE - возьмём её из запроса:
                 // $rpe = $item['rpe'] ?? 5; (Но пока нет, фиксируем = 5)
 
-                if (!$exerciseId) {
-                    \Log::debug("Пропускаем упражнение, т.к. exerciseId пустой");
-                    continue;
-                }
-
                 $program->exercises()->attach($exerciseId, [
                     'sets'   => $sets,
                     'weight' => $weight,
@@ -70,10 +61,6 @@ class ProgramController extends Controller
                 }
 
                 $exercise = Exercise::find($exerciseId);
-                if (!$exercise) {
-                    \Log::debug("Упражнение ID={$exerciseId} не найдено в БД");
-                    continue;
-                }
 
                 $sets   = $item['sets']   ?? 0;
                 $weight = $item['weight'] ?? 0;
@@ -81,12 +68,10 @@ class ProgramController extends Controller
 
                 // Допустим, при создании программы RPE = 5 (или берём из $item, если есть).
                 $rpe = 5;
-                \Log::debug("Считаем XP для exerciseId={$exerciseId}, sets={$sets}, weight={$weight}, reps={$reps}, rpe={$rpe}");
 
                 // Для каждого "сета" суммируем XP
                 for ($i = 0; $i < $sets; $i++) {
                     $xpForSet = $this->calculateSetXP($weight, $reps, $rpe, $exercise, $user);
-                    \Log::debug(" -> Сет #".($i + 1).": XP={$xpForSet}");
                     $totalXP += $xpForSet;
                 }
             }
@@ -95,11 +80,10 @@ class ProgramController extends Controller
             $program->experience = $totalXP;
             $program->save();
 
-            \Log::debug("Программа ID: {$program->id} - рассчитан XP = {$totalXP}");
+
 
             return response()->json(['message' => 'Программа успешно сохранена.']);
         } catch (\Exception $e) {
-            \Log::error('Ошибка при добавлении программы: ' . $e->getMessage());
             return response()->json(['message' => 'Ошибка при добавлении программы.'], 500);
         }
     }
@@ -126,7 +110,6 @@ class ProgramController extends Controller
 
             return response()->json(['message' => 'Программа успешно удалена.']);
         } catch (\Exception $e) {
-            \Log::error('Ошибка при удалении программы: ' . $e->getMessage());
             return response()->json(['message' => 'Ошибка при удалении программы.'], 500);
         }
     }
@@ -144,12 +127,9 @@ class ProgramController extends Controller
 
             $programs = Program::where('user_id', $userId)->get();
 
-            \Log::debug("Пользователь #{$userId} запросил список программ. Найдено: ".$programs->count());
-
             return response()->json($programs, 200);
 
         } catch (\Exception $e) {
-            \Log::error('Ошибка при получении списка программ: ' . $e->getMessage());
             return response()->json(['message' => 'Ошибка сервера при получении программ.'], 500);
         }
     }
@@ -180,10 +160,6 @@ class ProgramController extends Controller
         $adjMin = $minW * $factor;
         $adjMax = $maxW * $factor;
 
-        // Логи перед расчётом
-        \Log::debug("calcSetXP: weight={$weight}, reps={$reps}, rpe={$rpe}, gender={$gender}, userWeight={$userWeight}");
-        \Log::debug("calcSetXP: minW={$minW}, maxW={$maxW}, adjMin={$adjMin}, adjMax={$adjMax}");
-
         // Вычисляем "уровень" (от 1 до 10) — аналог getWeightLevel
         $weightLevel = $this->calculateWeightLevel($weight, $adjMin, $adjMax);
 
@@ -205,8 +181,6 @@ class ProgramController extends Controller
         }
 
         $setXP = round(($baseXP + $rpeBonus) * $multiRepFactor);
-
-        \Log::debug("calcSetXP result => weightLevel={$weightLevel}, baseXP={$baseXP}, rpeBonus={$rpeBonus}, multiRepFactor={$multiRepFactor}, setXP={$setXP}");
 
         return $setXP;
     }

@@ -112,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
       };
   
       // Отправляем POST на /program/add
-      console.log('Отправляем payload в /program/add:', payload);
       fetch('/program/add', {
         method: 'POST',
         headers: {
@@ -166,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Добавляет новое упражнение в массив
     // ------------------------------------------------
     function addNewExercise(exerciseData) {
-        console.log("Добавляем упражнение:", exerciseData);
       // По умолчанию 1 подход, 10 повторов, 20 кг
       const exercise = {
         exerciseData,
