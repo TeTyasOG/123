@@ -3532,5 +3532,2695 @@ class ExerciseSeeder extends Seeder
             $cableStandingLegCurl->tips()->attach($tip->id);
         }      
         
+
+// Упражнение 2: Cable Donkey Kickback
+$cableDonkeyKickback = Exercise::create([
+    'name' => 'Отведение ноги назад на канатном тренажере',
+    'video_url' => '/video/exercises/Cable_Donkey_Kickback.mp4',
+    'thumbnail_url' => '/images/thumbnail/Cable_Donkey_Kickback.jpg',
+    'min_weight_male' => 20,
+    'max_weight_male' => 70,
+    'min_weight_female' => 10,
+    'max_weight_female' => 40,
+    'description' => 'Отведение ноги назад на канатном тренажере — это упражнение, направленное на развитие ягодичных мышц и подколенных сухожилий. Выполняется с использованием кабельного тренажера, что позволяет изолировать и эффективно прорабатывать заднюю часть ног. Это упражнение помогает улучшить силу и выносливость ягодиц, а также способствует укреплению нижней части спины и общей стабилизации корпуса.',
+]);
+
+// Связь с мышцами напряжения
+$muscleLegs = MusclePercentage::where('name', 'Ноги')->first();
+$muscleBack = MusclePercentage::where('name', 'Спина')->first();
+$muscleAbs = MusclePercentage::where('name', 'Пресс')->first();
+
+if ($muscleLegs) {
+    $cableDonkeyKickback->musclePercentages()->attach($muscleLegs->id, ['percentages' => 60]);
+}
+
+if ($muscleBack) {
+    $cableDonkeyKickback->musclePercentages()->attach($muscleBack->id, ['percentages' => 30]);
+}
+
+if ($muscleAbs) {
+    $cableDonkeyKickback->musclePercentages()->attach($muscleAbs->id, ['percentages' => 10]);
+}
+
+// Связь с фильтрами
+$filters = ['Ягодицы', 'Подколенные сухожилия', 'Нижняя часть спины'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $cableDonkeyKickback->muscleFilters()->attach($filter->id);
     }
+}
+
+// Добавление советов
+$tips = [
+    'Сохранение правильной осанки: Держите спину прямой и избегайте прогиба в пояснице на протяжении всего упражнения.',
+    'Контролируемое движение: Выполняйте отведение ноги медленно и плавно, избегая резких рывков для минимизации риска травм.',
+    'Максимальная активация мышц: На верхней точке движения сделайте короткую паузу, чтобы максимально напрячь ягодичные мышцы.',
+    'Правильный угол отведения: Не поднимайте ногу слишком высоко, чтобы избежать избыточной нагрузки на поясницу и обеспечить эффективную работу целевых мышц.',
+    'Использование полного диапазона движения: Полностью выпрямляйте ногу в нижней точке и максимально отводите в верхней, обеспечивая полный охват мышц.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $cableDonkeyKickback->tips()->attach($tip->id);
+}
+
+// Упражнение 1: Dumbbell Reverse Wrist Curl (Сгибание запястий с гантелями обратным хватом)
+$dumbbellReverseWristCurl = Exercise::create([
+    'name' => 'Сгибание запястий с гантелями обратным хватом',
+    'video_url' => '/video/exercises/Dumbbell_Reverse_Wrist_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Dumbbell_Reverse_Wrist_Curl.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 25,
+    'min_weight_female' => 5,
+    'max_weight_female' => 15,
+    'description' => 'Сгибание запястий с гантелями обратным хватом — это упражнение, направленное на развитие и укрепление мышц предплечий, особенно разгибателей запястий. Выполняется с использованием гантелей, при этом кисти держатся в обратном положении по сравнению с традиционными сгибаниями запястий. Это упражнение помогает улучшить силу хвата и выносливость предплечий, что важно для различных видов спорта, а также для повседневных активностей, требующих устойчивости кистей и запястий.',
+]);
+
+// Связь с мышцами
+$arms = MusclePercentage::where('name', 'Руки')->first();
+if ($arms) {
+    $dumbbellReverseWristCurl->musclePercentages()->attach($arms->id, ['percentages' => 100]);
+}
+
+// Связь с фильтрами
+$filters = ['Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $dumbbellReverseWristCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная позиция: Сидите на скамье, положите предплечья на бедра или специальную опору так, чтобы кисти свисали за края.',
+    'Контроль движений: Поднимайте и опускайте гантели медленно и контролируемо, избегая рывков и быстрого движения.',
+    'Прямая спина: Держите спину прямой и избегайте прогиба туловища во время выполнения упражнения.',
+    'Полный диапазон: Выполняйте упражнение через полный диапазон движений для максимальной эффективности.',
+    'Дыхание: Вдыхайте при опускании гантелей и выдыхайте при их подъеме.',
+    'Регулярность: Включайте это упражнение в свою тренировочную программу 2-3 раза в неделю для достижения лучших результатов.',
+    'Безопасность: Начинайте с легких весов, чтобы привыкнуть к технике выполнения, и постепенно увеличивайте нагрузку по мере укрепления мышц.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $dumbbellReverseWristCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 2: Dumbbell Standing Wrist Curl (Подъем гантелей на запястья стоя)
+$dumbbellStandingWristCurl = Exercise::create([
+    'name' => 'Подъем гантелей на запястья стоя',
+    'video_url' => '/video/exercises/Dumbbell_Standing_Wrist_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Dumbbell_Standing_Wrist_Curl.jpg',
+    'min_weight_male' => 5,
+    'max_weight_male' => 25,
+    'min_weight_female' => 2,
+    'max_weight_female' => 15,
+    'description' => 'Подъем гантелей на запястья стоя — это упражнение, направленное на развитие мышц предплечий. Выполняется стоя, с гантелями в руках, поднимая только запястья, при этом предплечья остаются неподвижными. Это упражнение улучшает силу и выносливость предплечий, что важно для улучшения хвата и общей функциональной силы рук. Регулярное выполнение подъемов на запястья способствует увеличению объема и силы предплечий, а также помогает в предотвращении травм при выполнении других упражнений и повседневных задач.',
+]);
+
+// Связь с мышцами
+$arms = MusclePercentage::where('name', 'Руки')->first();
+if ($arms) {
+    $dumbbellStandingWristCurl->musclePercentages()->attach($arms->id, ['percentages' => 90]);
+}
+
+$abs = MusclePercentage::where('name', 'Пресс')->first();
+if ($abs) {
+    $dumbbellStandingWristCurl->musclePercentages()->attach($abs->id, ['percentages' => 10]);
+}
+
+// Связь с фильтрами
+$filters = ['Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $dumbbellStandingWristCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная позиция: Держите локти неподвижными и близко к телу, чтобы изолировать работу предплечий и избежать нагрузки на плечевые суставы.',
+    'Контролируемое движение: Выполняйте подъемы и опускания медленно и плавно, избегая рывков и использования инерции.',
+    'Полный диапазон движений: Полностью поднимайте гантели до максимальной высоты и опускайте до полного расслабления запястий для максимальной эффективности.',
+    'Дыхание: Синхронизируйте дыхание с движениями — выдыхайте при подъеме гантелей и вдыхайте при их опускании.',
+    'Постепенное увеличение веса: Начинайте с легких гантелей и постепенно увеличивайте вес по мере роста силы, чтобы избежать перегрузок и травм.',
+    'Использование запястных ремней (по необходимости): Если у вас слабые запястья или вы используете тяжелые веса, можно использовать запястные ремни для дополнительной поддержки.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $dumbbellStandingWristCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 3: Barbell Wrist Curl (Сгибание запястий со штангой)
+$barbellWristCurl = Exercise::create([
+    'name' => 'Сгибание запястий со штангой',
+    'video_url' => '/video/exercises/Barbell_Wrist_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Barbell_Wrist_Curl.jpg',
+    'min_weight_male' => 20,
+    'max_weight_male' => 60,
+    'min_weight_female' => 10,
+    'max_weight_female' => 40,
+    'description' => 'Сгибание запястий со штангой — это упражнение, направленное на развитие сгибательных мышц предплечий. Оно выполняется путем сгибания запястий с удерживанием штанги, что способствует укреплению и увеличению массы предплечий. Это упражнение важно для улучшения хватательной силы и общей функциональности рук, а также для повышения устойчивости при выполнении других упражнений и повседневных задач.',
+]);
+
+// Связь с мышцами
+$arms = MusclePercentage::where('name', 'Руки')->first();
+if ($arms) {
+    $barbellWristCurl->musclePercentages()->attach($arms->id, ['percentages' => 100]);
+}
+
+// Связь с фильтрами
+$filters = ['Предплечья', 'Бицепс'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $barbellWristCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Положение тела: Сядьте на скамью с прямой спиной, закрепите предплечья на бедрах так, чтобы запястья свисали за край коленей. Это обеспечит стабильность и изоляцию мышц предплечий.',
+    'Движение: Медленно сгибайте запястья вверх, максимально сокращая мышцы предплечий, затем плавно опускайте штангу вниз, контролируя движение.',
+    'Амплитуда: Выполняйте полный диапазон движений, чтобы обеспечить максимальное растяжение и сокращение мышц предплечий.',
+    'Контроль веса: Начинайте с легкого веса, чтобы освоить технику, и постепенно увеличивайте нагрузку, избегая рывков и резких движений.',
+    'Дыхание: Вдыхайте при опускании штанги и выдыхайте при сгибании запястий, поддерживая ритм дыхания и стабильность тела.',
+    'Избегайте чрезмерного напряжения: Не поднимайте слишком тяжелые веса, чтобы избежать перенапряжения запястий и снижения эффективности упражнения.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $barbellWristCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 4: Plate Pinch (Прижимание дисков)
+$platePinch = Exercise::create([
+    'name' => 'Прижимание дисков',
+    'video_url' => '/video/exercises/Plate_Pinch.mp4',
+    'thumbnail_url' => '/images/thumbnail/Plate_Pinch.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 50,
+    'min_weight_female' => 5,
+    'max_weight_female' => 25,
+    'description' => 'Прижимание дисков — это упражнение, направленное на развитие силы хвата и укрепление предплечий. Выполняется путём удерживания двух весовых дисков вместе пальцами и большим пальцем рук на протяжении определённого времени. Это упражнение также задействует плечевые мышцы, мышцы спины и корпус для стабилизации тела. Прижимание дисков улучшает общую функциональную силу рук, что полезно для различных видов спорта и повседневных активностей, требующих сильного хвата.',
+]);
+
+// Связь с мышцами
+$arms = MusclePercentage::where('name', 'Руки')->first();
+if ($arms) {
+    $platePinch->musclePercentages()->attach($arms->id, ['percentages' => 50]);
+}
+
+$shoulders = MusclePercentage::where('name', 'Плечи')->first();
+if ($shoulders) {
+    $platePinch->musclePercentages()->attach($shoulders->id, ['percentages' => 20]);
+}
+
+$back = MusclePercentage::where('name', 'Спина')->first();
+if ($back) {
+    $platePinch->musclePercentages()->attach($back->id, ['percentages' => 20]);
+}
+
+$abs = MusclePercentage::where('name', 'Пресс')->first();
+if ($abs) {
+    $platePinch->musclePercentages()->attach($abs->id, ['percentages' => 10]);
+}
+
+// Связь с фильтрами
+$filters = ['Предплечья', 'Бицепс', 'Трицепс'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $platePinch->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная стойка: Держите спину прямой и ноги на ширине плеч для устойчивости.',
+    'Активный хват: Сжимайте диски максимально сильно, используя пальцы и большой палец для лучшего захвата.',
+    'Контроль дыхания: Дышите равномерно, избегая задержки дыхания во время удерживания.',
+    'Постепенное увеличение веса: Начинайте с небольших весов и постепенно увеличивайте нагрузку, чтобы избежать травм.',
+    'Использование дополнительного хвата: При необходимости применяйте спортивный мел или перчатки для улучшения сцепления с дисками.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $platePinch->tips()->attach($tip->id);
+}
+
+// Упражнение 5: Barbell Reverse Wrist Curl (Обратные сгибания запястий со штангой)
+$barbellReverseWristCurl = Exercise::create([
+    'name' => 'Обратные сгибания запястий со штангой',
+    'video_url' => '/video/exercises/Barbell_Reverse_Wrist_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Barbell_Reverse_Wrist_Curl.jpg',
+    'min_weight_male' => 20,
+    'max_weight_male' => 60,
+    'min_weight_female' => 10,
+    'max_weight_female' => 30,
+    'description' => 'Обратные сгибания запястий со штангой — это упражнение, направленное на развитие мышц предплечий, особенно разгибателей запястий. Выполняется с использованием штанги, что позволяет эффективно укреплять мышцы предплечий, улучшать их выносливость и силу. Регулярное выполнение этого упражнения способствует улучшению хватки и общей функциональной силы рук, что полезно как для спортивных достижений, так и для повседневной активности.',
+]);
+
+// Связь с мышцами
+$arms = MusclePercentage::where('name', 'Руки')->first();
+if ($arms) {
+    $barbellReverseWristCurl->musclePercentages()->attach($arms->id, ['percentages' => 100]);
+}
+
+$filters = ['Предплечья', 'Бицепс', 'Трапеции'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $barbellReverseWristCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная позиция запястий: Держите запястья прямо, избегая их прогиба или чрезмерного сгибания, чтобы максимально нагрузить целевые мышцы и избежать травм.',
+    'Контролируемые движения: Выполняйте сгибания и разгибания медленно и плавно, концентрируясь на работе мышц предплечий, а не на рывках с помощью инерции.',
+    'Поддержка предплечий: Выполняйте упражнение сидя, поддерживая предплечья на скамье или коленях для стабильности и предотвращения раскачивания тела.',
+    'Выбор подходящего веса: Начинайте с меньшего веса, постепенно увеличивая нагрузку по мере укрепления мышц предплечий, чтобы избежать перегрузки и травм.',
+    'Дыхание: Не задерживайте дыхание; выдыхайте при подъёме штанги и вдыхайте при опускании, поддерживая ритмичное дыхание на протяжении всего подхода.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $barbellReverseWristCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 2: Cable Wrist Curl (Кабельные сгибания запястий)
+$cableWristCurl = Exercise::create([
+    'name' => 'Кабельные сгибания запястий',
+    'video_url' => '/video/exercises/Cable_Wrist_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Cable_Wrist_Curl.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 40,
+    'min_weight_female' => 5,
+    'max_weight_female' => 20,
+    'description' => 'Кабельные сгибания запястий — это изолирующее упражнение, направленное на развитие мышц предплечий, особенно сгибателей запястий. Выполняется с использованием тренажёра с тросом, что обеспечивает постоянное натяжение мышц на протяжении всего движения. Это упражнение помогает укрепить хват, улучшить выносливость и увеличить силу предплечий, что важно для выполнения различных упражнений и повседневных задач.',
+]);
+
+// Связь с мышцами
+$muscle = MusclePercentage::where('name', 'Руки')->first();
+if ($muscle) {
+    $cableWristCurl->musclePercentages()->attach($muscle->id, ['percentages' => 100]);
+}
+
+// Связь с фильтрами
+$filters = ['Предплечья', 'Бицепс'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $cableWristCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Положение тела: Сидите на скамье с прямой спиной, закрепите предплечья на бедрах или на специальной подставке для устойчивости.',
+    'Правильный захват: Держите рукоятку тренажёра или гриф параллельно полу, ладони направлены вверх.',
+    'Контроль движения: Медленно сгибайте запястья, поднимая вес максимально высоко, затем плавно опускайте его обратно, избегая рывков.',
+    'Дыхание: Вдыхайте при опускании веса и выдыхайте при его подъёме.',
+    'Избегайте перегрузки: Начинайте с небольших весов, чтобы избежать перенапряжения сухожилий и связок, постепенно увеличивая нагрузку по мере укрепления мышц.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $cableWristCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 3: Wrist Roller (Каталка для запястий)
+$wristRoller = Exercise::create([
+    'name' => 'Каталка для запястий',
+    'video_url' => '/video/exercises/Wrist_Roller.mp4',
+    'thumbnail_url' => '/images/thumbnail/Wrist_Roller.jpg',
+    'min_weight_male' => 2,
+    'max_weight_male' => 10,
+    'min_weight_female' => 1,
+    'max_weight_female' => 5,
+    'description' => 'Каталка для запястий — это упражнение, направленное на развитие силы и выносливости мышц предплечий и кистей. С помощью специального устройства, состоящего из рукояти, верёвки и грузов, выполняется вращательное движение, которое способствует укреплению мышц предплечий, улучшению хватки и стабилизации кистей и плечевого пояса.',
+]);
+
+// Связь с мышцами
+$muscles = [
+    ['name' => 'Руки', 'percentages' => 90],
+    ['name' => 'Плечи', 'percentages' => 10],
+];
+foreach ($muscles as $m) {
+    $muscle = MusclePercentage::where('name', $m['name'])->first();
+    if ($muscle) {
+        $wristRoller->musclePercentages()->attach($muscle->id, ['percentages' => $m['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Предплечья', 'Бицепс', 'Трицепс', 'Плечи'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $wristRoller->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная осанка: Держите спину прямо и избегайте раскачивания корпуса во время выполнения упражнения.',
+    'Постепенная нагрузка: Начинайте с меньшего веса и постепенно увеличивайте нагрузку, чтобы предотвратить перенапряжение мышц.',
+    'Контроль движения: Выполняйте движение медленно и контролируемо, концентрируясь на работе предплечий.',
+    'Равномерное наматывание: Убедитесь, что верёвка равномерно намотана на рукоять, чтобы избежать перекоса и дисбаланса.',
+    'Восстановление: Делайте перерывы между подходами для восстановления мышц.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $wristRoller->tips()->attach($tip->id);
+}
+
+// Упражнение 4: Cable Reverse Wrist Curl (Обратное сгибание запястий на блоке)
+$cableReverseWristCurl = Exercise::create([
+    'name' => 'Обратное сгибание запястий на блоке',
+    'video_url' => '/video/exercises/Cable_Reverse_Wrist_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Cable_Reverse_Wrist_Curl.jpg',
+    'min_weight_male' => 5,
+    'max_weight_male' => 20,
+    'min_weight_female' => 2,
+    'max_weight_female' => 10,
+    'description' => 'Обратное сгибание запястий на блоке — это упражнение, направленное на развитие разгибателей предплечий. Оно помогает улучшить силу хвата и развить мышцы предплечий. Упражнение выполняется с использованием троса на блоке, что обеспечивает постоянное натяжение мышц в течение всего движения.',
+]);
+
+// Связь с мышцами
+$muscles = [
+    ['name' => 'Руки', 'percentages' => 80],
+    ['name' => 'Плечи', 'percentages' => 15],
+    ['name' => 'Спина', 'percentages' => 5],
+];
+foreach ($muscles as $m) {
+    $muscle = MusclePercentage::where('name', $m['name'])->first();
+    if ($muscle) {
+        $cableReverseWristCurl->musclePercentages()->attach($muscle->id, ['percentages' => $m['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Предплечья', 'Бицепс', 'Трицепс'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $cableReverseWristCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Держите движение под контролем, избегайте рывков.',
+    'Не используйте чрезмерный вес, чтобы избежать перенапряжения запястий.',
+    'Сохраняйте нейтральное положение спины и плеч.',
+    'Избегайте раскачивания тела для обеспечения максимальной эффективности упражнения.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $cableReverseWristCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 5: EZ Bar Seated Wrist Curl (Сгибание запястий сидя с EZ-штангой)
+$ezBarSeatedWristCurl = Exercise::create([
+    'name' => 'Сгибание запястий сидя с EZ-штангой',
+    'video_url' => '/video/exercises/EZ_Bar_Seated_Wrist_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/EZ_Bar_Seated_Wrist_Curl.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 50,
+    'min_weight_female' => 5,
+    'max_weight_female' => 30,
+    'description' => 'Сгибание запястий сидя с EZ-штангой — это упражнение, направленное на развитие мышц предплечий. Оно помогает увеличить силу и выносливость кистей и предплечий, что полезно как для спортивных целей, так и для повседневной активности. Упражнение выполняется в сидячем положении с опорой предплечий на скамье, что позволяет изолировать работу запястий и минимизировать участие других мышц.',
+]);
+
+// Связь с мышцами
+$muscles = [
+    ['name' => 'Руки', 'percentages' => 80],
+    ['name' => 'Пресс', 'percentages' => 20],
+];
+foreach ($muscles as $m) {
+    $muscle = MusclePercentage::where('name', $m['name'])->first();
+    if ($muscle) {
+        $ezBarSeatedWristCurl->musclePercentages()->attach($muscle->id, ['percentages' => $m['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Предплечья', 'Бицепс', 'Трицепс', 'Плечи'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $ezBarSeatedWristCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная постановка рук: Держите EZ-штангу таким образом, чтобы запястья находились в нейтральном положении, избегая чрезмерного сгибания или разгибания.',
+    'Контроль движения: Выполняйте сгибание и разгибание запястий медленно и контролируемо, избегая рывков для максимальной эффективности нагрузки.',
+    'Полный диапазон движений: Полностью сгибайте и разгибайте запястья, не сокращая амплитуду движения, чтобы обеспечить полный рабочий цикл мышцы.',
+    'Фиксация предплечий: Убедитесь, что предплечья полностью опираются на скамью, чтобы избежать использования других мышц для стабилизации.',
+    'Постепенное увеличение веса: Начинайте с легкого веса, постепенно увеличивая нагрузку по мере укрепления мышц, чтобы избежать травм.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $ezBarSeatedWristCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 6: EZ Bar Seated Wrist Reverse Curl (Обратное сгибание запястья на скамье с EZ-баром)
+$ezBarSeatedWristReverseCurl = Exercise::create([
+    'name' => 'Обратное сгибание запястья на скамье с EZ-баром',
+    'video_url' => '/video/exercises/EZ_Bar_Seated_Wrist_Reverse_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/EZ_Bar_Seated_Wrist_Reverse_Curl.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 40,
+    'min_weight_female' => 5,
+    'max_weight_female' => 20,
+    'description' => 'Обратное сгибание запястья на скамье с EZ-баром направлено на развитие мышц предплечий, особенно мышц-разгибателей запястий и брахиорадиалиса. Упражнение выполняется сидя на скамье, что позволяет стабилизировать тело и изолировать работу предплечий. Использование EZ-бара снижает напряжение на запястья, делая упражнение более комфортным и безопасным по сравнению с прямым грифом. Регулярное выполнение этого упражнения способствует укреплению кистей, улучшению выносливости и повышению общей силы рук.',
+]);
+
+// Связь с мышцами
+$muscles = [
+    ['name' => 'Руки', 'percentages' => 80],
+    ['name' => 'Плечи', 'percentages' => 10],
+    ['name' => 'Спина', 'percentages' => 10],
+];
+foreach ($muscles as $m) {
+    $muscle = MusclePercentage::where('name', $m['name'])->first();
+    if ($muscle) {
+        $ezBarSeatedWristReverseCurl->musclePercentages()->attach($muscle->id, ['percentages' => $m['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Предплечья', 'Бицепс', 'Трицепс'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $ezBarSeatedWristReverseCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная позиция: Сидите на скамье с устойчивой опорой для предплечий, ладони направлены вверх. Убедитесь, что ваши предплечья полностью поддерживаются, чтобы избежать участия других мышц.',
+    'Контроль движения: Поднимайте и опускайте EZ-бар медленно и контролируемо, избегая рывков и резких движений. Это поможет максимизировать нагрузку на целевые мышцы и снизить риск травм.',
+    'Полный диапазон движений: Полностью сгибайте и разгибайте запястья, достигая максимальной амплитуды каждого повторения для полного вовлечения мышц.',
+    'Дыхание: Вдыхайте при опускании веса и выдыхайте при подъеме, поддерживая ритмичное дыхание на протяжении всего упражнения.',
+    'Избегайте фиксации: Не задерживайте дыхание и не фиксируйте тело, чтобы предотвратить лишнее напряжение в спине и плечах.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $ezBarSeatedWristReverseCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 1: Barbell Shrug (Шраги со штангой)
+$barbellShrug = Exercise::create([
+    'name' => 'Шраги со штангой',
+    'video_url' => '/video/exercises/Barbell_Shrug.mp4',
+    'thumbnail_url' => '/images/thumbnail/Barbell_Shrug.jpg',
+    'min_weight_male' => 40,
+    'max_weight_male' => 160,
+    'min_weight_female' => 20,
+    'max_weight_female' => 80,
+    'description' => 'Шраги со штангой — это упражнение, направленное на развитие трапециевидных мышц спины. Выполняется путем подъема штанги за счет сокращения трапециевидных мышц, без сгибания локтей. Это упражнение помогает увеличить силу и объем трапеций, улучшить осанку и общую силу верхней части тела. Шраги со штангой также способствуют укреплению плечевого пояса и предплечий, что важно для выполнения других упражнений и повседневных физических задач.',
+]);
+
+// Связь с мышцами напряжения
+$muscles = [
+    ['name' => 'Руки', 'percentages' => 90],
+    ['name' => 'Плечи', 'percentages' => 10],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $barbellShrug->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Трапеции', 'Плечи', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $barbellShrug->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная стойка: Стоять прямо, ноги на ширине плеч, спина ровная. Избегайте наклона вперед или прогиба спины.',
+    'Контроль движений: Поднимайте плечи максимально вверх, сокращая трапециевидные мышцы, и медленно опускайте их обратно, контролируя движение.',
+    'Фиксированные локти: Держите локти слегка согнутыми и неподвижными во время всего упражнения, чтобы сосредоточить нагрузку на трапециях.',
+    'Избегайте рывков: Не используйте инерцию для подъема штанги. Все движения должны быть плавными и контролируемыми.',
+    'Дыхание: Вдыхайте при опускании штанги и выдыхайте при подъеме, поддерживая ритм дыхания для стабильности и эффективности упражнения.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $barbellShrug->tips()->attach($tip->id);
+}
+
+// Упражнение 2: Dumbbell Shrug (Шраги с гантелями)
+$dumbbellShrug = Exercise::create([
+    'name' => 'Шраги с гантелями',
+    'video_url' => '/video/exercises/Dumbbell_Shrug.mp4',
+    'thumbnail_url' => '/images/thumbnail/Dumbbell_Shrug.jpg',
+    'min_weight_male' => 20,
+    'max_weight_male' => 50,
+    'min_weight_female' => 10,
+    'max_weight_female' => 30,
+    'description' => 'Шраги с гантелями — это упражнение, направленное на развитие трапециевидных мышц, которые расположены в верхней части спины и шее. Выполняя шраги, вы укрепляете верхнюю часть спины, улучшаете осанку и повышаете силу плечевого пояса. Это упражнение также способствует увеличению мышечной массы и выносливости в области шеи и плеч.',
+]);
+
+// Связь с мышцами напряжения
+$muscles = [
+    ['name' => 'Плечи', 'percentages' => 60],
+    ['name' => 'Спина', 'percentages' => 40],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $dumbbellShrug->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Трапеции', 'Плечи', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $dumbbellShrug->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная техника: Стоя прямо, ноги на ширине плеч, держите гантели по бокам с прямыми руками.',
+    'Избегайте рывков: Поднимайте плечи медленно и контролируемо, избегая резких движений и раскачиваний тела.',
+    'Полный диапазон движения: Поднимайте плечи максимально вверх, задерживайтесь на мгновение в верхней точке сокращения, затем медленно опускайте их вниз.',
+    'Дыхание: Вдыхайте при опускании гантелей и выдыхайте при подъёме плеч.',
+    'Фокус на мышцах: Концентрируйтесь на работе трапециевидных мышц, избегайте использования других мышц для подъёма веса.',
+    'Без перенапряжения шеи: Не поднимайте плечи слишком высоко, чтобы избежать излишнего напряжения в шее.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $dumbbellShrug->tips()->attach($tip->id);
+}
+
+// Упражнение 3: Cable Shrug (Шраги на блоке)
+$cableShrug = Exercise::create([
+    'name' => 'Шраги на блоке',
+    'video_url' => '/video/exercises/Cable_Shrug.mp4',
+    'thumbnail_url' => '/images/thumbnail/Cable_Shrug.jpg',
+    'min_weight_male' => 20,
+    'max_weight_male' => 80,
+    'min_weight_female' => 10,
+    'max_weight_female' => 40,
+    'description' => 'Шраги на блоке — это упражнение, направленное главным образом на трапециевидные мышцы, выполняемое с использованием тренажера с тросом. Оно способствует развитию силы шеи и верхней части спины, улучшению осанки и повышению стабильности плечевых суставов. Регулярное выполнение шрагов на блоке помогает создать мощную и хорошо развитую верхнюю часть тела.',
+]);
+
+// Связь с мышцами напряжения
+$muscles = [
+    ['name' => 'Спина', 'percentages' => 80],
+    ['name' => 'Плечи', 'percentages' => 20],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $cableShrug->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Трапеции', 'Плечи', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $cableShrug->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная техника: Держите спину прямой и избегайте прогиба во время выполнения упражнения.',
+    'Контролируемое движение: Поднимайте плечи медленно и контролируемо, максимально сокращая трапециевидные мышцы в верхней точке.',
+    'Избегайте раскачивания: Не используйте инерцию и не раскачивайтесь, чтобы нагрузка оставалась на целевых мышцах.',
+    'Положение рук: Держите локти слегка согнутыми и старайтесь не сгибать руки во время шрагов.',
+    'Дыхание: Вдыхайте при опускании плеч и выдыхайте при подъёме для поддержания ритма и стабильности.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $cableShrug->tips()->attach($tip->id);
+}
+
+// Упражнение 4: Barbell Upright Row (Тяга штанги к подбородку)
+$barbellUprightRow = Exercise::create([
+    'name' => 'Тяга штанги к подбородку',
+    'video_url' => '/video/exercises/Barbell_Upright_Row.mp4',
+    'thumbnail_url' => '/images/thumbnail/Barbell_Upright_Row.jpg',
+    'min_weight_male' => 40,
+    'max_weight_male' => 100,
+    'min_weight_female' => 20,
+    'max_weight_female' => 60,
+    'description' => 'Тяга штанги к подбородку — это упражнение, направленное на развитие плечевых мышц, трапеций и бицепсов. Выполняется стоя, при этом штанга поднимается вертикально к подбородку, удерживая локти выше уровня рук. Это упражнение способствует увеличению силы и массы плечевого пояса, улучшению осанки и укреплению силы захвата.',
+]);
+
+// Связь с мышцами напряжения
+$muscles = [
+    ['name' => 'Плечи', 'percentages' => 50],
+    ['name' => 'Руки', 'percentages' => 50],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $barbellUprightRow->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Плечи', 'Трапеции', 'Бицепс', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $barbellUprightRow->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная осанка: Держите спину прямо и избегайте прогиба корпуса во время выполнения упражнения.',
+    'Угол локтей: Ведите локти вверх под углом примерно 30 градусов от тела, чтобы максимально задействовать дельтовидные мышцы.',
+    'Контроль движения: Выполняйте движение плавно и контролируемо, избегая резких рывков и раскачивания тела.',
+    'Дыхание: Выдыхайте при подъёме штанги и вдыхайте при её опускании.',
+    'Выбор веса: Начинайте с меньшего веса, постепенно увеличивая нагрузку по мере укрепления мышц, чтобы избежать травм.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $barbellUprightRow->tips()->attach($tip->id);
+}
+
+// Упражнение 5: Dumbbell Upright Row (Тяга гантелей к подбородку)
+$dumbbellUprightRow = Exercise::create([
+    'name' => 'Тяга гантелей к подбородку',
+    'video_url' => '/video/exercises/Dumbbell_Upright_Row.mp4',
+    'thumbnail_url' => '/images/thumbnail/Dumbbell_Upright_Row.jpg',
+    'min_weight_male' => 20,
+    'max_weight_male' => 50,
+    'min_weight_female' => 10,
+    'max_weight_female' => 30,
+    'description' => 'Тяга гантелей к подбородку — это упражнение, направленное на развитие плечевых мышц и трапециевидных мышц спины. Выполняется с помощью гантелей, которые поднимаются вертикально до уровня подбородка, сохраняя локти слегка согнутыми. Это упражнение способствует укреплению верхней части тела, улучшению осанки и увеличению общей мышечной массы плечевого пояса.',
+]);
+
+// Связь с мышцами напряжения
+$muscles = [
+    ['name' => 'Плечи', 'percentages' => 50],
+    ['name' => 'Руки', 'percentages' => 50],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $dumbbellUprightRow->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Плечи', 'Трапеции', 'Бицепс'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $dumbbellUprightRow->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная постановка тела: Держите спину прямой, ноги на ширине плеч, слегка согнуты в коленях для устойчивости.',
+    'Контроль движения: Поднимайте гантели медленно и контролируемо, избегая резких рывков, чтобы минимизировать риск травм плечевых суставов.',
+    'Положение локтей: Локти должны быть слегка согнуты и направлены вверх во время подъема гантелей, что помогает эффективно задействовать целевые мышцы.',
+    'Дыхание: Выдыхайте при подъеме гантелей и вдыхайте при опускании, поддерживая равномерное дыхание на протяжении всего упражнения.',
+    'Выбор веса: Начинайте с минимального веса, чтобы освоить технику выполнения, и постепенно увеличивайте нагрузку по мере укрепления мышц.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $dumbbellUprightRow->tips()->attach($tip->id);
+}
+
+// Упражнение 6: Kettlebell Shrug (Шраги с гирей)
+$kettlebellShrug = Exercise::create([
+    'name' => 'Шраги с гирей',
+    'video_url' => '/video/exercises/Kettlebell_Shrug.mp4',
+    'thumbnail_url' => '/images/thumbnail/Kettlebell_Shrug.jpg',
+    'min_weight_male' => 16,
+    'max_weight_male' => 32,
+    'min_weight_female' => 8,
+    'max_weight_female' => 16,
+    'description' => 'Шраги с гирей — это упражнение, направленное на развитие трапециевидных мышц, а также плеч и предплечий. Выполняется стоя с гирей в одной или обеих руках, что способствует укреплению верхней части спины и шеи. Регулярное выполнение шрагов с гирей улучшает осанку, увеличивает силу верхней части тела и способствует общей физической выносливости.',
+]);
+
+// Связь с мышцами напряжения
+$muscles = [
+    ['name' => 'Спина', 'percentages' => 60],
+    ['name' => 'Плечи', 'percentages' => 30],
+    ['name' => 'Руки', 'percentages' => 10],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $kettlebellShrug->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Трапеции', 'Плечи', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $kettlebellShrug->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная стойка: Стойте прямо, ноги на ширине плеч, держа гирю в одной или обеих руках. Держите корпус устойчивым и избегайте раскачивания.',
+    'Техника подъема: Поднимайте плечи вверх к ушам максимально высоко, задержитесь на вершине движения на 1-2 секунды, затем медленно опустите их обратно в исходное положение.',
+    'Контроль движения: Держите руки прямыми и избегайте сгибания локтей. Не используйте инерцию или рывки для подъема гири — движение должно быть плавным и контролируемым.',
+    'Дыхание: Вдыхайте при опускании гирь и выдыхайте при подъеме плеч.',
+    'Избегайте лишнего напряжения: Не наклоняйтесь вперед или назад и не допускайте прогиба в спине. Сосредоточьтесь на работе трапециевидных мышц.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $kettlebellShrug->tips()->attach($tip->id);
+}
+
+// Упражнение 7: Lever Shrug (Шраги на тренажёре)
+$leverShrug = Exercise::create([
+    'name' => 'Шраги на тренажёре',
+    'video_url' => '/video/exercises/Lever_Shrug.mp4',
+    'thumbnail_url' => '/images/thumbnail/Lever_Shrug.jpg',
+    'min_weight_male' => 40,
+    'max_weight_male' => 160,
+    'min_weight_female' => 20,
+    'max_weight_female' => 80,
+    'description' => 'Шраги на тренажёре — это упражнение, направленное на развитие трапециевидных мышц верхней части спины и плеч. Выполняется на специальном тренажёре с использованием рычага, что позволяет контролировать движение и равномерно распределять нагрузку. Шраги способствуют улучшению осанки, укреплению плечевого пояса и повышению общей силы верхней части тела.',
+]);
+
+// Связь с мышцами напряжения
+$muscles = [
+    ['name' => 'Спина', 'percentages' => 60],
+    ['name' => 'Плечи', 'percentages' => 30],
+    ['name' => 'Руки', 'percentages' => 10],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $leverShrug->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Верхняя часть спины', 'Трапеции', 'Плечи'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $leverShrug->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная стойка: Встаньте прямо, ноги на ширине плеч, ступни устойчиво стоят на платформе тренажёра.',
+    'Контроль движения: Медленно поднимайте плечи вверх, максимально сокращая трапециевидные мышцы, затем плавно опускайте их вниз без рывков.',
+    'Дыхание: Вдыхайте при опускании плеч и выдыхайте при подъёме.',
+    'Позиция рук: Держите руки слегка согнутыми в локтях, избегайте полного выпрямления, чтобы сохранить напряжение в трапециях.',
+    'Фиксация корпуса: Не допускайте прогиба в спине; корпус должен оставаться стабильным на протяжении всего упражнения.',
+    'Темп выполнения: Выполняйте упражнение в умеренном темпе, избегая слишком быстрого движения, чтобы сохранить контроль и эффективность нагрузки.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $leverShrug->tips()->attach($tip->id);
+}
+
+// Упражнение 8: Trap Bar Standing Shrug (Шраги с трап-баром)
+$trapBarStandingShrug = Exercise::create([
+    'name' => 'Шраги с трап-баром',
+    'video_url' => '/video/exercises/Trap_Bar_Standing_Shrug.mp4',
+    'thumbnail_url' => '/images/thumbnail/Trap_Bar_Standing_Shrug.jpg',
+    'min_weight_male' => 40,
+    'max_weight_male' => 120,
+    'min_weight_female' => 20,
+    'max_weight_female' => 80,
+    'description' => 'Шраги с трап-баром — это упражнение, направленное на развитие трапециевидных мышц спины и плеч. Использование трап-бара позволяет равномерно распределить нагрузку и снизить напряжение в запястьях по сравнению с традиционной штангой. Упражнение способствует увеличению силы и массы верхней части спины, улучшению осанки и общей силы плечевого пояса. Оно также помогает в развитии стабилизационных мышц, что положительно влияет на выполнение других упражнений и повседневную активность.',
+]);
+
+// Связь с мышцами напряжения
+$muscles = [
+    ['name' => 'Спина', 'percentages' => 70],
+    ['name' => 'Плечи', 'percentages' => 20],
+    ['name' => 'Руки', 'percentages' => 10],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $trapBarStandingShrug->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Трапеции', 'Верхняя часть спины', 'Бицепс'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $trapBarStandingShrug->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная постановка тела: Держите спину прямой и избегайте прогиба в пояснице. Ноги должны стоять на ширине плеч для стабильности.',
+    'Диапазон движения: Поднимайте трап-бар только до уровня плеч. Не поднимайте его выше, чтобы избежать излишней нагрузки на шеи.',
+    'Фокус на мышцах: Сосредоточьтесь на сокращении трапециевидных мышц при подъёме веса, а не на рывках или использовании инерции.',
+    'Контроль веса: Выбирайте такой вес, который позволяет выполнять упражнение с правильной техникой. Плавные и контролируемые движения предотвращают травмы.',
+    'Дыхание: Вдыхайте при опускании трап-бара и выдыхайте при подъёме, поддерживая стабильное дыхание на протяжении всего упражнения.',
+    'Разминка: Перед выполнением шрагов с трап-баром обязательно разогрейте мышцы плеч и спины, чтобы подготовить их к нагрузке и снизить риск травм.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $trapBarStandingShrug->tips()->attach($tip->id);
+}
+
+// Упражнение 9: Barbell Overhead Shrug (Шраги со штангой над головой)
+$barbellOverheadShrug = Exercise::create([
+    'name' => 'Шраги со штангой над головой',
+    'video_url' => '/video/exercises/Barbell_Overhead_Shrug.mp4',
+    'thumbnail_url' => '/images/thumbnail/Barbell_Overhead_Shrug.jpg',
+    'min_weight_male' => 40,
+    'max_weight_male' => 100,
+    'min_weight_female' => 20,
+    'max_weight_female' => 60,
+    'description' => 'Шраги со штангой над головой — это упражнение, направленное на развитие плечевых мышц и трапеций. Выполняется путем удержания штанги над головой с прямыми руками и последующего подъема плеч вверх. Это упражнение способствует укреплению верхней части спины, улучшению осанки и повышению общей силы плечевого пояса.',
+]);
+
+// Связь с мышцами напряжения
+$muscles = [
+    ['name' => 'Плечи', 'percentages' => 60],
+    ['name' => 'Спина', 'percentages' => 40],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $barbellOverheadShrug->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Трапеции', 'Плечи', 'Широчайшие'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $barbellOverheadShrug->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная стойка: Держите корпус прямо, ноги на ширине плеч, чтобы обеспечить стабильность и избежать прогиба в спине.',
+    'Устойчивый хват: Используйте устойчивый хват штанги, чтобы предотвратить её скольжение и обеспечить контроль над движением.',
+    'Контролируемые движения: Поднимайте плечи медленно и плавно, избегая резких рывков и использования инерции.',
+    'Стабилизация: Сохраняйте штангу над головой на протяжении всего упражнения, стабилизируя тело и минимизируя движение других частей тела.',
+    'Дыхание: Вдыхайте при опускании штанги и выдыхайте при подъеме плеч, поддерживая ритмичное дыхание.',
+    'Разминка: Перед выполнением шрагов обязательно проведите разминку плеч и верхней части спины, чтобы подготовить мышцы и снизить риск травм.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $barbellOverheadShrug->tips()->attach($tip->id);
+}
+
+// Упражнение 1: Cable Triceps Pushdown (Разгибание рук на блоке)
+$cableTricepsPushdown = Exercise::create([
+    'name' => 'Разгибание рук на блоке',
+    'video_url' => '/video/exercises/Cable_Triceps_Pushdown.mp4',
+    'thumbnail_url' => '/images/thumbnail/Cable_Triceps_Pushdown.jpg',
+    'min_weight_male' => 20,
+    'max_weight_male' => 50,
+    'min_weight_female' => 10,
+    'max_weight_female' => 25,
+    'description' => 'Разгибание рук на блоке — это изолирующее упражнение, направленное на развитие трицепсов. Выполняется с использованием каната или прямой рукоятки, закрепленной на верхнем блоке тренажера. Во время выполнения упражнения трицепсы активно работают, способствуя их росту и укреплению. Это упражнение также задействует предплечья и стабилизирующие мышцы плеч, обеспечивая баланс и контроль движений.',
+]);
+
+// Связь с мышцами
+$muscles = [
+    ['name' => 'Руки', 'percentages' => 95],
+    ['name' => 'Плечи', 'percentages' => 5],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $cableTricepsPushdown->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Трицепс', 'Предплечья', 'Плечи'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $cableTricepsPushdown->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Позиция тела: Держите корпус прямо, слегка наклонившись вперёд от талии. Локти должны оставаться прижатыми к бокам и неподвижными на протяжении всего упражнения.',
+    'Контроль движения: Медленно опускайте рукоятку, полностью выпрямляя руки. Избегайте рывков и резких движений, чтобы максимально задействовать трицепсы.',
+    'Сокращение мышц: В конце каждого повторения сосредоточьтесь на полном сокращении трицепсов, удерживая напряжение на секунду перед возвращением в исходное положение.',
+    'Дыхание: Выдыхайте при выжимании рукоятки вниз и вдыхайте при возвращении в исходное положение, поддерживая ритмичное дыхание.',
+    'Выбор веса: Начинайте с минимального веса, чтобы освоить технику выполнения, и постепенно увеличивайте нагрузку по мере укрепления мышц.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $cableTricepsPushdown->tips()->attach($tip->id);
+}
+
+// Упражнение 2: Barbell Close Grip Bench Press (Жим штанги узким хватом лёжа)
+$barbellCloseGripBenchPress = Exercise::create([
+    'name' => 'Жим штанги узким хватом лёжа',
+    'video_url' => '/video/exercises/Barbell_Close_Grip_Bench_Press.mp4',
+    'thumbnail_url' => '/images/thumbnail/Barbell_Close_Grip_Bench_Press.jpg',
+    'min_weight_male' => 60,
+    'max_weight_male' => 160,
+    'min_weight_female' => 30,
+    'max_weight_female' => 80,
+    'description' => 'Жим штанги узким хватом лёжа — это силовое упражнение, направленное преимущественно на развитие трицепсов, а также грудных мышц и плеч. Выполняется лёжа на скамье с узким хватом на штанге, что позволяет лучше изолировать трицепсы и снизить нагрузку на грудные мышцы по сравнению с классическим жимом штанги.',
+]);
+
+// Связь с мышцами
+$muscles = [
+    ['name' => 'Руки', 'percentages' => 50],
+    ['name' => 'Грудь', 'percentages' => 30],
+    ['name' => 'Плечи', 'percentages' => 20],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $barbellCloseGripBenchPress->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Трицепс', 'Грудь', 'Плечи'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $barbellCloseGripBenchPress->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Убедитесь, что хват на штанге достаточно узкий, примерно на ширине плеч или чуть уже.',
+    'Держите локти близко к телу во время выполнения упражнения, чтобы максимизировать нагрузку на трицепсы.',
+    'Контролируйте движение штанги, опуская её до уровня груди и полностью выжимая вверх, не блокируя локтевые суставы в верхней точке.',
+    'Не прогибайте спину и сохраняйте устойчивое положение корпуса на протяжении всего упражнения.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $barbellCloseGripBenchPress->tips()->attach($tip->id);
+}
+
+// Упражнение 3: Cable Overhead Triceps Extension (Разгибание рук на блоке за головой)
+$cableOverheadTricepsExtension = Exercise::create([
+    'name' => 'Разгибание рук на блоке за головой',
+    'video_url' => '/video/exercises/Cable_Overhead_Triceps_Extension.mp4',
+    'thumbnail_url' => '/images/thumbnail/Cable_Overhead_Triceps_Extension.jpg',
+    'min_weight_male' => 20,
+    'max_weight_male' => 40,
+    'min_weight_female' => 10,
+    'max_weight_female' => 25,
+    'description' => 'Разгибание рук на блоке за головой — изолирующее упражнение, направленное на развитие трицепсов. Выполняется с использованием кабельной машины, что обеспечивает постоянное напряжение мышцы на протяжении всего движения. Упражнение помогает улучшить силу и массу трицепсов, а также способствует улучшению общей эстетики рук. Дополнительно задействуются плечевые мышцы и мышцы кора для стабилизации тела во время выполнения.',
+]);
+
+// Связь с мышцами
+$muscles = [
+    ['name' => 'Руки', 'percentages' => 70],
+    ['name' => 'Плечи', 'percentages' => 20],
+    ['name' => 'Пресс', 'percentages' => 10],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $cableOverheadTricepsExtension->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Трицепс', 'Плечи', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $cableOverheadTricepsExtension->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная позиция тела: Встаньте прямо, ноги на ширине плеч. Локти должны быть направлены вверх и оставаться неподвижными в течение всего упражнения.',
+    'Контроль движения: Медленно опускайте рукоять за голову, максимально растягивая трицепсы, затем плавно возвращайте её в исходное положение, полностью выпрямляя руки.',
+    'Избегайте раскачивания: Сохраняйте корпус стабильным, избегайте раскачивания тела для минимизации нагрузки на спину и обеспечение максимальной эффективности упражнения.',
+    'Дыхание: Вдыхайте при опускании рукояти и выдыхайте при разгибании рук.',
+    'Выбор веса: Начинайте с легкого веса, чтобы освоить технику выполнения, постепенно увеличивая нагрузку по мере укрепления мышц.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $cableOverheadTricepsExtension->tips()->attach($tip->id);
+}
+
+// Упражнение 4: Barbell Lying Triceps Extension Skull Crusher (Французский жим со штангой лёжа)
+$barbellLyingTricepsExtension = Exercise::create([
+    'name' => 'Французский жим со штангой лёжа',
+    'video_url' => '/video/exercises/Barbell_Lying_Triceps_Extension_Skull_Crusher.mp4',
+    'thumbnail_url' => '/images/thumbnail/Barbell_Lying_Triceps_Extension_Skull_Crusher.jpg',
+    'min_weight_male' => 30,
+    'max_weight_male' => 80,
+    'min_weight_female' => 15,
+    'max_weight_female' => 40,
+    'description' => 'Французский жим со штангой лёжа — изолирующее упражнение, направленное на развитие трицепсов. Выполняется лёжа на скамье с штангой, которую необходимо опускать к лбу (отсюда и название "Skull Crusher") и затем выжимать обратно, активно задействуя трицепсы для подъёма и опускания веса. Это упражнение эффективно для наращивания силы и массы трицепсов, а также улучшения общей функциональной силы рук.',
+]);
+
+// Связь с мышцами
+$muscles = [
+    ['name' => 'Руки', 'percentages' => 75],
+    ['name' => 'Плечи', 'percentages' => 15],
+    ['name' => 'Грудь', 'percentages' => 10],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $barbellLyingTricepsExtension->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Трицепс', 'Плечи', 'Грудь'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $barbellLyingTricepsExtension->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Положение локтей: Держите локти неподвижными и близко к голове, чтобы максимально задействовать трицепсы и избежать нагрузки на плечевые суставы.',
+    'Контроль движения: Выполняйте упражнение медленно и контролируемо, избегая резких рывков штангой.',
+    'Диапазон движений: Используйте полный диапазон движения, опуская штангу до уровня лба и полностью выжимая её вверх, но без блокировки локтей в верхней точке.',
+    'Положение тела: Поддерживайте спину плоской на скамье и избегайте прогиба, чтобы минимизировать риск травм плеч и спины.',
+    'Дыхание: Вдыхайте при опускании штанги и выдыхайте при её выжимании, чтобы поддерживать стабильность корпуса и улучшить технику выполнения.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $barbellLyingTricepsExtension->tips()->attach($tip->id);
+}
+
+// Упражнение 5: Dumbbell Standing Kickback (Разгибание руки с гантелей стоя)
+$dumbbellStandingKickback = Exercise::create([
+    'name' => 'Разгибание руки с гантелей стоя',
+    'video_url' => '/video/exercises/Dumbbell_Standing_Kickback.mp4',
+    'thumbnail_url' => '/images/thumbnail/Dumbbell_Standing_Kickback.jpg',
+    'min_weight_male' => 5,
+    'max_weight_male' => 25,
+    'min_weight_female' => 3,
+    'max_weight_female' => 15,
+    'description' => 'Разгибание руки с гантелей стоя — это упражнение, направленное на развитие трицепсов. Выполняется стоя, при этом одна рука держит гантель, а локоть фиксируется близко к телу. Основное движение заключается в разгибании локтя назад, что изолирует работу трицепса. Дополнительно вовлекаются плечевые мышцы и мышцы спины для стабилизации корпуса. Это упражнение помогает увеличить силу и массу трицепсов, улучшить общую выносливость рук.',
+]);
+
+// Связь с мышцами
+$muscles = [
+    ['name' => 'Руки', 'percentages' => 70],
+    ['name' => 'Плечи', 'percentages' => 20],
+    ['name' => 'Спина', 'percentages' => 10],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $dumbbellStandingKickback->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Трицепс', 'Плечи', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $dumbbellStandingKickback->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Поддерживайте правильную осанку: Держите спину прямой и избегайте раскачивания корпуса во время выполнения упражнения.',
+    'Контролируйте движение: Выполняйте разгибание и сгибание локтя медленно и плавно, концентрируясь на сокращении трицепса.',
+    'Фиксируйте локоть: Держите локоть неподвижным и близко к телу на протяжении всего упражнения, чтобы максимально изолировать трицепс.',
+    'Выбирайте подходящий вес: Начинайте с более легких гантелей, чтобы освоить технику, и постепенно увеличивайте вес по мере роста силы.',
+    'Дышите правильно: Вдыхайте при опускании гантели и выдыхайте при разгибании руки.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $dumbbellStandingKickback->tips()->attach($tip->id);
+}
+
+// Упражнение 6: Cable Single Arm Triceps Pushdown (Тросовое разгибание трицепса одной рукой)
+$cableSingleArmTricepsPushdown = Exercise::create([
+    'name' => 'Тросовое разгибание трицепса одной рукой',
+    'video_url' => '/video/exercises/Cable_Single_Arm_Triceps_Pushdown.mp4',
+    'thumbnail_url' => '/images/thumbnail/Cable_Single_Arm_Triceps_Pushdown.jpg',
+    'min_weight_male' => 20,
+    'max_weight_male' => 60,
+    'min_weight_female' => 10,
+    'max_weight_female' => 40,
+    'description' => 'Тросовое разгибание трицепса одной рукой — это изолирующее упражнение, направленное на развитие мышц трицепса с использованием кабельного тренажера. Выполняется стоя, одна рука закреплена за рукоятью, после чего происходит разгибание предплечья вниз, с акцентом на сокращение трицепса. Упражнение помогает увеличить силу и массу трицепсов, а также улучшить общую форму рук.',
+]);
+
+// Связь с мышцами
+$muscles = [
+    ['name' => 'Руки', 'percentages' => 90],
+    ['name' => 'Плечи', 'percentages' => 5],
+    ['name' => 'Спина', 'percentages' => 5],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $cableSingleArmTricepsPushdown->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Трицепс', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $cableSingleArmTricepsPushdown->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Положение локтя: Держите локоть прижатым к телу на протяжении всего упражнения для максимальной активации трицепса.',
+    'Контроль движения: Выполняйте движение медленно и контролируемо, избегая резких рывков и использования инерции.',
+    'Диапазон движений: Используйте полный диапазон движений — полностью разгибайте руку вниз и плавно возвращайте рукоять в исходное положение.',
+    'Дыхание: Дышите равномерно: выдыхайте при разгибании руки и вдыхайте при возвращении в исходное положение.',
+    'Постановка ног: Расположите ноги на ширине плеч для устойчивости и предотвращения раскачивания тела.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $cableSingleArmTricepsPushdown->tips()->attach($tip->id);
+}
+
+// Упражнение 7: Dumbbell Lying Triceps Extension (Трицепс разгибание с гантелями лёжа)
+$dumbbellLyingTricepsExtension = Exercise::create([
+    'name' => 'Трицепс разгибание с гантелями лёжа',
+    'video_url' => '/video/exercises/Dumbbell_Lying_Triceps_Extension.mp4',
+    'thumbnail_url' => '/images/thumbnail/Dumbbell_Lying_Triceps_Extension.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 40,
+    'min_weight_female' => 5,
+    'max_weight_female' => 20,
+    'description' => 'Трицепс разгибание с гантелями лёжа — упражнение, направленное на развитие трицепсов. Выполняется лёжа на скамье с гантелями, которые сгибаются в локтях и затем выпрямляются, эффективно прорабатывая мышцы рук. Это упражнение помогает увеличить силу и массу трицепсов, улучшить общую форму рук и способствует сбалансированному развитию верхней части тела.',
+]);
+
+// Связь с мышцами
+$muscles = [
+    ['name' => 'Трицепс', 'percentages' => 85],
+    ['name' => 'Плечи', 'percentages' => 10],
+    ['name' => 'Руки', 'percentages' => 5],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $dumbbellLyingTricepsExtension->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Трицепс', 'Плечи'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $dumbbellLyingTricepsExtension->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Положение тела: Лягте на скамью, стопы устойчиво стоят на полу. Держите спину плотно прижатой к скамье.',
+    'Локти: Держите локти неподвижными и прижатыми к телу на протяжении всего упражнения, чтобы максимально нагрузить трицепсы.',
+    'Движение: Опускайте гантели медленно и контролируемо до уровня головы, затем выжимайте их вверх, полностью выпрямляя руки.',
+    'Дыхание: Выдыхайте при выпрямлении рук и вдыхайте при опускании гантелей.',
+    'Вес: Выбирайте такой вес, который позволяет выполнять упражнение с правильной техникой. Слишком большой вес может привести к неправильному выполнению и травмам.',
+    'Разминка: Перед выполнением упражнения проведите хорошую разминку для рук и плеч, чтобы подготовить мышцы к нагрузке.',
+    'Контроль: Избегайте рывков и резких движений. Выполняйте упражнение плавно и с максимальной концентрацией на трицепсах.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $dumbbellLyingTricepsExtension->tips()->attach($tip->id);
+}
+
+// Упражнение 8: Lever Triceps Extension (Разгибание трицепса на тренажёре)
+$leverTricepsExtension = Exercise::create([
+    'name' => 'Разгибание трицепса на тренажёре',
+    'video_url' => '/video/exercises/Lever_Triceps_Extension.mp4',
+    'thumbnail_url' => '/images/thumbnail/Lever_Triceps_Extension.jpg',
+    'min_weight_male' => 20,
+    'max_weight_male' => 60,
+    'min_weight_female' => 10,
+    'max_weight_female' => 40,
+    'description' => 'Разгибание трицепса на тренажёре — изолирующее упражнение, направленное на развитие мышц задней поверхности плеча (трицепсов). Выполняется с использованием специализированного тренажёра с рычагом, что обеспечивает стабильность движения и позволяет сосредоточиться на работе трицепсов. Это упражнение помогает увеличить силу и массу трицепсов, улучшить общую эстетику рук и повысить функциональную силу верхней части тела.',
+]);
+
+// Связь с мышцами
+$muscles = [
+    ['name' => 'Руки', 'percentages' => 90],
+    ['name' => 'Плечи', 'percentages' => 10],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $leverTricepsExtension->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Трицепс', 'Плечи', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $leverTricepsExtension->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная постановка тела: Сидите прямо, ноги устойчиво стоят на полу. Спина должна быть полностью поддержана спинкой тренажёра для предотвращения раскачивания.',
+    'Контроль движения: Медленно опускайте рукоятку, полностью сгибая локти, затем плавно выпрямляйте руки, концентрируясь на сокращении трицепсов.',
+    'Избегайте перегрузок: Используйте вес, который позволяет выполнять упражнение с правильной техникой. Слишком большой вес может привести к чрезмерной нагрузке на локти и плечи.',
+    'Дыхание: Выдыхайте при выпрямлении рук и вдыхайте при сгибании. Ритмичное дыхание помогает поддерживать стабильность и контроль над движением.',
+    'Минимизируйте участие других мышц: Сосредоточьтесь на работе трицепсов, избегая движения плечами или телом для дополнительного импульса.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $leverTricepsExtension->tips()->attach($tip->id);
+}
+
+// Упражнение 9: Cable Kickback (Тросовое отведение трицепса)
+$cableKickback = Exercise::create([
+    'name' => 'Тросовое отведение трицепса',
+    'video_url' => '/video/exercises/Cable_Kickback.mp4',
+    'thumbnail_url' => '/images/thumbnail/Cable_Kickback.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 25,
+    'min_weight_female' => 5,
+    'max_weight_female' => 15,
+    'description' => 'Тросовое отведение трицепса — это изолирующее упражнение, направленное на развитие трицепсов. Оно выполняется с использованием троса на блочном тренажёре, что позволяет контролировать движение и поддерживать постоянное напряжение в мышцах на протяжении всего подхода. Это упражнение способствует увеличению массы и силы трицепсов, а также улучшает общую форму рук.',
+]);
+
+// Связь с мышцами
+$muscles = [
+    ['name' => 'Руки', 'percentages' => 80],
+    ['name' => 'Плечи', 'percentages' => 10],
+    ['name' => 'Спина', 'percentages' => 5],
+    ['name' => 'Пресс', 'percentages' => 5],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $cableKickback->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Трицепс', 'Плечи'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $cableKickback->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная позиция тела: Держите корпус неподвижным, слегка наклонившись вперёд от талии. Ноги расположите на ширине плеч для устойчивости.',
+    'Контроль движения: Выполняйте упражнение медленно и плавно, избегая рывков. Полностью разгибайте руки, сокращая трицепсы в конце движения.',
+    'Дыхание: Вдыхайте при опускании троса и выдыхайте при его отведении, синхронизируя дыхание с движением.',
+    'Избегайте перегрузки: Используйте вес, который позволяет выполнять упражнение с правильной техникой. Слишком большой вес может привести к нарушению формы и снизить эффективность упражнения.',
+    'Минимизация участия других мышц: Сосредоточьтесь на работе трицепсов, избегая использования рывков или раскачиваний тела для подъёма веса.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $cableKickback->tips()->attach($tip->id);
+}
+
+// Упражнение 10: Weighted Tricep Dip (Трицепсовые отжимания с дополнительным весом)
+$weightedTricepDip = Exercise::create([
+    'name' => 'Трицепсовые отжимания с дополнительным весом',
+    'video_url' => '/video/exercises/Weighted_Tricep_Dip.mp4',
+    'thumbnail_url' => '/images/thumbnail/Weighted_Tricep_Dip.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 50,
+    'min_weight_female' => 5,
+    'max_weight_female' => 30,
+    'description' => 'Трицепсовые отжимания с дополнительным весом — это упражнение, направленное на развитие трицепсов, плечевых и грудных мышц. Выполняется на брусьях с использованием дополнительного веса, что позволяет увеличить нагрузку и стимулировать рост мышечной массы. Это упражнение также способствует улучшению силы верхней части тела и общей физической формы.',
+]);
+
+// Связь с мышцами
+$muscles = [
+    ['name' => 'Руки', 'percentages' => 50],
+    ['name' => 'Плечи', 'percentages' => 20],
+    ['name' => 'Грудь', 'percentages' => 20],
+    ['name' => 'Пресс', 'percentages' => 10],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $weightedTricepDip->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Трицепс', 'Плечи', 'Грудь', 'Пресс'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $weightedTricepDip->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Поддерживайте правильную осанку: Держите тело прямо, избегая раскачивания, чтобы максимизировать нагрузку на трицепсы и снизить риск травм.',
+    'Контролируйте движение: Медленно опускайтесь вниз до угла 90 градусов в локтях, затем мощно выжимайтесь вверх, полностью выпрямляя руки.',
+    'Используйте полный диапазон движений: Полное опускание и выжимание обеспечивают максимальную активацию мышц.',
+    'Избегайте чрезмерного прогиба спины: Сохраняйте корпус стабильным, чтобы нагрузка фокусировалась на целевых мышцах, а не на спине.',
+    'Начинайте с малого веса: Если вы новичок, начните с минимального дополнительного веса и постепенно увеличивайте его по мере укрепления мышц.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $weightedTricepDip->tips()->attach($tip->id);
+}
+
+// Упражнение 1: Cable Wide Grip Lat Pulldown (Тяга верхнего блока широким хватом)
+$cableWideGripLatPulldown = Exercise::create([
+    'name' => 'Тяга верхнего блока широким хватом',
+    'video_url' => '/video/exercises/Cable_Wide_Grip_Lat_Pulldown.mp4',
+    'thumbnail_url' => '/images/thumbnail/Cable_Wide_Grip_Lat_Pulldown.jpg',
+    'min_weight_male' => 40,
+    'max_weight_male' => 100,
+    'min_weight_female' => 20,
+    'max_weight_female' => 60,
+    'description' => 'Тяга верхнего блока широким хватом — это упражнение, направленное на развитие широчайших мышц спины, а также бицепсов и предплечий. Выполняется на тренажере с использованием широкого грифа, что позволяет максимально нагрузить верхнюю часть спины и улучшить ширину туловища. Правильная техника выполнения включает прямую спину, контроль движения и сведение лопаток в конце тяги, обеспечивая эффективную активацию целевых мышц.',
+]);
+
+// Связь с мышцами напряжения
+$spina = MusclePercentage::where('name', 'Спина')->first();
+$ruki = MusclePercentage::where('name', 'Руки')->first();
+if ($spina && $ruki) {
+    $cableWideGripLatPulldown->musclePercentages()->attach($spina->id, ['percentages' => 70]);
+    $cableWideGripLatPulldown->musclePercentages()->attach($ruki->id, ['percentages' => 30]);
+}
+
+// Связь с фильтрами
+$filters = ['Широчайшие', 'Бицепс', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $cableWideGripLatPulldown->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная стойка: Держите спину прямой и устойчиво стойте, избегая раскачивания тела.',
+    'Хват: Используйте широкий хват, расположив руки на ширине, превышающей ширину плеч.',
+    'Движение: Тяните гриф вниз к верхней части груди, сводя лопатки вместе и концентрируясь на работе мышц спины.',
+    'Контроль: Медленно и контролируемо опускайте гриф обратно, не позволяя ему резко подниматься.',
+    'Дыхание: Вдыхайте при опускании грифа и выдыхайте при его подтягивании.',
+    'Вес: Начинайте с умеренного веса, чтобы освоить технику, и постепенно увеличивайте нагрузку по мере укрепления мышц.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $cableWideGripLatPulldown->tips()->attach($tip->id);
+}
+
+// Упражнение 2: Cable Straight Arm Pulldown (Тяга нижнего блока прямыми руками)
+$cableStraightArmPulldown = Exercise::create([
+    'name' => 'Тяга нижнего блока прямыми руками',
+    'video_url' => '/video/exercises/Cable_Straight_Arm_Pulldown.mp4',
+    'thumbnail_url' => '/images/thumbnail/Cable_Straight_Arm_Pulldown.jpg',
+    'min_weight_male' => 40,
+    'max_weight_male' => 100,
+    'min_weight_female' => 20,
+    'max_weight_female' => 60,
+    'description' => 'Тяга нижнего блока прямыми руками — это упражнение, направленное на развитие широчайших мышц спины. Выполняется с помощью каната или прямой рукояти на тренажере с нижним блоком. Основная цель упражнения — растягивание и сокращение широчайших мышц, что способствует улучшению ширины и толщины спины. Также активно задействуются трицепсы, плечи и мышцы кора для стабилизации тела во время выполнения движения.',
+]);
+
+// Связь с мышцами напряжения
+$spina = MusclePercentage::where('name', 'Спина')->first();
+$ruki = MusclePercentage::where('name', 'Руки')->first();
+$plechi = MusclePercentage::where('name', 'Плечи')->first();
+$press = MusclePercentage::where('name', 'Пресс')->first();
+if ($spina && $ruki && $plechi && $press) {
+    $cableStraightArmPulldown->musclePercentages()->attach($spina->id, ['percentages' => 60]);
+    $cableStraightArmPulldown->musclePercentages()->attach($ruki->id, ['percentages' => 20]);
+    $cableStraightArmPulldown->musclePercentages()->attach($plechi->id, ['percentages' => 10]);
+    $cableStraightArmPulldown->musclePercentages()->attach($press->id, ['percentages' => 10]);
+}
+
+// Связь с фильтрами
+$filters = ['Широчайшие', 'Трицепс', 'Плечи', 'Нижняя часть спины'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $cableStraightArmPulldown->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная техника: Держите спину прямой и слегка наклонённой вперёд, избегайте прогиба в пояснице.',
+    'Полный диапазон движений: Опускайте рукоять до уровня бедер, сохраняя руки прямыми, и медленно поднимайте их обратно, контролируя движение.',
+    'Контроль скорости: Выполняйте упражнение плавно и контролируемо, избегая резких рывков.',
+    'Дыхание: Вдыхайте при опускании рукояти и выдыхайте при подъёме.',
+    'Минимизация использования инерции: Сосредоточьтесь на работе мышц спины, избегая чрезмерного использования рывков для подъёма веса.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $cableStraightArmPulldown->tips()->attach($tip->id);
+}
+
+// Упражнение 3: Lever Front Pulldown (Фронтальная тяга на блоке)
+$leverFrontPulldown = Exercise::create([
+    'name' => 'Фронтальная тяга на блоке',
+    'video_url' => '/video/exercises/Lever_Front_Pulldown.mp4',
+    'thumbnail_url' => '/images/thumbnail/Lever_Front_Pulldown.jpg',
+    'min_weight_male' => 40,
+    'max_weight_male' => 100,
+    'min_weight_female' => 20,
+    'max_weight_female' => 60,
+    'description' => 'Фронтальная тяга на блоке — это упражнение для развития мышц спины, выполняемое на специальном тренажере с блоком и тросом. Основная нагрузка приходится на широчайшие мышцы спины, а также активно задействуются бицепсы и предплечья. Упражнение способствует увеличению силы и выносливости верхней части тела, улучшению осанки и формированию ширины спины. Правильная техника выполнения обеспечивает максимальную эффективность и снижает риск травм.',
+]);
+
+// Связь с мышцами напряжения
+$spina = MusclePercentage::where('name', 'Спина')->first();
+$ruki = MusclePercentage::where('name', 'Руки')->first();
+$plechi = MusclePercentage::where('name', 'Плечи')->first();
+if ($spina && $ruki && $plechi) {
+    $leverFrontPulldown->musclePercentages()->attach($spina->id, ['percentages' => 75]);
+    $leverFrontPulldown->musclePercentages()->attach($ruki->id, ['percentages' => 20]);
+    $leverFrontPulldown->musclePercentages()->attach($plechi->id, ['percentages' => 5]);
+}
+
+// Связь с фильтрами
+$filters = ['Широчайшие', 'Бицепс', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $leverFrontPulldown->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Поддерживайте прямую спину: Держите спину ровной и слегка наклонитесь назад, чтобы избежать чрезмерной нагрузки на поясницу.',
+    'Контролируйте движение: Медленно тяните блок вниз к верхней части груди, концентрируясь на работе мышц спины.',
+    'Избегайте рывков: Не используйте инерцию для выполнения упражнения, выполняйте движения плавно и контролируемо.',
+    'Сфокусируйтесь на мышцах: Старайтесь ощущать напряжение в широчайших мышцах спины, а не в руках, чтобы обеспечить правильную активацию целевых мышц.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $leverFrontPulldown->tips()->attach($tip->id);
+}
+
+// Упражнение 4: Kettlebell Sumo High Pull (Сумо-подтягивание гири)
+$kettlebellSumoHighPull = Exercise::create([
+    'name' => 'Сумо-подтягивание гири',
+    'video_url' => '/video/exercises/Kettlebell_Sumo_High_Pull.mp4',
+    'thumbnail_url' => '/images/thumbnail/Kettlebell_Sumo_High_Pull.jpg',
+    'min_weight_male' => 12,
+    'max_weight_male' => 24,
+    'min_weight_female' => 8,
+    'max_weight_female' => 16,
+    'description' => 'Сумо-подтягивание гири — это функциональное упражнение, сочетающее элементы силовой тренировки и кардионагрузки. Выполняется в широкой стойке сумо с гирей, которая поднимается от пола до уровня груди или подбородка. Упражнение эффективно развивает силу и выносливость ног, спины и рук, а также улучшает координацию движений и общую физическую форму. Благодаря широкому положению ног нагрузка равномерно распределяется, что позволяет активно работать над нижней частью тела и укреплять основные группы мышц.',
+]);
+
+// Связь с мышцами напряжения
+$nogi = MusclePercentage::where('name', 'Ноги')->first();
+$spina = MusclePercentage::where('name', 'Спина')->first();
+$ruki = MusclePercentage::where('name', 'Руки')->first();
+$plechi = MusclePercentage::where('name', 'Плечи')->first();
+$press = MusclePercentage::where('name', 'Пресс')->first();
+if ($nogi && $spina && $ruki && $plechi && $press) {
+    $kettlebellSumoHighPull->musclePercentages()->attach($nogi->id, ['percentages' => 30]);
+    $kettlebellSumoHighPull->musclePercentages()->attach($spina->id, ['percentages' => 25]);
+    $kettlebellSumoHighPull->musclePercentages()->attach($ruki->id, ['percentages' => 20]);
+    $kettlebellSumoHighPull->musclePercentages()->attach($plechi->id, ['percentages' => 15]);
+    $kettlebellSumoHighPull->musclePercentages()->attach($press->id, ['percentages' => 10]);
+}
+
+// Связь с фильтрами
+$filters = ['Верхняя часть спины', 'Ноги', 'Плечи', 'Трапеции', 'Бицепс'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $kettlebellSumoHighPull->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Поддерживайте правильную осанку: Держите спину прямой на протяжении всего упражнения, избегайте прогиба и наклона вперед.',
+    'Используйте ноги для импульса: Начинайте движение с сильного выталкивания ног, используя их силу для подъема гири, а не только рук.',
+    'Контролируйте вес гири: Избегайте рывков и резких движений, выполняйте упражнение плавно и контролируемо.',
+    'Держите корпус напряжённым: Укреплённый корсет поможет стабилизировать тело и предотвратит раскачивание во время выполнения упражнения.',
+    'Правильное дыхание: Выдыхайте при подъёме гири и вдыхайте при её опускании, поддерживая ритмичное дыхание.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $kettlebellSumoHighPull->tips()->attach($tip->id);
+}
+
+// Упражнение 5: Cable Reverse Grip Pulldown (Тяга верхнего блока обратным хватом)
+$cableReverseGripPulldown = Exercise::create([
+    'name' => 'Тяга верхнего блока обратным хватом',
+    'video_url' => '/video/exercises/Cable_Reverse_Grip_Pulldown.mp4',
+    'thumbnail_url' => '/images/thumbnail/Cable_Reverse_Grip_Pulldown.jpg',
+    'min_weight_male' => 40,
+    'max_weight_male' => 100,
+    'min_weight_female' => 20,
+    'max_weight_female' => 60,
+    'description' => 'Тяга верхнего блока обратным хватом — упражнение, направленное на развитие широчайших мышц спины и бицепсов. Выполняется с помощью верхнего блока тренажёра, при котором хват осуществляется обратным (ладони обращены к себе). Такой хват позволяет лучше акцентировать нагрузку на бицепсах и задней части спины, улучшая форму и силу верхней части тела.',
+]);
+
+// Связь с мышцами напряжения
+$spina = MusclePercentage::where('name', 'Спина')->first();
+$ruki = MusclePercentage::where('name', 'Руки')->first();
+$plechi = MusclePercentage::where('name', 'Плечи')->first();
+if ($spina && $ruki && $plechi) {
+    $cableReverseGripPulldown->musclePercentages()->attach($spina->id, ['percentages' => 60]);
+    $cableReverseGripPulldown->musclePercentages()->attach($ruki->id, ['percentages' => 30]);
+    $cableReverseGripPulldown->musclePercentages()->attach($plechi->id, ['percentages' => 10]);
+}
+
+// Связь с фильтрами
+$filters = ['Широчайшие', 'Бицепс', 'Плечи', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $cableReverseGripPulldown->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Держите спину прямой и слегка наклонённой назад на протяжении всего упражнения.',
+    'Тяните перекладину вниз к груди, сосредотачиваясь на сокращении широчайших мышц спины.',
+    'Избегайте раскачивания тела, чтобы предотвратить использование инерции.',
+    'Полностью выпрямляйте руки в конце движения для максимальной активации мышц.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $cableReverseGripPulldown->tips()->attach($tip->id);
+}
+
+// ---------------------------------------------------------------------------------------------
+
+// Упражнение 6: Barbell Hip Thrust (Тяга бедра со штангой)
+$barbellHipThrust = Exercise::create([
+    'name' => 'Тяга бедра со штангой',
+    'video_url' => '/video/exercises/Barbell_Hip_Thrust.mp4',
+    'thumbnail_url' => '/images/thumbnail/Barbell_Hip_Thrust.jpg',
+    'min_weight_male' => 60,
+    'max_weight_male' => 150,
+    'min_weight_female' => 40,
+    'max_weight_female' => 100,
+    'description' => 'Тяга бедра со штангой — это упражнение, направленное на развитие ягодичных мышц. Выполняется путем подъема бедер вверх, опираясь верхней частью спины на скамью, при этом штанга располагается на бедрах. Это упражнение не только увеличивает силу и объем ягодиц, но также укрепляет подколенные сухожилия и нижнюю часть спины, способствуя общей стабильности корпуса.',
+]);
+
+// Связь с мышцами напряжения
+$nogi = MusclePercentage::where('name', 'Ноги')->first();
+$spina = MusclePercentage::where('name', 'Спина')->first();
+if ($nogi && $spina) {
+    $barbellHipThrust->musclePercentages()->attach($nogi->id, ['percentages' => 90]);
+    $barbellHipThrust->musclePercentages()->attach($spina->id, ['percentages' => 10]);
+}
+
+// Связь с фильтрами
+$filters = ['Ягодицы', 'Подколенные сухожилия', 'Нижняя часть спины'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $barbellHipThrust->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная фиксация: Убедитесь, что верхняя часть спины надежно закреплена на скамье, чтобы обеспечить стабильность во время выполнения упражнения.',
+    'Активное сокращение ягодиц: При подъеме бедер концентрируйтесь на напряжении ягодичных мышц, избегая чрезмерного прогиба в пояснице.',
+    'Контроль штанги: Держите штангу устойчиво, не позволяйте ей скользить вниз при опускании бедер.',
+    'Плавное движение: Выполняйте подъем и опускание бедер плавно, контролируя каждую фазу упражнения для максимальной эффективности и безопасности.',
+    'Дыхание: Вдыхайте при опускании бедер и выдыхайте при подъеме, поддерживая ритмичное дыхание на протяжении всего подхода.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $barbellHipThrust->tips()->attach($tip->id);
+}
+
+// Упражнение 7: Barbell Sumo Deadlift (Становая тяга сумо со штангой)
+$barbellSumoDeadlift = Exercise::create([
+    'name' => 'Становая тяга сумо со штангой',
+    'video_url' => '/video/exercises/Barbell_Sumo_Deadlift.mp4',
+    'thumbnail_url' => '/images/thumbnail/Barbell_Sumo_Deadlift.jpg',
+    'min_weight_male' => 60,
+    'max_weight_male' => 250,
+    'min_weight_female' => 40,
+    'max_weight_female' => 150,
+    'description' => 'Становая тяга сумо со штангой — это силовое упражнение, направленное на развитие мышц ног, ягодиц и нижней части спины. Техника сумо позволяет более активно задействовать квадрицепсы и уменьшить нагрузку на поясницу по сравнению с классической станово́й тягой. Это упражнение способствует увеличению общей силы, улучшению стабилизации корпуса и развитию мышечной массы нижней части тела.',
+]);
+
+// Связь с мышцами напряжения
+$nogi = MusclePercentage::where('name', 'Ноги')->first();
+$spina = MusclePercentage::where('name', 'Спина')->first();
+$press = MusclePercentage::where('name', 'Пресс')->first();
+$plechi = MusclePercentage::where('name', 'Плечи')->first();
+if ($nogi && $spina && $press && $plechi) {
+    $barbellSumoDeadlift->musclePercentages()->attach($nogi->id, ['percentages' => 65]);
+    $barbellSumoDeadlift->musclePercentages()->attach($spina->id, ['percentages' => 20]);
+    $barbellSumoDeadlift->musclePercentages()->attach($press->id, ['percentages' => 10]);
+    $barbellSumoDeadlift->musclePercentages()->attach($plechi->id, ['percentages' => 5]);
+}
+
+// Связь с фильтрами
+$filters = ['Квадрицепс', 'Ягодицы', 'Нижняя часть спины', 'Пресс', 'Плечи'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $barbellSumoDeadlift->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Расставьте ноги шире, чем при классической станово́й тяге, носки слегка развернуты наружу.',
+    'Держите спину прямой и напряжённой, избегайте прогиба в пояснице.',
+    'Начинайте движение, выпрямляя ноги и приводя таз вперед одновременно.',
+    'Дышите глубоко и равномерно, контролируя подъем штанги.',
+    'Не допускайте рывков и резких движений, чтобы избежать травм.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $barbellSumoDeadlift->tips()->attach($tip->id);
+}
+
+// Упражнение 8: Lever Hip Thrust (Тяга бедер на блоке)
+$leverHipThrust = Exercise::create([
+    'name' => 'Тяга бедер на блоке',
+    'video_url' => '/video/exercises/Lever_Hip_Thrust.mp4',
+    'thumbnail_url' => '/images/thumbnail/Lever_Hip_Thrust.jpg',
+    'min_weight_male' => 40,
+    'max_weight_male' => 200,
+    'min_weight_female' => 20,
+    'max_weight_female' => 100,
+    'description' => 'Тяга бедер на блоке — это упражнение, направленное на развитие ягодичных мышц, подколенных сухожилий и нижней части спины. Выполняется на специальном тренажёре с использованием рычага, что позволяет точно регулировать нагрузку и обеспечивать стабильную технику выполнения. Это упражнение способствует увеличению силы и массы ягодиц, улучшению формы нижней части спины и общей стабильности корпуса. Тяга бедер на блоке также помогает повысить спортивную производительность и уменьшить риск травм за счёт укрепления основных мышечных групп нижней части тела.',
+]);
+
+// Связь с мышцами напряжения
+$nogi = MusclePercentage::where('name', 'Ноги')->first();
+$spina = MusclePercentage::where('name', 'Спина')->first();
+$press = MusclePercentage::where('name', 'Пресс')->first();
+if ($nogi && $spina && $press) {
+    $leverHipThrust->musclePercentages()->attach($nogi->id, ['percentages' => 60]);
+    $leverHipThrust->musclePercentages()->attach($spina->id, ['percentages' => 25]);
+    $leverHipThrust->musclePercentages()->attach($press->id, ['percentages' => 15]);
+}
+
+// Связь с фильтрами
+$filters = ['Ягодицы', 'Подколенные сухожилия', 'Нижняя часть спины'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $leverHipThrust->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Правильная постановка ног: Установите ноги на платформу на ширине плеч, пятки полностью контактируют с ней для максимальной активации ягодичных мышц.',
+    'Нейтральное положение спины: Сохраняйте спину прямой и нейтральной на протяжении всего упражнения, избегая чрезмерного прогиба или округления.',
+    'Контролируемое движение: Выполняйте подъём бедер плавно и контролируемо, концентрируясь на сокращении ягодичных мышц в верхней фазе движения.',
+    'Правильное дыхание: Выдыхайте при подъёме бедер и вдыхайте при их опускании, избегая задержки дыхания.',
+    'Фокус на технике: Не используйте чрезмерный вес в ущерб правильной технике выполнения; качество движения важнее количества веса.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $leverHipThrust->tips()->attach($tip->id);
+}
+
+// Упражнение 9: Lever Glute Press (Жим ягодиц на тренажере с рычагом)
+$leverGlutePress = Exercise::create([
+    'name' => 'Жим ягодиц на тренажере с рычагом',
+    'video_url' => '/video/exercises/Lever_Glute_Press.mp4',
+    'thumbnail_url' => '/images/thumbnail/Lever_Glute_Press.jpg',
+    'min_weight_male' => 80,
+    'max_weight_male' => 300,
+    'min_weight_female' => 40,
+    'max_weight_female' => 160,
+    'description' => 'Жим ягодиц на тренажере с рычагом — это упражнение, направленное на развитие ягодичных мышц и укрепление ног. Оно выполняется на специализированном тренажере, где вы, отталкиваясь ногами, выжимаете платформу, активно задействуя ягодицы, квадрицепсы и подколенные сухожилия. Это упражнение помогает увеличить силу и объем ягодиц, улучшить стабильность нижней части тела и повысить общую физическую выносливость.',
+]);
+
+// Связь с мышцами напряжения
+$nogi = MusclePercentage::where('name', 'Ноги')->first();
+$spina = MusclePercentage::where('name', 'Спина')->first();
+$ruki = MusclePercentage::where('name', 'Руки')->first();
+if ($nogi && $spina && $ruki) {
+    $leverGlutePress->musclePercentages()->attach($nogi->id, ['percentages' => 70]);
+    $leverGlutePress->musclePercentages()->attach($spina->id, ['percentages' => 25]);
+    $leverGlutePress->musclePercentages()->attach($ruki->id, ['percentages' => 5]);
+}
+
+// Связь с фильтрами
+$filters = ['Ягодицы', 'Квадрицепс', 'Подколенные сухожилия', 'Нижняя часть спины'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $leverGlutePress->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Положение ног: Разместите ноги на платформе на ширине плеч для равномерной нагрузки.',
+    'Стабилизация спины: Держите спину плотно прижатой к спинке тренажера, избегая чрезмерного прогиба.',
+    'Контроль движения: Выполняйте движение плавно и контролируемо, не блокируя коленные суставы в верхней точке.',
+    'Дыхание: Вдыхайте при опускании платформы и выдыхайте при выжимании.',
+    'Фокус на мышцах: Сосредоточьтесь на активном сокращении ягодичных мышц при каждом повторении.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $leverGlutePress->tips()->attach($tip->id);
+}
+
+// Упражнение 10: Weighted Glute Bridge (Ягодичный мост с отягощением)
+$weightedGluteBridge = Exercise::create([
+    'name' => 'Ягодичный мост с отягощением',
+    'video_url' => '/video/exercises/Weighted_Glute_Bridge.mp4',
+    'thumbnail_url' => '/images/thumbnail/Weighted_Glute_Bridge.jpg',
+    'min_weight_male' => 40,
+    'max_weight_male' => 100,
+    'min_weight_female' => 20,
+    'max_weight_female' => 50,
+    'description' => 'Ягодичный мост с отягощением — это упражнение, направленное на развитие ягодичных мышц, подколенных сухожилий и нижней части спины. Выполняется лёжа на спине с согнутыми коленями и поднятием таза вверх с использованием дополнительного веса, например, штанги или гантели. Это упражнение способствует укреплению нижней части тела, улучшению осанки и повышению общей силы.',
+]);
+
+// Связь с мышцами напряжения
+$nogi = MusclePercentage::where('name', 'Ноги')->first();
+$spina = MusclePercentage::where('name', 'Спина')->first();
+$press = MusclePercentage::where('name', 'Пресс')->first();
+if ($nogi && $spina && $press) {
+    $weightedGluteBridge->musclePercentages()->attach($nogi->id, ['percentages' => 70]);
+    $weightedGluteBridge->musclePercentages()->attach($spina->id, ['percentages' => 20]);
+    $weightedGluteBridge->musclePercentages()->attach($press->id, ['percentages' => 10]);
+}
+
+// Связь с фильтрами
+$filters = ['Ягодицы', 'Подколенные сухожилия', 'Нижняя часть спины'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $weightedGluteBridge->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Положение ног: Держите ноги на ширине плеч, ступни плотно прижаты к полу.',
+    'Техника подъема: Поднимайте таз до тех пор, пока тело не образует прямую линию от колен до плеч.',
+    'Контроль спины: Избегайте чрезмерного прогиба в нижней части спины, концентрируйтесь на сокращении ягодичных мышц.',
+    'Медленное опускание: Медленно опускайте таз обратно, контролируя движение.',
+    'Напряжение корпуса: Держите пресс напряжённым для стабильности корпуса.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $weightedGluteBridge->tips()->attach($tip->id);
+}
+
+// Упражнение 11: Cable Hip Abduction (Отведение бедра на блоке)
+$cableHipAbduction = Exercise::create([
+    'name' => 'Отведение бедра на блоке',
+    'video_url' => '/video/exercises/Cable_Hip_Abduction.mp4',
+    'thumbnail_url' => '/images/thumbnail/Cable_Hip_Abduction.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 40,
+    'min_weight_female' => 5,
+    'max_weight_female' => 30,
+    'description' => 'Отведение бедра на блоке — это упражнение, направленное на развитие мышц боковой поверхности бедра, особенно средней и малой ягодичных мышц. Оно также задействует плечи и мышцы пресса для стабилизации тела во время выполнения движения. Это упражнение помогает улучшить баланс, укрепить ноги и создать эстетичную форму ягодиц.',
+]);
+
+// Связь с мышцами напряжения
+$nogi = MusclePercentage::where('name', 'Ноги')->first();
+$plechi = MusclePercentage::where('name', 'Плечи')->first();
+$press = MusclePercentage::where('name', 'Пресс')->first();
+if ($nogi && $plechi && $press) {
+    $cableHipAbduction->musclePercentages()->attach($nogi->id, ['percentages' => 70]);
+    $cableHipAbduction->musclePercentages()->attach($plechi->id, ['percentages' => 20]);
+    $cableHipAbduction->musclePercentages()->attach($press->id, ['percentages' => 10]);
+}
+
+// Связь с фильтрами
+$filters = ['Ягодицы', 'Плечи', 'Пресс'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $cableHipAbduction->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Сидите прямо на тренажёре, закрепите лодыжку к нижнему блоке.',
+    'Держите спину прямой и не допускайте прогиба в пояснице.',
+    'Медленно отводите ногу в сторону, контролируя движение, не раскачивайтесь.',
+    'В конце движения задержитесь на секунду, максимально сжимая ягодицы.',
+    'Плавно верните ногу в исходное положение, не теряя контроля над весом.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $cableHipAbduction->tips()->attach($tip->id);
+}
+
+// Упражнение 2: Barbell Decline Bench Press
+$barbellDeclineBenchPress = Exercise::create([
+    'name' => 'Жим штанги с наклоном вниз',
+    'video_url' => '/video/exercises/Barbell_Decline_Bench_Press.mp4',
+    'thumbnail_url' => '/images/thumbnail/Barbell_Decline_Bench_Press.jpg',
+    'min_weight_male' => 30,
+    'max_weight_male' => 120,
+    'min_weight_female' => 15,
+    'max_weight_female' => 50,
+    'description' => 'Жим штанги с наклоном вниз — это упражнение, которое акцентирует нагрузку на нижнюю часть грудных мышц. В отличие от традиционного жима лёжа, наклон вниз помогает уменьшить нагрузку на плечевые суставы и увеличить активность нижней части груди. Это отличное упражнение для улучшения пропорциональности груди и развития её нижнего отдела.',
+]);
+
+// Связь с мышцами
+$muscles = [
+    ['name' => 'Грудь', 'percentage' => 70],
+    ['name' => 'Руки', 'percentage' => 20],
+    ['name' => 'Плечи', 'percentage' => 10],
+];
+
+foreach ($muscles as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $barbellDeclineBenchPress->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentage']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Грудь', 'Трицепс', 'Плечи'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $barbellDeclineBenchPress->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Держите спину прижатой к скамье, а ноги плотно расположены на полу для стабильности.',
+    'Опускайте штангу до уровня груди, не позволяйте ей «падать» на тело.',
+    'Локти должны быть под углом 45 градусов к туловищу, чтобы не перегружать плечи.',
+    'Используйте полный диапазон движения для максимальной активации грудных мышц.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $barbellDeclineBenchPress->tips()->attach($tip->id);
+}
+
+// Упражнение 2: Barbell Reverse Curl
+$barbellReverseCurl = Exercise::create([
+    'name' => 'Обратное сгибание рук со штангой',
+    'video_url' => '/video/exercises/Barbell_Reverse_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Barbell_Reverse_Curl.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 40,
+    'min_weight_female' => 5,
+    'max_weight_female' => 20,
+    'description' => 'Обратное сгибание рук со штангой — это упражнение, направленное на укрепление предплечий и плечевой мышцы. Благодаря хвату сверху, основная нагрузка приходится на предплечья, с меньшим вовлечением бицепсов. Подходит для повышения силы хвата и гармоничного развития мышц рук.',
+]);
+
+// Связь с мышцами
+$muscleTensions = [
+    'Руки' => 90,
+    'Плечи' => 10,
+];
+foreach ($muscleTensions as $muscleName => $percentage) {
+    $muscle = MusclePercentage::where('name', $muscleName)->first();
+    if ($muscle) {
+        $barbellReverseCurl->musclePercentages()->attach($muscle->id, ['percentages' => $percentage]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Предплечья', 'Бицепс', 'Плечи'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $barbellReverseCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Держите спину прямой, избегая раскачивания корпуса.',
+    'Убедитесь, что локти остаются неподвижными и прижатыми к телу.',
+    'Используйте контролируемое движение, особенно в негативной фазе.',
+    'Начинайте с умеренного веса, чтобы предотвратить чрезмерное напряжение запястий.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $barbellReverseCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 2: Cable Curl
+$cableCurl = Exercise::create([
+    'name' => 'Сгибание рук на верхнем блоке',
+    'video_url' => '/video/exercises/Cable_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Cable_Curl.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 40,
+    'min_weight_female' => 5,
+    'max_weight_female' => 20,
+    'description' => 'Сгибание рук на верхнем блоке с использованием рукоятки или веревки — это изолированное упражнение для бицепсов. Оно позволяет поддерживать постоянное напряжение в мышцах на протяжении всего движения. Отлично подходит как для начинающих, так и для опытных атлетов.',
+]);
+
+// Связь с мышцами
+$biceps = MusclePercentage::where('name', 'Руки')->first();
+if ($biceps) {
+    $cableCurl->musclePercentages()->attach($biceps->id, ['percentages' => 100]);
+}
+
+// Связь с фильтрами
+$filters = ['Бицепс', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $cableCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Держите локти неподвижными, прижимая их к туловищу.',
+    'Контролируйте движение на всем протяжении, избегая рывков.',
+    'Настройте блок так, чтобы натяжение сохранялось даже в нижней точке амплитуды.',
+    'Дышите равномерно: выдох при подъеме, вдох при опускании рукоятки.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $cableCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 2: Dumbbell Concentration Curl
+$dumbbellConcentrationCurl = Exercise::create([
+    'name' => 'Сгибание рук с гантелью на скамье',
+    'video_url' => '/video/exercises/Dumbbell_Concentration_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Dumbbell_Concentration_Curl.jpg',
+    'min_weight_male' => 5,
+    'max_weight_male' => 25,
+    'min_weight_female' => 3,
+    'max_weight_female' => 15,
+    'description' => 'Сгибание рук с гантелью на скамье — изолированное упражнение, позволяющее сосредоточиться на проработке бицепсов, минимизируя участие других мышц. Выполняется сидя с упором локтя в бедро. Помогает улучшить форму и пиковую силу бицепса.',
+]);
+
+// Связь с мышцами
+$arms = MusclePercentage::where('name', 'Руки')->first();
+if ($arms) {
+    $dumbbellConcentrationCurl->musclePercentages()->attach($arms->id, ['percentages' => 100]);
+}
+
+// Связь с фильтрами
+$filters = ['Бицепс', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $dumbbellConcentrationCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Убедитесь, что локоть плотно прижат к бедру на протяжении всего упражнения.',
+    'Выполняйте движение медленно и подконтрольно, избегая рывков.',
+    'На пике сокращения задерживайтесь на 1-2 секунды для максимального напряжения мышцы.',
+    'Держите спину ровной, чтобы не снижать эффективность упражнения.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $dumbbellConcentrationCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 2: Dumbbell Zottman Curl
+$dumbbellZottmanCurl = Exercise::create([
+    'name' => 'Сгибание рук с гантелями по методу Зоттмана',
+    'video_url' => '/video/exercises/Dumbbell_Zottman_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Dumbbell_Zottman_Curl.jpg',
+    'min_weight_male' => 5,
+    'max_weight_male' => 20,
+    'min_weight_female' => 3,
+    'max_weight_female' => 10,
+    'description' => 'Сгибание рук с гантелями по методу Зоттмана — это уникальное упражнение, которое сочетает сгибание для бицепса в подъеме и акцент на предплечья в опускании. Оно улучшает силу и выносливость рук, развивает мышцы стабилизаторы и увеличивает объем предплечий.',
+]);
+
+// Связь с мышцами
+$hands = MusclePercentage::where('name', 'Руки')->first();
+if ($hands) {
+    $dumbbellZottmanCurl->musclePercentages()->attach($hands->id, ['percentages' => 100]);
+}
+
+// Связь с фильтрами
+$filters = ['Бицепс', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $dumbbellZottmanCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Выполняйте сгибание с супинированным (ладони вверх) хватом, а опускание — с пронированным (ладони вниз).',
+    'Держите локти неподвижными, прижимая их к туловищу.',
+    'Контролируйте темп, особенно в негативной (опускание) фазе движения.',
+    'Используйте умеренный вес для правильной техники и максимального контроля.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $dumbbellZottmanCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 1: Dumbbell Incline Biceps Curl
+$dumbbellInclineCurl = Exercise::create([
+    'name' => 'Сгибание рук с гантелями на наклонной скамье',
+    'video_url' => '/video/exercises/Dumbbell_Incline_Biceps_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Dumbbell_Incline_Biceps_Curl.jpg',
+    'min_weight_male' => 5,
+    'max_weight_male' => 25,
+    'min_weight_female' => 3,
+    'max_weight_female' => 12,
+    'description' => 'Сгибание рук с гантелями на наклонной скамье — изолированное упражнение, которое увеличивает растяжение бицепсов за счет положения тела. Оно позволяет эффективно прорабатывать нижнюю часть бицепса и увеличивать его объем.',
+]);
+
+// Связь с мышцами
+$biceps = MusclePercentage::where('name', 'Руки')->first();
+if ($biceps) {
+    $dumbbellInclineCurl->musclePercentages()->attach($biceps->id, ['percentages' => 100]);
+}
+
+// Связь с фильтрами
+$filters = ['Бицепс', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $dumbbellInclineCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Убедитесь, что спина и плечи остаются плотно прижатыми к скамье.',
+    'Избегайте рывков, контролируйте движение на подъеме и опускании.',
+    'Держите локти неподвижными и избегайте их смещения вперед.',
+    'Используйте полную амплитуду для максимального растяжения и сокращения бицепсов.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $dumbbellInclineCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 2: EZ Bar Curl
+$ezBarCurl = Exercise::create([
+    'name' => 'Сгибание рук с EZ-грифом',
+    'video_url' => '/video/exercises/EZ_Bar_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/EZ_Bar_Curl.jpg',
+    'min_weight_male' => 15,
+    'max_weight_male' => 50,
+    'min_weight_female' => 7,
+    'max_weight_female' => 25,
+    'description' => 'Сгибание рук с EZ-грифом — базовое упражнение для проработки бицепсов. Изогнутая форма грифа снижает нагрузку на запястья и локтевые суставы, что делает его удобным для выполнения даже с большим весом. Подходит для спортсменов любого уровня подготовки.',
+]);
+
+// Связь с мышцами
+$biceps = MusclePercentage::where('name', 'Руки')->first();
+if ($biceps) {
+    $ezBarCurl->musclePercentages()->attach($biceps->id, ['percentages' => 100]);
+}
+
+// Связь с фильтрами
+$filters = ['Бицепс', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $ezBarCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Держите локти неподвижными и прижатыми к туловищу.',
+    'Избегайте раскачивания корпуса, сосредотачиваясь на работе бицепсов.',
+    'Используйте контролируемый темп и избегайте рывков.',
+    'В нижней точке не разгибайте руки полностью, чтобы сохранять напряжение в мышцах.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $ezBarCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 2: Lever Biceps Curl
+$leverBicepsCurl = Exercise::create([
+    'name' => 'Сгибание рук на тренажере',
+    'video_url' => '/video/exercises/Lever_Biceps_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Lever_Biceps_Curl.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 40,
+    'min_weight_female' => 5,
+    'max_weight_female' => 20,
+    'description' => 'Сгибание рук на тренажере — изолированное упражнение для бицепсов, которое обеспечивает стабильную амплитуду движения. Позволяет сосредоточиться на проработке мышц без вовлечения стабилизаторов. Отлично подходит для новичков и восстановления после травм.',
+]);
+
+// Связь с мышцами
+$biceps = MusclePercentage::where('name', 'Руки')->first();
+if ($biceps) {
+    $leverBicepsCurl->musclePercentages()->attach($biceps->id, ['percentages' => 100]);
+}
+
+// Связь с фильтрами
+$filters = ['Бицепс', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $leverBicepsCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Регулируйте положение сиденья так, чтобы локти были плотно зафиксированы.',
+    'Двигайте рычаги плавно, избегая резких рывков.',
+    'Полностью контролируйте движение как в подъемной, так и в опускной фазах.',
+    'Следите, чтобы напряжение в бицепсах сохранялось на протяжении всего упражнения.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $leverBicepsCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 2: Dumbbell Standing One Arm Curl
+$dumbbellCurl = Exercise::create([
+    'name' => 'Сгибание одной руки с гантелью стоя',
+    'video_url' => '/video/exercises/Dumbbell_Standing_One_Arm_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Dumbbell_Standing_One_Arm_Curl.jpg',
+    'min_weight_male' => 5,
+    'max_weight_male' => 25,
+    'min_weight_female' => 3,
+    'max_weight_female' => 12,
+    'description' => 'Сгибание одной руки с гантелью стоя — классическое изолированное упражнение для бицепсов, позволяющее сосредоточиться на работе одной руки за раз. Это помогает улучшить симметрию и устранить дисбаланс между руками.',
+]);
+
+// Связь с мышцами
+$biceps = MusclePercentage::where('name', 'Руки')->first();
+if ($biceps) {
+    $dumbbellCurl->musclePercentages()->attach($biceps->id, ['percentages' => 100]);
+}
+
+// Связь с фильтрами
+$filters = ['Бицепс', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $dumbbellCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Держите локоть неподвижным, прижимая его к туловищу.',
+    'Контролируйте движение на всем протяжении, избегая рывков.',
+    'Используйте полную амплитуду для максимального сокращения и растяжения бицепса.',
+    'Не наклоняйте корпус в сторону работающей руки, чтобы избежать читинга.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $dumbbellCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 2: EZ Barbell Spider Curl
+$ezBarbellSpiderCurl = Exercise::create([
+    'name' => 'Сгибание рук с EZ-грифом на скамье "паука"',
+    'video_url' => '/video/exercises/EZ_Barbell_Spider_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/EZ_Barbell_Spider_Curl.jpg',
+    'min_weight_male' => 15,
+    'max_weight_male' => 40,
+    'min_weight_female' => 7,
+    'max_weight_female' => 20,
+    'description' => 'Сгибание рук с EZ-грифом на скамье "паука" — изолированное упражнение для бицепсов, выполняемое на специальной наклонной скамье. Это положение позволяет исключить читинг и сконцентрировать всю нагрузку на бицепсах, особенно на их пиковом сокращении.',
+]);
+
+// Связь с мышцами
+$biceps = MusclePercentage::where('name', 'Руки')->first();
+if ($biceps) {
+    $ezBarbellSpiderCurl->musclePercentages()->attach($biceps->id, ['percentages' => 100]);
+}
+
+// Связь с фильтрами
+$filters = ['Бицепс', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $ezBarbellSpiderCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Держите грудь и плечи прижатыми к скамье на протяжении всего упражнения.',
+    'Поднимайте гриф плавно, избегая рывков, и контролируйте опускание.',
+    'Не позволяйте локтям смещаться в стороны или вперед.',
+    'Используйте умеренный вес, чтобы поддерживать правильную технику и максимальную изоляцию бицепсов.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $ezBarbellSpiderCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 1: Dumbbell Drag Biceps Curl
+$dumbbellDragCurl = Exercise::create([
+    'name' => 'Тяговое сгибание рук с гантелями',
+    'video_url' => '/video/exercises/Dumbbell_Drag_Biceps_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Dumbbell_Drag_Biceps_Curl.jpg',
+    'min_weight_male' => 5,
+    'max_weight_male' => 25,
+    'min_weight_female' => 3,
+    'max_weight_female' => 12,
+    'description' => 'Тяговое сгибание рук с гантелями — это вариация стандартного сгибания, где акцент переносится на пиковое сокращение бицепса за счет перемещения локтей назад, а не вперед. Такое положение минимизирует вовлечение других мышц и усиливает изоляцию бицепсов.',
+]);
+
+// Связь с мышцами
+$muscleData = [
+    'Руки' => 95,
+    'Плечи' => 5,
+];
+
+foreach ($muscleData as $muscleName => $percentage) {
+    $muscle = MusclePercentage::where('name', $muscleName)->first();
+    if ($muscle) {
+        $dumbbellDragCurl->musclePercentages()->attach($muscle->id, ['percentages' => $percentage]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Бицепс', 'Предплечья', 'Плечи'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $dumbbellDragCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Во время выполнения тяните гантели вдоль туловища, при этом локти движутся назад.',
+    'Держите корпус неподвижным, избегая раскачиваний.',
+    'Контролируйте темп, особенно в негативной фазе.',
+    'Используйте полную амплитуду, но не допускайте перегрузки локтей.',
+];
+
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $dumbbellDragCurl->tips()->attach($tip->id);
+}
+
+// Упражнение: Cable Hammer Curl
+$cableHammerCurl = Exercise::create([
+    'name' => 'Сгибание рук на блоке "молотком"',
+    'video_url' => '/video/exercises/Cable_Hammer_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Cable_Hammer_Curl.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 40,
+    'min_weight_female' => 5,
+    'max_weight_female' => 20,
+    'description' => 'Сгибание рук на блоке "молотком" — это упражнение, которое акцентирует нагрузку на бицепсы, предплечья и плечевые мышцы, благодаря нейтральному хвату. Использование троса обеспечивает постоянное напряжение на протяжении всего движения.',
+]);
+
+// Связь с мышцами
+$musclePercentages = [
+    ['name' => 'Руки', 'percentage' => 90],
+    ['name' => 'Плечи', 'percentage' => 10],
+];
+foreach ($musclePercentages as $muscle) {
+    $muscleEntity = MusclePercentage::where('name', $muscle['name'])->first();
+    if ($muscleEntity) {
+        $cableHammerCurl->musclePercentages()->attach($muscleEntity->id, ['percentages' => $muscle['percentage']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Бицепс', 'Предплечья', 'Плечи'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $cableHammerCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Убедитесь, что локти остаются неподвижными и прижаты к туловищу.',
+    'Держите трос рукояти параллельно друг другу для сохранения правильного нейтрального хвата.',
+    'Выполняйте упражнение медленно, контролируя как подъем, так и опускание.',
+    'Настройте блок на нужную высоту для оптимальной амплитуды движения.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $cableHammerCurl->tips()->attach($tip->id);
+}
+
+// Упражнение: Cable Overhead Curl
+$cableOverheadCurl = Exercise::create([
+    'name' => 'Сгибание рук на верхнем блоке над головой',
+    'video_url' => '/video/exercises/Cable_Overhead_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Cable_Overhead_Curl.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 30,
+    'min_weight_female' => 5,
+    'max_weight_female' => 15,
+    'description' => 'Сгибание рук на верхнем блоке над головой — изолированное упражнение для бицепсов, выполняемое в положении, при котором мышцы находятся в максимальном растяжении в начале движения. Оно помогает акцентировать внимание на верхней части бицепса и улучшить его форму.',
+]);
+
+// Связь с мышцами
+$arms = MusclePercentage::where('name', 'Руки')->first();
+if ($arms) {
+    $cableOverheadCurl->musclePercentages()->attach($arms->id, ['percentages' => 100]);
+}
+
+// Связь с фильтрами
+$filters = ['Бицепс', 'Предплечья'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $cableOverheadCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Держите локти на уровне плеч, неподвижными на протяжении всего упражнения.',
+    'Используйте плавное, контролируемое движение, избегая рывков.',
+    'Настройте высоту блоков так, чтобы обеспечить максимальную амплитуду.',
+    'Следите за стабильностью корпуса, не прогибайте спину во время выполнения.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $cableOverheadCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 2: Barbell Drag Curl
+$barbellDragCurl = Exercise::create([
+    'name' => 'Тяговое сгибание рук со штангой',
+    'video_url' => '/video/exercises/Barbell_Drag_Curl.mp4',
+    'thumbnail_url' => '/images/thumbnail/Barbell_Drag_Curl.jpg',
+    'min_weight_male' => 20,
+    'max_weight_male' => 50,
+    'min_weight_female' => 10,
+    'max_weight_female' => 25,
+    'description' => 'Тяговое сгибание рук со штангой — это вариация стандартного сгибания, которая увеличивает акцент на бицепсах за счет движения локтей назад. Такое выполнение исключает возможность читинга и усиливает изоляцию мышц.',
+]);
+
+// Связь с мышцами
+$muscles = [
+    'Руки' => 95,
+    'Плечи' => 5,
+];
+
+foreach ($muscles as $muscleName => $percentage) {
+    $muscle = MusclePercentage::where('name', $muscleName)->first();
+    if ($muscle) {
+        $barbellDragCurl->musclePercentages()->attach($muscle->id, ['percentages' => $percentage]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Бицепс', 'Предплечья', 'Плечи'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $barbellDragCurl->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Тяните штангу вдоль тела, локти при этом должны двигаться назад.',
+    'Держите корпус неподвижным, избегая раскачиваний.',
+    'Контролируйте каждую фазу движения, особенно негативную.',
+    'Не блокируйте локти в нижней точке, чтобы сохранять постоянное напряжение в мышцах.'
+];
+
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $barbellDragCurl->tips()->attach($tip->id);
+}
+
+// Упражнение 2: Cable Kneeling Crunch
+$cableKneelingCrunch = Exercise::create([
+    'name' => 'Скручивания на коленях с тросом',
+    'video_url' => '/video/exercises/Cable_Kneeling_Crunch.mp4',
+    'thumbnail_url' => '/images/thumbnail/Cable_Kneeling_Crunch.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 80,
+    'min_weight_female' => 5,
+    'max_weight_female' => 40,
+    'description' => 'Скручивания на коленях с тросом — это эффективное упражнение для проработки верхней и средней части пресса, при котором используется верхний блок. Данная вариация позволяет усилить нагрузку на пресс за счет натяжения троса на протяжении всего движения.',
+]);
+
+// Связь с мышцами
+$musclePress = MusclePercentage::where('name', 'Пресс')->first();
+if ($musclePress) {
+    $cableKneelingCrunch->musclePercentages()->attach($musclePress->id, ['percentages' => 90]);
+}
+
+$muscleBack = MusclePercentage::where('name', 'Спина')->first();
+if ($muscleBack) {
+    $cableKneelingCrunch->musclePercentages()->attach($muscleBack->id, ['percentages' => 10]);
+}
+
+// Связь с фильтрами
+$filters = ['Пресс', 'Трапеции'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $cableKneelingCrunch->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Держите корпус стабилизированным, избегайте лишнего движения в пояснице.',
+    'Используйте технику скручивания, а не просто сгибания корпуса.',
+    'Сосредотачивайтесь на напряжении пресса, не создавая напряжения в шее или спине.',
+    'Плавно возвращайтесь в исходное положение, не расслабляя мышцы пресса.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $cableKneelingCrunch->tips()->attach($tip->id);
+}
+
+// Упражнение 1: Lever Ab Swing
+$leverAbSwing = Exercise::create([
+    'name' => 'Скручивания на тренажере для пресса',
+    'video_url' => '/video/exercises/Lever_Ab_Swing.mp4',
+    'thumbnail_url' => '/images/thumbnail/Lever_Ab_Swing.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 80,
+    'min_weight_female' => 5,
+    'max_weight_female' => 40,
+    'description' => 'Скручивания на тренажере для пресса (Lever Ab Swing) — это упражнение, которое акцентирует нагрузку на мышцы кора, особенно на верхнюю и среднюю часть пресса. Использование тренажера помогает контролировать движение и изолировать работу пресса.',
+]);
+
+// Связь с мышцами
+$abs = MusclePercentage::where('name', 'Пресс')->first();
+if ($abs) {
+    $leverAbSwing->musclePercentages()->attach($abs->id, ['percentages' => 100]);
+}
+
+// Связь с фильтрами
+$filters = ['Пресс'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $leverAbSwing->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Держите спину прямой, избегайте прогибов в пояснице.',
+    'Включайте только мышцы пресса, а не ноги или спину.',
+    'Не наклоняйтесь слишком сильно вперед, чтобы избежать чрезмерного напряжения в спине.',
+    'Контролируйте движение, плавно возвращая туловище в исходную позицию.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $leverAbSwing->tips()->attach($tip->id);
+}
+
+// Упражнение 1: Weighted Decline Crunch
+$weightedDeclineCrunch = Exercise::create([
+    'name' => 'Скручивания на наклонной скамье с весом',
+    'video_url' => '/video/exercises/Weighted_Decline_Crunch.mp4',
+    'thumbnail_url' => '/images/thumbnail/Weighted_Decline_Crunch.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 50,
+    'min_weight_female' => 5,
+    'max_weight_female' => 25,
+    'description' => 'Скручивания на наклонной скамье с весом — эффективное упражнение для проработки верхней и средней части пресса. Наклон скамьи увеличивает амплитуду движения, что позволяет более интенсивно работать с мышцами живота. Дополнительный вес добавляет нагрузку, что способствует улучшению силы и формы пресса.',
+]);
+
+// Связь с мышцами
+$abs = MusclePercentage::where('name', 'Пресс')->first();
+if ($abs) {
+    $weightedDeclineCrunch->musclePercentages()->attach($abs->id, ['percentages' => 100]);
+}
+
+// Связь с фильтрами
+$filters = ['Пресс'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $weightedDeclineCrunch->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Поднимайте туловище медленно, сосредотачиваясь на напряжении в мышцах пресса.',
+    'Держите ноги надежно зафиксированными, чтобы избежать читинга.',
+    'Не напрягайте шею, держите голову нейтрально.',
+    'Следите за тем, чтобы движение было исключительно из пресса, избегая вовлечения бедер или бедренных сгибателей.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $weightedDeclineCrunch->tips()->attach($tip->id);
+}
+
+// Упражнение 2: Dumbbell Russian Twist with Legs Floor Off
+$dumbbellRussianTwist = Exercise::create([
+    'name' => 'Русский твист с гантелью и ногами от пола',
+    'video_url' => '/video/exercises/Dumbbell_Russian_Twist_with_Legs_Floor_Off.mp4',
+    'thumbnail_url' => '/images/thumbnail/Dumbbell_Russian_Twist_with_Legs_Floor_Off.jpg',
+    'min_weight_male' => 5,
+    'max_weight_male' => 25,
+    'min_weight_female' => 3,
+    'max_weight_female' => 15,
+    'description' => 'Русский твист с гантелью и ногами от пола — упражнение для пресса, которое акцентирует нагрузку на косые мышцы живота и верхний пресс. Поднятие ног с пола увеличивает сложность, заставляя работать больше стабилизирующих мышц. Использование гантели добавляет интенсивности упражнению.',
+]);
+
+// Связь с мышцами
+$muscleGroups = [
+    ['name' => 'Пресс', 'percentages' => 85],
+    ['name' => 'Спина', 'percentages' => 10],
+    ['name' => 'Руки', 'percentages' => 5],
+];
+
+foreach ($muscleGroups as $muscleData) {
+    $muscle = MusclePercentage::where('name', $muscleData['name'])->first();
+    if ($muscle) {
+        $dumbbellRussianTwist->musclePercentages()->attach($muscle->id, ['percentages' => $muscleData['percentages']]);
+    }
+}
+
+// Связь с фильтрами
+$filters = ['Пресс', 'Трапеции', 'Бицепс'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $dumbbellRussianTwist->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Держите корпус в наклоне, не округляя спину.',
+    'Вращайте туловище в обе стороны, избегая вращения только руками.',
+    'Ноги должны быть подняты на небольшую высоту, чтобы увеличить нагрузку на пресс.',
+    'Используйте медленный и контролируемый темп, чтобы удерживать постоянное напряжение в мышцах живота.'
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $dumbbellRussianTwist->tips()->attach($tip->id);
+}
+
+// Упражнение: Lever Total Abdominal Crunch
+$leverTotalAbCrunch = Exercise::create([
+    'name' => 'Скручивания на тренажере для всего пресса',
+    'video_url' => '/video/exercises/Lever_Total_Abdominal_Crunch.mp4',
+    'thumbnail_url' => '/images/thumbnail/Lever_Total_Abdominal_Crunch.jpg',
+    'min_weight_male' => 10,
+    'max_weight_male' => 80,
+    'min_weight_female' => 5,
+    'max_weight_female' => 40,
+    'description' => 'Скручивания на тренажере для всего пресса — это эффективное упражнение, направленное на проработку всех частей пресса, включая верхнюю, среднюю и нижнюю. Использование тренажера позволяет изолировать мышцы пресса и минимизировать вовлечение других групп мышц, обеспечивая стабильное и контролируемое выполнение движения.',
+]);
+
+// Связь с мышцами
+$absMuscle = MusclePercentage::where('name', 'Пресс')->first();
+if ($absMuscle) {
+    $leverTotalAbCrunch->musclePercentages()->attach($absMuscle->id, ['percentages' => 100]);
+}
+
+// Связь с фильтрами
+$filters = ['Пресс'];
+foreach ($filters as $filterName) {
+    $filter = MuscleFilter::where('name', $filterName)->first();
+    if ($filter) {
+        $leverTotalAbCrunch->muscleFilters()->attach($filter->id);
+    }
+}
+
+// Добавление советов
+$tips = [
+    'Сосредотачивайтесь на сокращении мышц пресса, избегая чрезмерного напряжения в шее.',
+    'Плавно возвращайте туловище в исходную позицию, чтобы не расслабить мышцы пресса.',
+    'Контролируйте амплитуду движения, не перегибая спину слишком сильно.',
+    'Используйте правильную настройку тренажера, чтобы обеспечить полный диапазон движения.',
+];
+foreach ($tips as $tipContent) {
+    $tip = Tip::create(['content' => $tipContent]);
+    $leverTotalAbCrunch->tips()->attach($tip->id);
+}
+
+}
 }
