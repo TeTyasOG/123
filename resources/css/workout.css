@@ -1,0 +1,547 @@
+/* workout.css */
+
+/* CSS Variables */
+:root {
+  --font-family: 'INTRO', sans-serif;
+
+  --icon-size: 64px;
+  --settings-icon-size: 64px; /* Размер кнопки настроек */
+
+  --top-bar-height: 80px;
+  --separator-height: 10px;
+  --separator-color: #545454;
+
+  --stat-label-font-size: 48px;
+  
+  /* Цвета и размеры значений под ВРЕМЯ, ОПЫТ и СЕТЫ */
+  --time-value-font-size: 50px;
+  --time-value-color: #152ac7;
+
+  --xp-value-font-size: 50px;
+  --xp-value-color: #00d800;
+
+  --sets-value-font-size: 50px;
+  --sets-value-color: #7e7e7e;
+
+  --primary-button-width: 40%;
+  --primary-button-height: 120px;
+  --primary-button-font-size: 40px;
+  --primary-button-border-radius: 20px;
+  --primary-button-border-width: 4px;
+  --primary-button-border-color: #000;
+  --primary-button-text-color: #ffffff;
+  --primary-button-background-color: #7e7e7e;
+  --primary-button-margin: 20px auto;
+
+  --secondary-button-width: 90%;
+  --secondary-button-height: 100px;
+  --secondary-button-font-size: 24px;
+  --secondary-button-border-radius: 10px;
+  --secondary-button-border-width: 2px;
+  --secondary-button-border-color: #000;
+  --secondary-button-text-color: #000;
+  --secondary-button-background-color: #fff;
+  --secondary-button-margin: 10px auto;
+
+  --delete-exercise-button-width: 60%;
+  --delete-exercise-button-height: 120px;
+  --delete-exercise-button-font-size: 40px;
+
+  --exercise-image-size: 160px;
+  --exercise-image-border-radius: 20px;
+  --exercise-image-border-color: #7e7e7e;
+  --exercise-image-border-width: 5px;
+
+  --exercise-name-font-size: 48px; /* Размер названия упражнения */
+  --exercise-info-font-size: 36px; /* Размер текста мин./макс. веса */
+  --xp-sphere-size: 32px; /* Размер иконки сферы опыта */
+
+  --note-font-size: 32px;
+  --note-color: #000;
+  --note-margin-top: 10px; /* Отступ сверху для заметки */
+  --note-margin-bottom: -30px; /* Отступ снизу для заметки */
+
+  --set-item-font-size: 40px;
+  --set-number-font-size: 40px; /* Размер номера подхода */
+  --set-item-margin: 10px 0;
+  --set-item-padding: 10px;
+  --set-item-border-radius: 5px;
+
+  --header-item-font-size: 40px; /* Размер заголовков в сете */
+
+  --prev-data-font-size: 25px; /* Размер данных ПРЕД. */
+  --prev-data-max-width: 160px; /* Максимальная ширина ПРЕД. для переноса */
+
+  --check-button-size: 50px; /* Размер квадрата выполнения */
+
+  --completed-set-border-color: #00d800; /* Цвет зелёной рамки выполнения */
+  --completed-set-border-width: 4px; /* Толщина зелёной рамки выполнения */
+
+  --completed-set-separator-height: 2px; /* Толщина разделителя в выполненном сете */
+  --completed-set-separator-color: #00d800; /* Цвет разделителя в выполненном сете */
+
+  --background-color: #ffffff;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+}
+
+/* Верхняя панель */
+.top-bar {
+  position: relative;
+  width: 100%;
+  height: var(--top-bar-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#pageTitle {
+  font-size: 64px;
+  text-transform: uppercase;
+}
+
+.icon-button {
+  position: absolute;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.icon-button img {
+  width: 100%;
+  height: 100%;
+}
+
+#backButton {
+  left: 5px;
+}
+
+#finishButton {
+  right: 5px;
+}
+
+/* Разделитель */
+.separator {
+  border: none;
+  height: var(--separator-height);
+  background-color: var(--separator-color);
+  margin: 0;
+}
+
+/* Статистика тренировки */
+.workout-stats {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: var(--stat-label-font-size);
+}
+
+#timeValue {
+  font-size: var(--time-value-font-size);
+  color: var(--time-value-color);
+}
+
+#xpValue {
+  font-size: var(--xp-value-font-size);
+  color: var(--xp-value-color);
+}
+
+#setsValue {
+  font-size: var(--sets-value-font-size);
+  color: var(--sets-value-color);
+}
+
+/* Кнопки действий */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.primary-button, .secondary-button {
+  width: var(--primary-button-width);
+  height: var(--primary-button-height);
+  font-size: var(--primary-button-font-size);
+  color: var(--primary-button-text-color);
+  background-color: var(--primary-button-background-color);
+  border: var(--primary-button-border-width) solid var(--primary-button-border-color);
+  border-radius: var(--primary-button-border-radius);
+  margin: var(--primary-button-margin);
+  cursor: pointer;
+  font-family: var(--font-family);
+}
+
+.secondary-button {
+  width: var(--primary-button-width); /* Чтобы кнопки были одинаковыми */
+  height: var(--primary-button-height);
+  font-size: var(--primary-button-font-size);
+  margin: var(--primary-button-margin);
+}
+
+.delete-exercise-button {
+  width: var(--delete-exercise-button-width);
+  height: var(--delete-exercise-button-height);
+  font-size: var(--delete-exercise-button-font-size);
+}
+
+.primary-button:hover, .secondary-button:hover, .add-set-button:hover, .delete-exercise-button:hover {
+  background-color: var(--primary-button-background-color); /* Убираем изменение цвета при наведении */
+}
+
+/* Убираем изменение цвета при нажатии */
+.primary-button:active, .secondary-button:active, .add-set-button:active, .delete-exercise-button:active {
+  background-color: var(--primary-button-background-color);
+}
+
+/* Список упражнений */
+#exercises {
+  padding: 20px;
+}
+
+.exercise-item {
+  margin-bottom: 30px;
+}
+
+.exercise-header {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.exercise-image {
+  width: var(--exercise-image-size);
+  height: var(--exercise-image-size);
+  border: var(--exercise-image-border-width) solid var(--exercise-image-border-color);
+  border-radius: var(--exercise-image-border-radius);
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.exercise-details {
+  flex: 1;
+}
+
+.exercise-name {
+  font-size: var(--exercise-name-font-size);
+  text-transform: uppercase;
+}
+
+.exercise-settings-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: var(--settings-icon-size);
+  height: var(--settings-icon-size);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.exercise-settings-button img {
+  width: 100%;
+  height: 100%;
+}
+
+.exercise-info {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.exercise-info .info-item {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+  font-size: var(--exercise-info-font-size); /* Размер текста мин./макс. веса */
+}
+
+.exercise-info .info-item img {
+  width: var(--xp-sphere-size);
+  height: var(--xp-sphere-size);
+  margin: 0 5px;
+}
+
+.exercise-info .info-separator {
+  font-size: var(--exercise-info-font-size);
+  margin-right: 20px;
+}
+
+.small-separator {
+  border: none;
+  height: 1px;
+  background-color: #ccc;
+  margin-top: 5px; /* Отступ сверху */
+  margin-bottom: 5px; /* Отступ снизу */
+}
+
+.exercise-notes {
+  font-size: var(--note-font-size);
+  color: var(--note-color);
+  width: 100%;
+  border: none;
+  resize: none;
+  background: none;
+  margin-top: var(--note-margin-top);
+  margin-bottom: var(--note-margin-bottom);
+  font-family: var(--font-family);
+}
+
+.exercise-notes::placeholder {
+  color: #aaa;
+  font-family: var(--font-family);
+}
+
+.exercise-notes:focus {
+  outline: none;
+}
+
+.default-value {
+  color: gray;
+}
+
+/* Убираем изменение цвета при нажатии на textarea */
+.exercise-notes:active {
+  background-color: transparent;
+}
+
+/* Блокируем изменение цвета кнопок при нажатии */
+button:active {
+  background-color: transparent;
+}
+
+/* Поля ввода в сете */
+.sets-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 50px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.sets-header .header-item {
+  font-size: var(--header-item-font-size);
+  text-align: center;
+}
+
+.set-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 50px;
+  align-items: center;
+  margin: var(--set-item-margin) 0;
+  padding: var(--set-item-padding);
+  border-radius: var(--set-item-border-radius);
+  background-color: #f9f9f9;
+}
+
+.set-item input {
+  font-size: var(--set-item-font-size);
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: center;
+  font-family: var(--font-family);
+}
+
+.set-item input::placeholder {
+  font-family: var(--font-family);
+}
+
+.set-item input:focus {
+  outline: none;
+}
+
+.set-item .set-number {
+  font-size: var(--set-number-font-size);
+  text-align: center;
+}
+
+.set-item .set-data {
+  text-align: center;
+  font-size: var(--prev-data-font-size);
+  color: #888;
+  max-width: var(--prev-data-max-width);
+  word-wrap: break-word;
+}
+
+.set-item .set-action {
+  text-align: center;
+}
+
+.set-item .check-button {
+  width: var(--check-button-size);
+  height: var(--check-button-size);
+  background-color: #ccc;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.set-item.completed {
+  background-color: #e0ffe0;
+  border-top: var(--completed-set-border-width) solid var(--completed-set-border-color);
+  border-bottom: var(--completed-set-border-width) solid var(--completed-set-border-color);
+}
+
+.set-item.completed .check-button {
+  background-color: #80ff80;
+}
+
+/* Запрещаем изменение полей ввода в выполненном сете */
+.set-item.completed input {
+  background-color: #e0ffe0;
+  pointer-events: none;
+}
+
+/* Убираем изменение цвета при нажатии на кнопку выполнения */
+.set-item .check-button:active {
+  background-color: #ccc;
+}
+
+/* Центрируем кнопки "Добавить сет" и "Удалить упражнение" */
+.add-set-button, .delete-exercise-button {
+  display: block;
+  width: var(--primary-button-width);
+  height: var(--primary-button-height);
+  font-size: var(--primary-button-font-size);
+  color: var(--primary-button-text-color);
+  background-color: var(--primary-button-background-color);
+  border: var(--primary-button-border-width) solid var(--primary-button-border-color);
+  border-radius: var(--primary-button-border-radius);
+  margin: var(--primary-button-margin);
+  cursor: pointer;
+  font-family: var(--font-family);
+}
+
+.delete-exercise-button {
+  width: var(--delete-exercise-button-width);
+  height: var(--delete-exercise-button-height);
+  font-size: var(--delete-exercise-button-font-size);
+}
+
+/* Модальные окна */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #ffffff;
+  margin: 5% auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  border-radius: 10px;
+}
+
+.close {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Стили для модального окна подтверждения */
+.modal .modal-content p {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.modal .modal-buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.modal .confirm-button,
+.modal .cancel-button {
+  width: 40%;
+  height: 80px;
+  font-size: 32px;
+  border-radius: 10px;
+  border: 2px solid #000;
+  font-family: var(--font-family);
+  cursor: pointer;
+}
+
+.modal .confirm-button {
+  background-color: #00d800;
+  color: #fff;
+}
+
+.modal .cancel-button {
+  background-color: #7e7e7e;
+  color: #fff;
+}
+
+/* Размытие фона при открытом модальном окне */
+.modal-open {
+  overflow: hidden;
+}
+
+.modal-open::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  z-index: 99; /* Убедитесь, что это ниже модального окна */
+}
+
+/* Адаптивность */
+@media screen and (max-width: 480px) {
+  :root {
+    --icon-size: 32px;
+    --settings-icon-size: 24px;
+    --stat-label-font-size: 18px;
+
+    --time-value-font-size: 24px;
+    --xp-value-font-size: 24px;
+    --sets-value-font-size: 24px;
+
+    --primary-button-font-size: 20px;
+    --secondary-button-font-size: 20px;
+
+    --exercise-image-size: 60px;
+    --exercise-name-font-size: 20px;
+    --exercise-info-font-size: 16px;
+    --xp-sphere-size: 16px;
+
+    --note-font-size: 16px;
+    --set-item-font-size: 16px;
+    --set-number-font-size: 16px;
+    --header-item-font-size: 16px;
+    --prev-data-font-size: 12px;
+    --check-button-size: 20px;
+  }
+}

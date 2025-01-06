@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Создать программу</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @vite(['resources/css/addProgram.css', 'resources/js/addProgram.js'])
     <link rel="stylesheet" href="{{ asset('css/addProgram.css') }}">
     <style>
         @font-face {
@@ -14,6 +16,13 @@
     </style>
 </head>
 <body>
+    <div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999;">
+        <div id="modalContent" style="position:relative; margin:auto; top:20%; max-width:400px; padding:20px; background:white; border-radius:8px; text-align:center;">
+          <p id="modalText"></p>
+          <button id="modalOkButton" style="margin-top:20px; padding:10px 20px;">ОК</button>
+        </div>
+      </div>
+      
     <!-- Верхняя панель -->
     <div class="top-bar">
         <button id="cancelButton" class="icon-button">

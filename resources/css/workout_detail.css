@@ -1,0 +1,294 @@
+:root {
+    --font-family: 'INTRO', sans-serif;
+  
+    --icon-size: 64px;
+    --top-bar-height: 80px;
+    --separator-height: 10px;
+    --separator-color: #545454;
+  
+    --stat-label-font-size: 48px;
+  
+    --time-value-font-size: 50px;
+    --time-value-color: #152ac7;
+  
+    --xp-value-font-size: 50px;
+    --xp-value-color: #00d800;
+  
+    --sets-value-font-size: 50px;
+    --sets-value-color: #7e7e7e;
+  
+    --exercise-image-size: 160px;
+    --exercise-image-border-radius: 20px;
+    --exercise-image-border-color: #7e7e7e;
+    --exercise-image-border-width: 5px;
+  
+    --exercise-name-font-size: 48px;
+    --exercise-info-font-size: 36px;
+    --xp-sphere-size: 32px;
+  
+    --set-item-font-size: 40px;
+    --set-number-font-size: 40px;
+    --set-item-margin: 10px 0;
+    --set-item-padding: 10px;
+    --set-item-border-radius: 5px;
+  
+    --header-item-font-size: 40px;
+  
+    --background-color: #ffffff;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    overflow: auto; /* Прокрутка */
+  }
+  
+  .top-bar {
+    position: relative;
+    width: 100%;
+    height: var(--top-bar-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #pageTitle {
+    font-size: 64px;
+    text-transform: uppercase;
+  }
+  
+  .icon-button {
+    position: absolute;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .icon-button img {
+    width: 100%;
+    height: 100%;
+  }
+  
+  #backButton {
+    left: 5px;
+  }
+  
+  .separator {
+    border: none;
+    height: var(--separator-height);
+    background-color: var(--separator-color);
+    margin: 0;
+  }
+  
+  .workout-stats {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+  }
+  
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .stat-label {
+    font-size: var(--stat-label-font-size);
+  }
+  
+  #timeValue {
+    font-size: var(--time-value-font-size);
+    color: var(--time-value-color);
+  }
+  
+  #xpValue {
+    font-size: var(--xp-value-font-size);
+    color: var(--xp-value-color);
+  }
+  
+  #setsValue {
+    font-size: var(--sets-value-font-size);
+    color: var(--sets-value-color);
+  }
+  
+  #exercises {
+    padding: 20px;
+  }
+  
+  .exercise-item {
+    margin-bottom: 30px;
+  }
+  
+  .exercise-header {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  .exercise-image {
+    width: var(--exercise-image-size);
+    height: var(--exercise-image-size);
+    border: var(--exercise-image-border-width) solid var(--exercise-image-border-color);
+    border-radius: var(--exercise-image-border-radius);
+    margin-right: 10px;
+    cursor: pointer;
+  }
+  
+  .exercise-details {
+    flex: 1;
+  }
+  
+  .exercise-name {
+    font-size: var(--exercise-name-font-size);
+    text-transform: uppercase;
+  }
+  
+  .exercise-info {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+  }
+  
+  .exercise-info .info-item {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+    font-size: var(--exercise-info-font-size);
+  }
+  
+  .exercise-info .info-item img {
+    width: var(--xp-sphere-size);
+    height: var(--xp-sphere-size);
+    margin: 0 5px;
+  }
+  
+  .exercise-info .info-separator {
+    font-size: var(--exercise-info-font-size);
+    margin-right: 20px;
+  }
+  
+  .small-separator {
+    border: none;
+    height: 1px;
+    background-color: #ccc;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  
+  /* Убираем заметки, настройки, добавление сетов - не нужны */
+  /* Убираем галочки и зелёный фон (нет класса completed) */
+  /* Убираем "ПРЕД." - для этого изменим сетку. */
+  
+  /* Заголовки для сетов без "ПРЕД." */
+  .sets-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 50px;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .sets-header .header-item {
+    font-size: var(--header-item-font-size);
+    text-align: center;
+  }
+  
+  /* Каждый сет без галочки и без зелёного фона */
+  .set-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 50px;
+    align-items: center;
+    margin: var(--set-item-margin) 0;
+    padding: var(--set-item-padding);
+    border-radius: var(--set-item-border-radius);
+    background-color: #f9f9f9;
+  }
+  
+  .set-item input {
+    font-size: var(--set-item-font-size);
+    width: 100%;
+    border: none;
+    background: none;
+    text-align: center;
+    font-family: var(--font-family);
+    pointer-events: none; /* Нельзя редактировать */
+  }
+  
+  .set-item input:focus {
+    outline: none;
+  }
+  
+  .set-item .set-number {
+    font-size: var(--set-number-font-size);
+    text-align: center;
+  }
+  
+  .set-item .set-data {
+    display: none; /* Убираем колонку ПРЕД. полностью */
+  }
+  
+  .set-item .set-action {
+    text-align: center;
+  }
+  
+  /* Убираем чекбокс */
+  .set-item .set-action {
+    display: none;
+  }
+  
+  /* Нижняя панель навигации */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    display: flex;
+    justify-content: space-around;
+    border-top: 1px solid #ccc;
+  }
+  
+  .bottom-nav .nav-link {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    text-decoration: none;
+    color: #000;
+    font-size: 24px;
+    font-family: var(--font-family);
+  }
+  
+  .bottom-nav .nav-link img {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .bottom-nav .nav-link span {
+    display: block;
+    margin-top: 5px;
+  }
+  
+  /* Адаптивность */
+  @media screen and (max-width: 480px) {
+    :root {
+      --icon-size: 32px;
+      --stat-label-font-size: 18px;
+      --time-value-font-size: 24px;
+      --xp-value-font-size: 24px;
+      --sets-value-font-size: 24px;
+      --exercise-image-size: 60px;
+      --exercise-name-font-size: 20px;
+      --exercise-info-font-size: 16px;
+      --xp-sphere-size: 16px;
+      --set-item-font-size: 16px;
+      --set-number-font-size: 16px;
+      --header-item-font-size: 16px;
+    }
+  }
+  

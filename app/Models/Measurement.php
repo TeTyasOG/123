@@ -2,32 +2,36 @@
 
 namespace App\Models;
 
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Measurement extends Model
 {
-    // Указываем коллекцию MongoDB (по умолчанию используется имя модели в нижнем регистре с добавлением 's')
-    protected $collection = 'measurements';
+    use HasFactory;
 
-    // Указываем, что модель будет использовать MongoDB
-    protected $connection = 'mongodb';
+    // Таблица, связанная с моделью
+    protected $table = 'measurements';
 
     // Поля, которые могут быть заполнены
     protected $fillable = [
-        'userId',
+        'user_id',
         'date',
-        'measurements',
     ];
 
     // Типы данных для атрибутов
     protected $casts = [
-        'date' => 'datetime',
-        'measurements' => 'array',
+        'date' => 'date',
     ];
 
-    // Указываем связь с моделью User (если такая модель есть)
+    // Связь с пользователем
     public function user()
     {
-        return $this->belongsTo(User::class, '_id', 'userId');
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    // Связь с промежуточной таблицей (measurement_unit)
+    public function measurementUnits()
+    {
+        return $this->hasMany(MeasurementUnit::class, 'measurement_id');
     }
 }

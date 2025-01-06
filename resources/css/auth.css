@@ -1,0 +1,121 @@
+:root {
+  --icon-size: 64px;
+  --top-bar-height: 80px;
+  --separator-height: 10px;
+  --separator-color: #545454;
+  --setting-label-font-size: 48px;
+  --setting-input-font-size: 40px;
+}
+
+/* Общий стиль для фона и текста */
+body {
+  font-family: 'INTRO', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  color: #000;
+}
+
+/* Верхняя панель */
+.top-bar {
+  position: relative;
+  width: 100%;
+  height: var(--top-bar-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-title {
+  font-size: 64px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* Разделитель */
+.separator {
+  border: none;
+  height: var(--separator-height);
+  background-color: var(--separator-color);
+  margin: 0;
+}
+
+/* Контейнер для формы */
+.form-container {
+  padding: 20px;
+  
+}
+
+.form-item {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  font-size: var(--setting-label-font-size);
+  margin-bottom: 20px;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  font-size: var(--setting-input-font-size);
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 20px;
+  font-family: 'INTRO', sans-serif;
+  background: #f9f9f9;
+  box-sizing: border-box;
+  color: #000;
+  margin-bottom: 20px;
+}
+
+.form-input:focus, .form-select:focus {
+  outline: none;
+  background: #fff;
+}
+
+/* Кнопка отправки формы */
+.form-button {
+  width: 100%;
+  font-size: var(--setting-input-font-size);
+  padding: 15px;
+  border: 2px solid #000;
+  border-radius: 20px;
+  font-family: 'INTRO', sans-serif;
+  background: #7e7e7e;
+  color: #fff;
+  cursor: pointer;
+}
+
+.form-button:hover {
+  background: #6d6d6d;
+}
+
+/* Ссылки под формой (например, "Нет аккаунта?" "Уже есть аккаунт?") */
+.auth-link {
+  font-size: var(--setting-input-font-size);
+  text-align: center;
+  margin-top: 20px;
+}
+
+.auth-link a {
+  color: #545454;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.auth-link a:hover {
+  text-decoration: underline;
+}
+
+/* Адаптивность для мобильных устройств */
+@media screen and (max-width: 480px) {
+  :root {
+      --icon-size: 32px;
+      --setting-label-font-size: 20px;
+      --setting-input-font-size: 16px;
+  }
+
+  .page-title {
+      font-size: 32px;
+  }
+}

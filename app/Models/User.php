@@ -2,52 +2,72 @@
 
 namespace App\Models;
 
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class User extends Model
+class User extends Authenticatable
 {
-    // Указываем коллекцию, если она не совпадает с названием модели
-    protected $collection = 'users'; 
+    use HasFactory, Notifiable;
 
-    // Указываем заполняемые поля
+    // Указываем таблицу
+    protected $table = 'users';
+
+    // Заполняемые поля
     protected $fillable = [
         'nickname',
         'email',
         'password',
-        'age',
         'gender',
-        'height',
         'weight',
         'experience',
-        'level',
-        'achievements',
-        'muscleExperience',
-        'muscleLevels',
-        'exerciseExperience',
-        'exerciseLevels',
     ];
 
-    // Указываем типы полей
+    // Типы данных для атрибутов
     protected $casts = [
-        'age' => 'integer',
-        'height' => 'integer',
-        'weight' => 'integer',
-        'experience' => 'integer',
-        'level' => 'integer',
-        'achievements' => 'array', // Массив строк
-        'muscleExperience' => 'array', // Ассоциативный массив
-        'muscleLevels' => 'array', // Ассоциативный массив
-        'exerciseExperience' => 'array', // Объект
-        'exerciseLevels' => 'array', // Объект
+        'email_verified_at' => 'datetime',
+        'weight' => 'float',
+        'experience' => 'float',
     ];
 
-    // Поля с значениями по умолчанию
-    protected $attributes = [
-        'experience' => 0,
-        'level' => 1,
-        'muscleExperience' => [],
-        'muscleLevels' => [],
-        'exerciseExperience' => [],
-        'exerciseLevels' => [],
+    // Скрываемые поля (например, пароль)
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
+
+    // Связи многие ко многим с мышцами
+    public function muscles()
+    {
+        return $this->belongsToMany(Muscle::class, 'user_muscle_experience')
+            ->withPivot('experience') // Опыт в тренировках мышц
+            ->withTimestamps();
+    }
+
+    // Связь многие ко многим с упражнениями
+    public function exercises()
+    {
+        return $this->belongsToMany(Exercise::class, 'user_exercise_experience')
+            ->withPivot('experience') // Опыт в выполнении упражнений
+            ->withTimestamps();
+    }
+
+    // Связь многие ко многим с достижениями
+    public function achievements()
+    {
+        return $this->belongsToMany(Achievement::class, 'user_achievements')
+            ->withTimestamps();
+    }
+
+    // Дополнительная связь: тренировки
+    public function workouts()
+    {
+        return $this->hasMany(Workout::class);
+    }
+
+    // Связь с пользовательскими данными (например, настройки или профили)
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
 }

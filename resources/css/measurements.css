@@ -1,0 +1,336 @@
+:root {
+  --icon-size: 64px;
+  --top-bar-height: 50px;
+  --setting-label-font-size: 48px;
+  --setting-input-font-size: 40px;
+  --nav-icon-size: 48px;
+  --nav-text-size: 24px;
+
+  --modal-bg-color: #fff;
+  --modal-text-color: #333;
+  --modal-button-bg: #e0e0e0;
+  --modal-button-text-color: #333;
+  --modal-button-radius: 20px;
+  --modal-button-shadow: 0 2px 4px rgba(0,0,0,0.2);
+
+  --measurement-label-font-size: 20px;
+  --measurement-input-font-size: 16px;
+}
+
+body {
+  background: #f3f2f8;
+  margin: 0;
+  padding: 0;
+  font-family: 'INTRO', sans-serif;
+}
+
+/* Верхняя панель */
+.top-bar {
+  position: relative;
+  width: 100%;
+  height: var(--top-bar-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.page-title {
+  font-size: 64px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.icon-button {
+  position: absolute;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  background: #e0e0e0;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease;
+}
+
+.icon-button:hover {
+  background-color: #d5d5d5;
+}
+
+.icon-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+}
+
+#backButton {
+  left: 10px;
+  top: 40%;
+  transform: translateY(-50%);
+}
+
+#addButton {
+  right: 10px;
+  top: 40%;
+  transform: translateY(-50%);
+}
+
+/* История замеров */
+.measurements-history {
+  padding: 20px;
+  box-sizing: border-box;
+  padding-bottom: 60px; /* Увеличиваем нижний отступ */
+}
+
+.measurement-entry {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.measurement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.measurement-date {
+  font-size: 20px; /* Размер шрифта */
+  color: #777; /* Серый цвет */
+  text-align: right; /* Выравнивание по правому краю */
+  margin: -5px 0 5px 0; /* Убираем внешние отступы */
+  padding: 0; /* Убираем внутренние отступы */
+}
+
+.measurement-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.measurement-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.measurement-list li:last-child {
+  margin-bottom: 0;
+}
+
+.measurement-name {
+  font-size: 24px;
+  color: #333;
+  margin-right: 10px;
+}
+
+.measurement-value {
+  font-size: 24px;
+  color: #333;
+  margin-left: auto; /* Отодвигаем значение вправо */
+}
+
+.measurement-change {
+  width: 24px;
+  height: 24px;
+  margin-left: 10px; /* Оставляем пространство перед иконкой */
+}
+/* Нижняя панель навигации */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid #ccc;
+}
+
+.bottom-nav .nav-link {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  text-decoration: none;
+  color: #000;
+  font-size: var(--nav-text-size);
+  font-family: 'INTRO', sans-serif;
+}
+
+.bottom-nav .nav-link img {
+  width: var(--nav-icon-size);
+  height: var(--nav-icon-size);
+}
+
+.bottom-nav .nav-link span {
+  display: block;
+  margin-top: 5px;
+  text-transform: uppercase;
+}
+
+.bottom-nav .nav-link.active {
+  background-color: #e0e0e0;
+}
+
+/* Модальное окно */
+.modal {
+  display: none; 
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background-color: rgba(0,0,0,0.4);
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background-color: #ffffff;
+  margin: 5% auto;
+  width: 90%;
+  max-width: 300px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  padding: 20px;
+  position: relative;
+  text-align: center;
+}
+
+.modal-title {
+  font-size: 36px;
+  margin: 0 0 20px 0;
+  text-transform: uppercase;
+  color: #333;
+}
+
+/* Формы замеров в два ряда */
+.modal-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  gap: 20px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.measurement-field-container {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 80%;
+}
+
+.measurement-field-container label {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.measurement-field-container input {
+  font-size: 18px;
+  border: 2px solid #ccc;
+  border-radius: 20px;
+  padding: 5px 10px;
+  width: 40%;
+  text-align: center;
+  background: #f9f9f9;
+  font-family: 'INTRO', sans-serif;
+}
+
+.measurement-field-container input:focus {
+  outline: none;
+  background: #fff;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.modal-button {
+  background: var(--modal-button-bg);
+  color: var(--modal-button-text-color);
+  border: none;
+  border-radius: var(--modal-button-radius);
+  box-shadow: var(--modal-button-shadow);
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-family: 'INTRO', sans-serif;
+  width: 120px;
+}
+
+.modal-button:hover {
+  background: #d5d5d5;
+}
+
+.modal-button-blue {
+  background: #152ac7;
+  color: #fff;
+}
+
+.modal-button-blue:hover {
+  background: #0f1e9a;
+}
+
+
+/* Мобильная адаптация */
+@media screen and (max-width: 480px) {
+  :root {
+    --icon-size: 32px;
+    --setting-label-font-size: 20px;
+    --setting-input-font-size: 16px;
+    --nav-icon-size: 20px;
+    --nav-text-size: 10px;
+  }
+
+  .page-title {
+    font-size: 24px;
+  }
+
+  .measurement-field-container label,
+  .measurement-field-container input {
+    font-size: 14px;
+  }
+
+  .modal-title {
+    font-size: 24px;
+  }
+
+  .modal-form-grid {
+    grid-template-columns: 1fr 1fr; /* На маленьком экране в один столбец */
+  }
+
+  .modal-button {
+    font-size: 14px;
+    padding: 5px 10px;
+  }
+
+  .measurement-name,
+  .measurement-value {
+    font-size: 16px;
+  }
+
+  .measurement-date {
+    font-size: 16px;
+  }
+}

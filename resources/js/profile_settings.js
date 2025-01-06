@@ -69,13 +69,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error('Ошибка при загрузке данных пользователя:', error);
       // Показываем модалку об ошибке
       showModal('Ошибка при загрузке данных пользователя', [
-        { text: 'ОК', onClick: () => { closeModal(); window.location.href = '/profile.html'; } }
+        { text: 'ОК', onClick: () => { closeModal(); window.location.href = '/profile'; } }
       ], false);
     }
   }
 
   backButton.addEventListener('click', () => {
-    window.location.href = '/profile.html';
+    window.location.href = '/profile';
   });
 
   // Проверка полей
@@ -99,47 +99,47 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const error = validateInputs(newNickname, newGender, newWeight);
     if (error) {
-      // Показываем модалку с ошибкой валидации
-      showModal(error, [
-        { text: 'ОК', onClick: () => { closeModal(); } }
-      ], true);
-      return;
+        showModal(error, [{ text: 'ОК', onClick: () => { closeModal(); } }], true);
+        return;
     }
 
-    // Показываем модалку подтверждения
     showModal('Вы хотите изменить настройки профиля?', [
-      { text: 'ОТМЕНА', onClick: () => { closeModal(); } },
-      { text: 'ДА', blue: true, onClick: async () => {
-        closeModal();
-        // Пробуем сохранить
-        try {
-          const response = await fetch('/updateProfile', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nickname: newNickname, gender: newGender, weight: newWeight })
-          });
+        { text: 'ОТМЕНА', onClick: () => { closeModal(); } },
+        { text: 'ДА', blue: true, onClick: async () => {
+            closeModal();
+            try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').content; // CSRF-токен
 
-          if (response.ok) {
-            // Успешно, переходим на profile.html без уведомления
-            window.location.href = '/profile.html';
-          } else {
-            const errorData = await response.json();
-            // Ошибка сохранения
-            showModal('ПРОИЗОШЛА ОШИБКА В СОХРАНЕНИИ НАСТРОЕК', [
-              { text: 'ОК', onClick: () => { closeModal(); } }
-            ], true);
-            console.error('Ошибка сохранения:', errorData.message);
-          }
-        } catch (error) {
-          console.error('Ошибка:', error);
-          // Ошибка сохранения
-          showModal('ПРОИЗОШЛА ОШИБКА В СОХРАНЕНИИ НАСТРОЕК', [
-            { text: 'ОК', onClick: () => { closeModal(); } }
-          ], true);
-        }
-      }}
+                const response = await fetch('/updateProfile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({ nickname: newNickname, gender: newGender, weight: newWeight }),
+                });
+
+                if (response.ok) {
+                    window.location.href = '/profile'; // Успешное обновление
+                } else {
+                    const errorData = await response.json();
+                    showModal('ПРОИЗОШЛА ОШИБКА В СОХРАНЕНИИ НАСТРОЕК', [
+                        { text: 'ОК', onClick: () => { closeModal(); } }
+                    ], true);
+                    console.error('Ошибка сохранения:', errorData.message);
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showModal('ПРОИЗОШЛА ОШИБКА В СОХРАНЕНИИ НАСТРОЕК', [
+                    { text: 'ОК', onClick: () => { closeModal(); } }
+                ], true);
+            }
+        }},
     ], true);
-  });
+});
+
 
   nicknameInput.addEventListener('input', () => {
     if (nicknameInput.value.length > 0) {

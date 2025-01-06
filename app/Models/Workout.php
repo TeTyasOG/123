@@ -2,29 +2,34 @@
 
 namespace App\Models;
 
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Workout extends Model
 {
-    protected $collection = 'workouts'; // Укажите имя коллекции MongoDB
+    protected $table = 'workouts'; // Указываем имя таблицы
     protected $fillable = [
-        'userId',
+        'user_id',
         'date',
-        'exercises',
-        'totalXP',
-        'exercisesCount',
-        'totalWorkoutTime',
+        'total_experience',
+        'exercises_count',
+        'total_workout_time',
     ];
 
-    // Атрибуты с вложенными структурами
+    // Каст типов данных
     protected $casts = [
         'date' => 'datetime',
-        'exercises' => 'array', // Указываем, что поле exercises является массивом
+        'total_experience' => 'float',
     ];
 
     // Связь с пользователем
     public function user()
     {
-        return $this->belongsTo(User::class, '_id', 'userId');
+        return $this->belongsTo(User::class);
+    }
+
+    // Связь с упражнениями в тренировке
+    public function exercises()
+    {
+        return $this->hasMany(WorkoutExercise::class, 'workout_id');
     }
 }

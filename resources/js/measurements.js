@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalText = document.getElementById('modalText');
+  const modalOkButton = document.getElementById('modalOkButton');
+
   const backButton = document.getElementById('backButton');
   const addButton = document.getElementById('addButton');
   const measurementsHistory = document.getElementById('measurementsHistory');
@@ -7,6 +11,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const cancelModalButton = document.getElementById('cancelModalButton');
   const applyChangesButton = document.getElementById('applyChangesButton');
   const measurementsForm = document.getElementById('measurementsForm');
+
+  function showModal(text) {
+    modalText.textContent = text;
+    modalOverlay.style.display = 'block';
+
+    // Закрытие по кнопке "ОК"
+    modalOkButton.addEventListener('click', closeModal);
+
+    // Закрытие при клике на фон
+    modalOverlay.addEventListener('click', function overlayHandler(e) {
+      if (e.target === modalOverlay) {
+        closeModal();
+        modalOverlay.removeEventListener('click', overlayHandler); // Убираем обработчик после закрытия
+      }
+    });
+  }
+
+  function closeModal() {
+    modalOverlay.style.display = 'none';
+  }
 
   const measurementParameters = [
     'Масса тела (кг)',
@@ -31,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let userData = {};
 
   backButton.addEventListener('click', () => {
-    window.location.href = 'profile.html';
+    window.location.href = 'profile';
   });
 
   addButton.addEventListener('click', () => {
@@ -79,13 +103,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (Object.keys(measurementEntry.measurements).length > 0) {
       try {
-        const response = await fetch('/addMeasurement', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(measurementEntry)
-        });
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            const response = await fetch('/addMeasurement', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                
+                body: JSON.stringify(measurementEntry)
+            });
 
         if (response.ok) {
           await loadMeasurementsFromServer();
@@ -95,17 +123,17 @@ document.addEventListener('DOMContentLoaded', () => {
             userData.weight = measurementEntry.measurements['Масса тела (кг)'];
           }
         } else {
-          console.error('Ошибка при сохранении замера на сервере.');
+          showModal('Ошибка при сохранении замера на сервере.');
           // Можно показать модалку ошибки, если нужно
         }
       } catch (error) {
-        console.error('Ошибка сети:', error);
+        showModal('Ошибка сети. Пожалуйста, проверьте соединение.');
         // Можно показать модалку ошибки, если нужно
       }
     } else {
       // Можно сделать модальное уведомление о том, что нужно ввести хотя бы один параметр.
       // Для простоты оставим alert:
-      alert('Пожалуйста, введите хотя бы один замер.');
+      showModal('Пожалуйста, введите хотя бы один замер.');
     }
   });
 
@@ -116,122 +144,124 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function renderMeasurementsHistory() {
+    // Сортируем данные по уникальному идентификатору id в порядке возрастания
+    measurementsData.sort((a, b) => a.id - b.id);
+
     measurementsHistory.innerHTML = '';
     if (measurementsData.length === 0) {
-      // Если нет замеров
-      const noData = document.createElement('p');
-      noData.textContent = 'Нет данных о замерах.';
-      measurementsHistory.appendChild(noData);
-      return;
+        const noData = document.createElement('p');
+        noData.textContent = 'Нет данных о замерах.';
+        measurementsHistory.appendChild(noData);
+        return;
     }
 
-    measurementsData.forEach((entry, index) => {
-      const entryDiv = document.createElement('div');
-      entryDiv.className = 'measurement-entry';
+    // Храним последние значения каждого параметра
+    const lastValues = {};
 
-      // Заголовок с датой
-      const headerDiv = document.createElement('div');
-headerDiv.className = 'measurement-header';
+    // Идём по записям снизу вверх
+    measurementsData.forEach((entry) => {
+        const entryDiv = document.createElement('div');
+        entryDiv.className = 'measurement-entry';
 
-// Добавляем дату в заголовок
-const dateDiv = document.createElement('div');
-dateDiv.className = 'measurement-date';
-const formattedDate = new Date(entry.date).toLocaleDateString('ru-RU');
-dateDiv.textContent = formattedDate;
+        // Заголовок с датой
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'measurement-header';
 
-headerDiv.appendChild(dateDiv);
-entryDiv.appendChild(headerDiv); // Добавляем заголовок в общий блок
+        const dateDiv = document.createElement('div');
+        dateDiv.className = 'measurement-date';
+        const formattedDate = new Date(entry.date).toLocaleDateString('ru-RU');
+        dateDiv.textContent = formattedDate;
 
+        headerDiv.appendChild(dateDiv);
+        entryDiv.appendChild(headerDiv);
 
-      // Список замеров
-      const ul = document.createElement('ul');
-      ul.className = 'measurement-list';
+        // Список замеров
+        const ul = document.createElement('ul');
+        ul.className = 'measurement-list';
 
-      let previousMeasurements = null;
-      if (index < measurementsData.length - 1) {
-        previousMeasurements = measurementsData.slice(index + 1);
-      }
+        Object.entries(entry.measurements).forEach(([name, value]) => {
+            const li = document.createElement('li');
 
-      for (const param in entry.measurements) {
-        const li = document.createElement('li');
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'measurement-name';
+            nameSpan.textContent = name;
 
-        const nameSpan = document.createElement('span');
-        nameSpan.className = 'measurement-name';
-        nameSpan.textContent = param;
+            const valueSpan = document.createElement('span');
+            valueSpan.className = 'measurement-value';
+            valueSpan.textContent = value;
 
-        const valueSpan = document.createElement('span');
-        valueSpan.className = 'measurement-value';
-        valueSpan.textContent = entry.measurements[param];
+            const changeImg = document.createElement('img');
+            changeImg.className = 'measurement-change';
 
-        const changeImg = document.createElement('img');
-        changeImg.className = 'measurement-change';
-
-        let previousValue = null;
-        if (previousMeasurements) {
-          for (let i = 0; i < previousMeasurements.length; i++) {
-            if (previousMeasurements[i].measurements &&
-                previousMeasurements[i].measurements[param] !== undefined) {
-              previousValue = previousMeasurements[i].measurements[param];
-              break;
+            // Проверяем изменения относительно последнего значения
+            if (lastValues[name] === undefined) {
+                changeImg.src = 'images/icons/arrow_new.png'; // Новый параметр
+            } else {
+                const lastValue = lastValues[name];
+                if (value > lastValue) {
+                    changeImg.src = 'images/icons/arrow_up.png'; // Замер увеличился
+                } else if (value < lastValue) {
+                    changeImg.src = 'images/icons/arrow_down.png'; // Замер уменьшился
+                } else {
+                    changeImg.src = 'images/icons/arrow_equal.png'; // Замер остался неизменным
+                }
             }
-          }
-        }
 
-        if (previousValue !== null) {
-          if (entry.measurements[param] > previousValue) {
-            changeImg.src = 'images/icons/arrow_up.png';
-          } else if (entry.measurements[param] < previousValue) {
-            changeImg.src = 'images/icons/arrow_down.png';
-          } else {
-            changeImg.src = 'images/icons/arrow_equal.png';
-          }
-        } else {
-          changeImg.src = 'images/icons/arrow_new.png';
-        }
+            // Обновляем последнее значение параметра
+            lastValues[name] = value;
 
-        li.appendChild(nameSpan);
-        li.appendChild(valueSpan);
-        li.appendChild(changeImg);
-        ul.appendChild(li);
-      }
+            li.appendChild(nameSpan);
+            li.appendChild(valueSpan);
+            li.appendChild(changeImg);
+            ul.appendChild(li);
+        });
 
-      entryDiv.appendChild(ul);
-      measurementsHistory.appendChild(entryDiv);
-
+        entryDiv.appendChild(ul);
+        measurementsHistory.appendChild(entryDiv);
     });
-  }
 
-  async function loadMeasurementsFromServer() {
+    // Перевернуть историю после рендера, чтобы показывать новые записи сверху
+    const reversedHistory = Array.from(measurementsHistory.children).reverse();
+    measurementsHistory.innerHTML = '';
+    reversedHistory.forEach((child) => measurementsHistory.appendChild(child));
+}
+
+
+async function loadMeasurementsFromServer() {
     try {
-      const response = await fetch('/getMeasurements');
-      if (response.ok) {
-        measurementsData = await response.json();
-        renderMeasurementsHistory();
-      } else {
-        console.error('Ошибка при загрузке замеров с сервера.');
-      }
-    } catch (error) {
-      console.error('Ошибка сети:', error);
-    }
-  }
+        const response = await fetch('/getMeasurements');
+        if (response.ok) {
+            measurementsData = await response.json();
 
-  async function loadUserDataFromServer() {
+            // Вызываем рендер с отсортированными данными
+            renderMeasurementsHistory();
+        } else {
+          showModal('Ошибка при загрузке замеров с сервера.');
+        }
+    } catch (error) {
+      showModal('Ошибка сети при загрузке данных. Проверьте подключение к интернету.');
+    }
+}
+
+
+async function loadUserDataFromServer() {
     try {
-      const response = await fetch('/getUserProfile');
-      if (response.ok) {
-        userData = await response.json();
-      } else {
-        console.error('Ошибка при загрузке данных пользователя.');
-      }
+        const response = await fetch('/getUserProfile');
+        if (response.ok) {
+            userData = await response.json();
+        } else {
+          showModal('Ошибка при загрузке данных пользователя.');
+        }
     } catch (error) {
-      console.error('Ошибка сети:', error);
+      showModal('Ошибка сети:', error);
     }
-  }
+}
 
-  async function init() {
+async function init() {
     await loadUserDataFromServer();
     await loadMeasurementsFromServer();
-  }
+}
 
-  init();
+init();
+
 });

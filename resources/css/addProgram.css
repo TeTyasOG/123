@@ -1,0 +1,399 @@
+:root {
+  --font-family: 'INTRO', sans-serif;
+
+  --icon-size: 64px;
+  --top-bar-height: 80px;
+  --separator-height: 10px;
+  --separator-color: #545454;
+
+  --stats-label-font-size: 40px;
+  --stats-value-green-color: #00d800;
+  --stats-value-blue-color: #152ac7;
+  --stats-value-gray-color: #7e7e7e;
+  --stats-value-font-size: 40px;
+
+  --program-name-font-size: 40px;
+  --program-name-background: #eee; 
+  --program-name-text-color: #000;
+
+  --exercise-name-font-size: 48px;
+  --exercise-image-size: 140px;
+  --exercise-image-border-radius: 20px;
+  --exercise-image-border-width: 4px;
+  --exercise-image-border-color: #7e7e7e;
+
+  --xp-value-font-size: 36px;
+  --xp-value-color: #00d800;
+  --muscle-name-color: #152ac7;
+  --xp-label-color: #152ac7;
+
+  --set-input-font-size: 32px;
+
+  --modal-background-color: rgba(0,0,0,0.4);
+  --modal-content-background: #fff;
+  --modal-border-radius: 20px;
+  --modal-title-font-size: 32px;
+  --modal-button-font-size: 32px;
+
+  --button-font-size: 32px;
+  --button-color: #fff;
+  --button-background: #7e7e7e;
+  --button-border: 2px solid #000;
+  --button-border-radius: 10px;
+
+  --add-exercise-button-width: 50%;
+  --add-exercise-button-height: 120px;
+
+  --section-padding: 20px;
+
+  --xp-line-height: 1.2;
+  --xp-line-margin: 5px 0;
+}
+
+* {
+  font-family: var(--font-family);
+}
+
+input, button {
+  font-family: var(--font-family);
+}
+
+input::placeholder {
+  font-family: var(--font-family);
+  color: #aaa;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  background: #fff;
+  overflow-y: auto;
+}
+
+.top-bar {
+  position: relative;
+  width: 100%;
+  height: var(--top-bar-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#pageTitle {
+  font-size: 64px;
+  text-transform: uppercase;
+}
+
+.icon-button {
+  position: absolute;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.icon-button img {
+  width: 100%;
+  height: 100%;
+}
+
+#cancelButton {
+  left: 5px;
+}
+
+#finishButton {
+  right: 5px;
+}
+
+.separator {
+  border: none;
+  height: var(--separator-height);
+  background-color: var(--separator-color);
+  margin: 0;
+}
+
+.program-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--section-padding);
+}
+
+.program-stats-left, .program-stats-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stats-label {
+  font-size: var(--stats-label-font-size);
+  text-transform: uppercase;
+}
+
+.stats-value-green {
+  font-size: var(--stats-value-font-size);
+  color: var(--stats-value-green-color);
+}
+
+.stats-value-gray {
+  font-size: var(--stats-value-font-size);
+  color: var(--stats-value-gray-color);
+}
+
+.program-name-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.program-name {
+  font-size: var(--program-name-font-size);
+  text-align: center;
+  background: var(--program-name-background);
+  border: none;
+  border-radius: 20px;
+  color: var(--program-name-text-color);
+  width: 80%;
+  padding: 10px;
+}
+
+.program-name:focus {
+  outline: none;
+}
+
+#exercisesContainer {
+  padding: var(--section-padding);
+}
+
+/* Карточка упражнения */
+.exercise-card {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-bottom: 40px;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 20px;
+}
+
+.exercise-image {
+  width: var(--exercise-image-size);
+  height: var(--exercise-image-size);
+  border: var(--exercise-image-border-width) solid var(--exercise-image-border-color);
+  border-radius: var(--exercise-image-border-radius);
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.exercise-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
+}
+
+.exercise-name-block {
+  font-size: var(--exercise-name-font-size);
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: 20px;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+/* Таблица ввода под картинкой - теперь под названием упражнения */
+.exercise-inputs {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.header-row, .input-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+
+.header-item {
+  font-size: var(--set-input-font-size);
+  text-transform: uppercase;
+  margin-right: 40px;
+}
+
+.input-row .set-input {
+  font-size: var(--set-input-font-size);
+  background: none;
+  border: none;
+  border-bottom: 2px solid #000;
+  width: 80px;
+  text-align: center;
+  margin-right: 40px;
+}
+
+.input-row .set-input:focus {
+  outline: none;
+}
+
+.buttons-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 20px;
+}
+
+.add-set-button, .delete-exercise-button {
+  width: 200px;
+  height: 80px;
+  font-size: var(--button-font-size);
+  background: var(--button-background);
+  color: var(--button-color);
+  border: var(--button-border);
+  border-radius: var(--button-border-radius);
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.xp-block {
+  align-self: flex-start; /* Выравнивание блока по левой стороне */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Выравнивание текста по левому краю */
+  margin-top: 10px;
+}
+
+.xp-line {
+  font-size: var(--xp-value-font-size); /* Размер текста для строки */
+  line-height: 1.5; /* Увеличенный межстрочный интервал для равномерности */
+  margin: 5px 0; /* Пространство между строками */
+  display: flex;
+  align-items: baseline; /* Вертикальное выравнивание текста */
+}
+
+.xp-line .xp-value {
+  color: var(--xp-value-color); /* Зеленый цвет для значения XP */
+  font-weight: bold; /* Жирный шрифт для значения XP */
+  font-size: 1.2em; /* Увеличение размера текста */
+  margin-right: 8px; /* Расстояние между XP и описанием */
+}
+
+.xp-line .xp-label {
+  color: var(--xp-label-color); /* Цвет описания XP (синий) */
+  font-size: 0.9em; /* Чуть меньшее значение для описания */
+}
+
+.xp-line .muscle-name {
+  color: var(--muscle-name-color); /* Цвет для названия мышцы */
+  font-weight: normal; /* Нормальный шрифт для второстепенной информации */
+  display: inline-block; /* Не растягивает текст */
+  word-break: break-word; /* Перенос длинных слов */
+  overflow-wrap: anywhere; /* Перенос в любом месте */
+  white-space: normal; /* Разрешает перенос на новую строку */
+  max-width: 60%; /* Убедитесь, что текст не выходит за пределы контейнера */
+  text-align: left; /* Выравнивание текста по левому краю */
+  line-height: 1.2; /* Добавляет пространство между строками */
+}
+/* Кнопка Добавить упражнение */
+.add-exercise-button-container {
+  text-align: center;
+  margin: 40px 0;
+}
+
+.add-exercise-button {
+  width: var(--add-exercise-button-width);
+  height: var(--add-exercise-button-height);
+  font-size: var(--button-font-size);
+  background: var(--button-background);
+  color: var(--button-color);
+  border: var(--button-border);
+  border-radius: var(--button-border-radius);
+  cursor: pointer;
+}
+
+/* Модальные окна */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background-color: var(--modal-background-color);
+}
+
+.modal-content {
+  background-color: var(--modal-content-background);
+  margin: 10% auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 600px;
+  border-radius: var(--modal-border-radius);
+  text-align: center;
+  font-family: var(--font-family);
+}
+
+.modal-content p {
+  font-size: var(--modal-title-font-size);
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.confirm-button, .cancel-button {
+  width: 40%;
+  height: 80px;
+  font-size: var(--modal-button-font-size);
+  border-radius: 10px;
+  border: 2px solid #000;
+  font-family: var(--font-family);
+  cursor: pointer;
+}
+
+.confirm-button {
+  background-color: #00d800;
+  color: #fff;
+}
+
+.cancel-button {
+  background-color: #7e7e7e;
+  color: #fff;
+}
+
+/* Адаптивность */
+@media screen and (max-width: 480px) {
+  :root {
+    --icon-size: 32px;
+    --program-name-font-size: 24px;
+    --stats-label-font-size: 24px;
+    --stats-value-font-size: 24px;
+    --exercise-name-font-size: 24px;
+    --set-input-font-size: 20px;
+    --xp-value-font-size: 20px;
+  }
+
+  .exercise-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .header-item, .input-row .set-input {
+    margin-right: 20px;
+  }
+
+  .buttons-row button {
+    width: 120px;
+    height: 60px;
+    font-size: 20px;
+  }
+
+  .add-exercise-button {
+    font-size: 24px;
+  }
+}

@@ -1,69 +1,88 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Регистрация</title>
-  <!-- Подключение стилей через Laravel Mix -->
-  <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
-  <!-- Подключение шрифта INTRO -->
-  <style>
-    @font-face {
-      font-family: 'INTRO';
-      src: url('{{ asset('fonts/INTRO.ttf') }}') format('truetype');
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
-  <!-- Верхняя панель -->
-  <div class="top-bar">
-    <h1 class="page-title">РЕГИСТРАЦИЯ</h1>
-  </div>
-  <hr class="separator">
+    <h1>Регистрация</h1>
 
-  <div class="form-container">
+    <!-- Вывод ошибок -->
+    @if ($errors->any())
+        <div style="color: red;">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Вывод сообщения об успехе -->
+    @if (session('success'))
+        <div style="color: green;">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <!-- Форма регистрации -->
-    <form id="registerForm" method="POST" action="{{ route('register') }}">
-      @csrf <!-- Защита от CSRF -->
-      
-      <div class="form-item">
-        <div class="form-label">Никнейм:</div>
-        <input type="text" id="nickname" name="nickname" class="form-input" required placeholder="Введите никнейм">
-      </div>
+    <form method="POST" action="{{ route('register') }}">
+        @csrf <!-- CSRF токен обязателен -->
 
-      <div class="form-item">
-        <div class="form-label">Email:</div>
-        <input type="email" id="email" name="email" class="form-input" required placeholder="Введите Email">
-      </div>
+        <!-- Поле "Никнейм" -->
+        <label for="nickname">Никнейм:</label>
+        <input type="text" id="nickname" name="nickname" value="{{ old('nickname') }}" required>
+        @error('nickname')
+            <div style="color: red;">{{ $message }}</div>
+        @enderror
+        <br>
 
-      <div class="form-item">
-        <div class="form-label">Пароль:</div>
-        <input type="password" id="password" name="password" class="form-input" required placeholder="Введите пароль">
-      </div>
+        <!-- Поле "Email" -->
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="{{ old('email') }}" required>
+        @error('email')
+            <div style="color: red;">{{ $message }}</div>
+        @enderror
+        <br>
 
-      <div class="form-item">
-        <div class="form-label">Пол:</div>
-        <select id="gender" name="gender" class="form-select" required>
-          <option value="">Выберите пол</option>
-          <option value="male">Мужской</option>
-          <option value="female">Женский</option>
+        <!-- Поле "Пароль" -->
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required>
+        @error('password')
+            <div style="color: red;">{{ $message }}</div>
+        @enderror
+        <br>
+
+        <!-- Поле "Подтверждение пароля" -->
+        <label for="password_confirmation">Подтверждение пароля:</label>
+        <input type="password" id="password_confirmation" name="password_confirmation" required>
+        <br>
+
+        <!-- Поле "Пол" -->
+        <label for="gender">Пол:</label>
+        <select id="gender" name="gender" required>
+            <option value="" disabled selected>Выберите пол</option>
+            <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Мужской</option>
+            <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Женский</option>
         </select>
-      </div>
+        @error('gender')
+            <div style="color: red;">{{ $message }}</div>
+        @enderror
+        <br>
 
-      <div class="form-item">
-        <div class="form-label">Вес (кг):</div>
-        <input type="number" id="weight" name="weight" class="form-input" required placeholder="Введите вес">
-      </div>
+        <!-- Поле "Вес" -->
+        <label for="weight">Вес (кг):</label>
+        <input type="number" id="weight" name="weight" value="{{ old('weight') }}" min="1" required>
+        @error('weight')
+            <div style="color: red;">{{ $message }}</div>
+        @enderror
+        <br>
 
-      <button type="submit" class="form-button">Зарегистрироваться</button>
+        <!-- Кнопка отправки -->
+        <button type="submit">Зарегистрироваться</button>
     </form>
-
-    <div class="auth-link">
-      Уже есть аккаунт? <a href="{{ route('login') }}">Войти</a>
-    </div>
-  </div>
-
-  <!-- Подключение JavaScript через Laravel Mix -->
-  <script src="{{ asset('js/register.js') }}"></script>
 </body>
 </html>

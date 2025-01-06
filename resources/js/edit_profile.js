@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
         if (response.ok) {
           alert('Профиль успешно обновлён.');
-          window.location.href = '/profile.html';
+          window.location.href = '/profile';
         } else {
           const errorData = await response.json();
           alert('Ошибка: ' + errorData.message);
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
     // Обработчик кнопки "Отмена"
     cancelButton.addEventListener('click', () => {
-      window.location.href = '/profile.html';
+      window.location.href = '/profile';
     });
   });
   

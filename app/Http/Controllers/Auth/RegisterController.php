@@ -10,17 +10,19 @@ use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
 
+    public function create()
+
+    {
+        return view('auth.register');
+        
+    }
+
+    public function store()
+    {
+        
+    }
+    
     use RegistersUsers;
 
     /**
@@ -64,22 +66,4 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\Models\User
      */
-    protected function create(array $data)
-{
-    return User::create([
-        'nickname' => $data['nickname'],
-        'email' => $data['email'],
-        'password' => Hash::make($data['password']),
-        'gender' => $data['gender'],
-        'weight' => $data['weight'],
-        'experience' => 0,
-        'level' => 1,
-        'achievements' => [],
-        'muscleExperience' => [],
-        'muscleLevels' => [],
-        'exerciseExperience' => [],
-        'exerciseLevels' => [],
-    ]);
-}
-
 }

@@ -11,17 +11,36 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Таблица программ
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Связь с пользователем
+            $table->string('name'); // Название программы
+            $table->integer('experience')->default(0); // Опыт
+            $table->integer('times_completed')->default(0); // Количество пройденных раз
+            $table->timestamps();
+        });
+
+        // Промежуточная таблица для связи программ и упражнений
+        Schema::create('program_exercises', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('program_id')->constrained('programs')->onDelete('cascade'); // Связь с программой
+            $table->foreignId('exercise_id')->constrained('exercises')->onDelete('cascade'); // Связь с упражнением
+            $table->integer('sets'); // Количество сетов
+            $table->float('weight'); // Вес в сете
+            $table->integer('reps'); // Количество повторений
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
+        Schema::dropIfExists('program_exercises');
         Schema::dropIfExists('programs');
     }
 };

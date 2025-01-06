@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Профиль</title>
-  <!-- Подключение стилей через Laravel Mix -->
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  @vite(['resources/css/profile.css', 'resources/js/profile.js'])
+  <!-- Подключение стилей -->
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
   <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
   <style>
@@ -12,8 +15,16 @@
       font-family: 'INTRO';
       src: url('{{ asset('fonts/INTRO.ttf') }}') format('truetype');
     }
+    
   </style>
 </head>
+<div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999;">
+  <div id="modalContent" style="position:relative; margin:auto; top:20%; max-width:400px; padding:20px; background:white; border-radius:8px; text-align:center;">
+    <p id="modalText"></p>
+    <button id="modalOkButton" style="margin-top:20px; padding:10px 20px;">ОК</button>
+  </div>
+</div>
+
 <body>
   <!-- Верхняя панель с кнопками -->
   <div class="top-bar">
@@ -37,7 +48,7 @@
   
     <div class="screens-container">
       <div class="screen left-screen">
-        <!-- Здесь будут большие мышцы через JS -->
+        <!-- Здесь будут крупные мышцы (3 шт) через JS -->
       </div>
       <div class="screen center-screen">
         <div class="center-content">
@@ -52,7 +63,7 @@
         </div>
       </div>
       <div class="screen right-screen">
-        <!-- Здесь будут малые мышцы через JS -->
+        <!-- Здесь будут мелкие мышцы (3 шт) через JS -->
       </div>
     </div>
   </div>
@@ -75,13 +86,6 @@
     <p class="empty-text">ПОКА ТУТ ПУСТО</p>
   </div>
   
-  <!-- Модальное окно для уровней мышц -->
-  <div id="muscleLevelsModal" class="modal" onclick="closeMuscleLevelsModal()">
-    <div class="modal-content" style="border-radius: 20px;">
-    <!-- Содержимое модального окна -->
-    </div>
-  </div>
-
   <!-- Нижняя панель навигации -->
   <nav class="bottom-nav">
     <a href="{{ url('/shop') }}" class="nav-link">
@@ -98,7 +102,7 @@
     </a>
   </nav>
 
-  <!-- Подключение скриптов через Laravel Mix -->
+  <!-- Подключение скриптов -->
   <script src="{{ asset('js/profile.js') }}"></script>
 </body>
 </html>

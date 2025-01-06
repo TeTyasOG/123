@@ -1,0 +1,513 @@
+/* profile.css */
+
+/* CSS Variables for sizes and positions */
+:root {
+  /* Основные размеры для desktop/tablet */
+  --progress-size: 320px;         /* уменьшили базовый размер прогресса */
+  --icon-size: 48px;
+  --button-height: 100px;
+  --button-width: 40%;
+  --button-font-size: 28px;
+  --button-bg-color: #e0e0e0;
+  --button-bg-hover: #d5d5d5;
+  --progress-line-width: 60;
+  --achievement-img-size: 40px;
+  --level-number-size: 80px;
+  --nav-icon-size: 32px;
+  --nav-text-size: 16px;
+  --separator-height: 6px;
+  --separator-color: #545454;
+  --nickname-font-size: 48px;
+  --section-title-font-size: 36px;
+  --achievement-text-font-size: 16px;
+  --top-bar-padding: 0px;
+  --top-bar-height: 64px;
+  --separator-margin: 20px 0;
+  --buttons-margin: 20px;
+  --buttons-gap: 20px;
+  --achievement-section-margin: 0 20px;
+  --section-title-margin: 20px 20px 10px 20px;
+  --progress-bar-color: #2ac715;
+}
+
+/* Общие стили */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'INTRO', sans-serif;
+  background-color: #f3f2f8;
+}
+
+/* Убираем зелёный эффект нажатия для кнопок */
+button {
+  outline: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+button:focus {
+  outline: none;
+}
+
+button:active {
+  background: none;
+}
+
+button::-moz-focus-inner {
+  border: 0;
+}
+
+/* Верхняя панель */
+.top-bar {
+  position: relative;
+  width: 100%;
+  height: var(--top-bar-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff; /* Цвет панели */
+  border-radius: 0 0 20px 20px; /* Закругление только снизу */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Тень внизу панели */
+  z-index: 10; /* Поверх других элементов */
+}
+
+.muscle-progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: #ddd;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.muscle-progress-bar {
+  height: 100%;
+  background-color: #37b24d; /* зелёный или другой цвет */
+  border-radius: 4px;
+  width: 0; /* динамически меняется */
+  transition: width 0.3s ease;
+}
+
+.icon-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--icon-size); /* Размер кнопки */
+  height: var(--icon-size);
+  background-color: #e0e0e0; /* Серый фон */
+  border-radius: 50%; /* Делаем фон круглым */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Тень для кнопки */
+  transition: background-color 0.3s ease; /* Плавное изменение цвета */
+}
+
+.icon-button:hover {
+  background-color: #d5d5d5; /* Серый цвет при наведении */
+}
+
+.icon-button img {
+  width: 70%; /* Размер иконки внутри кнопки */
+  height: 70%;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)); /* Тень для иконок */
+}
+
+
+#logoutButton {
+  top: 20px;
+  left: 8px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+#settingsButton {
+  top: 20px;
+  right: 8px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+#userNickname {
+  font-size: calc(var(--nickname-font-size) - 4px); /* Немного уменьшаем размер текста */
+  margin: 0; /* Убираем лишние отступы */
+  position: relative;
+  top: -4px; /* Поднимаем текст вверх */
+  text-align: center;
+}
+
+
+/* Прогресс-бар */
+.progress-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 25px;
+}
+
+.progress-circle {
+  position: relative;
+  width: var(--progress-size);
+  height: var(--progress-size);
+}
+
+.progress-circle canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--progress-size);
+  height: var(--progress-size);
+}
+
+.progress-circle #userLevel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: var(--level-number-size);
+}
+
+/* Кнопки */
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: var(--buttons-margin);
+  gap: var(--buttons-gap);
+  height: 00px; /* Задайте фиксированную высоту */
+}
+
+.text-button {
+  width: var(--button-width);
+  height: var(--button-height);
+  background-color: #f3f3f3; /* Светло-серый фон */
+  border: none;
+  border-radius: 16px; /* Закруглённые углы */
+  font-size: var(--button-font-size);
+  font-family: 'INTRO', sans-serif;
+  color: #333; /* Тёмно-серый цвет текста */
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Лёгкая тень */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease; /* Плавное изменение */
+}
+
+.text-button:hover {
+  background-color: #e0e0e0; /* Чуть более тёмный серый цвет при наведении */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Усиливаем тень при наведении */
+}
+
+.text-button:active {
+  background-color: #d5d5d5; /* Цвет при нажатии */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transform: translateY(2px); /* Эффект "нажатия" */
+}
+
+
+/* Заголовок раздела */
+.section-title {
+  text-align: left;
+  font-size: var(--section-title-font-size);
+  margin: var(--section-title-margin);
+}
+
+.achievements-container {
+  background-color: #ffffff; /* Белый фон */
+  border-radius: 20px; /* Закруглённые углы */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Лёгкая тень */
+  margin: 20px; /* Отступы слева и справа */
+  padding: 10px 20px 20px 20px; /* Внутренние отступы */
+  text-align: center; /* Центрирование текста */
+  min-height: 800px; /* Увеличиваем минимальную высоту */
+  display: flex;
+  flex-direction: column; /* Элементы располагаются в колонке */
+  align-items: center; /* Центрирование по горизонтали */
+  justify-content: flex-start; /* Располагаем элементы сверху */
+  gap: 20px; /* Расстояние между заголовком и текстом */
+  margin-top: 50px; /* Отодвигает контейнер вниз на 50 пикселей */
+}
+
+.section-title {
+  font-size: var(--section-title-font-size);
+  color: #333; /* Основной цвет заголовка */
+  margin: 0; /* Убираем лишние отступы */
+}
+
+.empty-text {
+  color: #a0a0a0; /* Серый цвет текста */
+  font-size: 18px; /* Размер шрифта */
+  font-weight: normal;
+  margin: 0; /* Убираем лишние отступы */
+}
+
+
+
+.separator {
+  display: none; /* Убираем палку-разделитель */
+}
+
+
+
+.main-level {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+
+.section-title {
+  font-size: var(--section-title-font-size);
+  text-align: center;
+}
+
+
+
+
+.level-progress-container {
+  width: 50px; /* Ширина контейнера */
+  height: 25px; /* Высота контейнера */
+  background-color: #ffffff; /* Белый фон */
+  border-radius: 12px; /* Закруглённые углы */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Лёгкая тень */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 10px; /* Отступы между кнопками */
+}
+
+.level-progress-container p {
+  font-size: 12px; /* Размер текста */
+  color: #333; /* Цвет текста */
+  font-weight: bold;
+  margin: 0;
+}
+
+/* Нижняя навигационная панель */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid #ccc;
+}
+
+.bottom-nav .nav-link {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  text-decoration: none;
+  color: #000;
+  font-size: var(--nav-text-size);
+  font-family: 'INTRO', sans-serif;
+}
+
+.bottom-nav .nav-link img {
+  width: var(--nav-icon-size);
+  height: var(--nav-icon-size);
+}
+
+.bottom-nav .nav-link.active {
+  background-color: #e0e0e0;
+}
+
+.bottom-nav .nav-link span {
+  display: block;
+  margin-top: 5px;
+}
+
+.screens-wrapper {
+  width: 100%;
+  overflow: hidden; /* Скрываем все, что выходит за границы */
+  position: relative; /* На случай позиционирования внутренних элементов */
+}
+
+.screens-container {
+  display: flex; /* Раскладываем экраны в одну линию */
+  width: 300%; /* Ширина под три экрана, каждый будет 100% */
+  transition: transform 0.3s ease; /* На будущее для анимаций, пока можно оставить */
+  transform: translateX(-100vw);
+  position: relative; /* Добавь это, если его нет */
+}
+
+.screen {
+  width: 100vw; /* Каждая "страница" по ширине экрана */
+  box-sizing: border-box;
+  padding: 20px; /* Отступы внутри экрана (по желанию) */
+}
+
+.left-screen,
+.center-screen,
+.right-screen {
+  /* Можем временно добавить фоновый цвет, чтобы видеть границы (потом убрать) */
+  /* background: #f0f0f0; */
+  text-align: center; /* Текст по центру для заглушек */
+  position: relative;
+}
+
+.arrow-left,
+.arrow-right {
+  all: unset; /* Полный сброс стилей */
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  font-size: 24px !important;
+  color: #333 !important;
+  background-color: #e0e0e0 !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  line-height: 1 !important;
+  width: 36px !important;
+  height: 36px !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Тень для стрелок */
+  transition: all 0.2s ease; /* Плавная анимация */
+  display: block; /* Начальное состояние */
+  transition: opacity 0.3s ease; /* Плавная анимация */
+}
+
+.arrow-left[style*="display: none"],
+.arrow-right[style*="display: none"] {
+  opacity: 0; /* Плавное исчезновение стрелки */
+  pointer-events: none; /* Убираем кликабельность */
+}
+
+.arrow-left {
+  left: 10px !important;
+}
+
+.arrow-right {
+  right: 10px !important;
+}
+
+
+.muscle-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px; /* Расстояние между карточками */
+  margin-top: 0px; /* Отступ сверху */
+}
+
+.muscle-card {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.muscle-card .muscle-name {
+  font-size: 12px;
+  font-weight: bold;
+  margin: 5px 0 3px 0;
+  color: #333;
+}
+
+.muscle-card .muscle-level-text {
+  font-size: 10px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.muscle-card .muscle-icon {
+  width: 30px;
+  height: 30px;
+  margin-bottom: 5px;
+}
+
+.muscle-card .progress-bar-container {
+  width: 100%;
+  background: #ddd;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.muscle-card .progress-bar-fill {
+  height: 100%;
+  background: var(--progress-bar-color);
+  width: 0;
+  transition: width 0.3s ease;
+}
+
+.muscle-cards-grid {
+  gap: 30px; /* Уменьшаем расстояние между карточками */
+  grid-template-columns: repeat(3, minmax(80px, 1fr));
+}
+
+.center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px;
+}
+
+.main-level-container {
+  background: #fff;
+  border-radius: 200px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+
+  width: 200px; /* Фиксированная ширина */
+  height: 200px; /* Фиксированная высота */
+}
+
+
+
+/* Мобильная адаптация */
+@media screen and (max-width: 480px) {
+  :root {
+    /* Значительно уменьшаем размеры для мобильных устройств */
+    --progress-size: 200px;
+    --icon-size: 36px;
+    --button-height: 60px;
+    --button-width: 30%;
+    --button-font-size: 14px;
+    --progress-line-width: 35;
+    --achievement-img-size: 24px;
+    --level-number-size: 48px;
+    --nav-icon-size: 20px;
+    --nav-text-size: 10px;
+    --separator-height: 4px;
+    --nickname-font-size: 24px;
+    --section-title-font-size: 28px;
+    --achievement-text-font-size: 10px;
+    --top-bar-height: 50px;
+
+  }
+
+  .page-title {
+    font-size: 20px;
+  }
+
+  #userNickname {
+    font-size: var(--nickname-font-size);
+    margin: 5px 0 0 0;
+  }
+
+  .progress-container {
+    margin-top: 0px;
+  }
+
+  .text-button {
+    font-size: var(--button-font-size);
+  }
+
+  .achievement p {
+    font-size: var(--achievement-text-font-size);
+  }
+}

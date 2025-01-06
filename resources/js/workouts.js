@@ -1,29 +1,52 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalText = document.getElementById('modalText');
+  const modalOkButton = document.getElementById('modalOkButton');
   const workoutListDiv = document.getElementById('workoutList');
   const backButton = document.getElementById('backButton');
 
+  function showModal(text) {
+    modalText.textContent = text;
+    modalOverlay.style.display = 'block';
+
+    // Закрытие по кнопке "ОК"
+    modalOkButton.addEventListener('click', closeModal);
+
+    // Закрытие при клике на фон
+    modalOverlay.addEventListener('click', function overlayHandler(e) {
+      if (e.target === modalOverlay) {
+        closeModal();
+        modalOverlay.removeEventListener('click', overlayHandler); // Убираем обработчик после закрытия
+      }
+    });
+  }
+
+  function closeModal() {
+    modalOverlay.style.display = 'none';
+  }
+
   backButton.addEventListener('click', () => {
-    window.location.href = 'profile.html';
+    window.location.href = 'profile';
   });
 
   async function loadWorkouts() {
-    console.log('Запуск функции loadWorkouts');
+
     try {
       const response = await fetch('/getWorkouts'); // Предполагается, что маршрут возвращает список завершённых тренировок
       if (response.ok) {
         const workouts = await response.json();
-        console.log('Данные от сервера:', workouts);
+
         displayWorkouts(workouts);
       } else if (response.status === 401) {
-        alert('Требуется авторизация. Пожалуйста, войдите в систему.');
-        window.location.href = '/login.html';
+        showModal('Требуется авторизация. Пожалуйста, войдите в систему.');
+        window.location.href = '/login';
       } else {
         console.error('Ошибка при загрузке тренировок. Статус:', response.status);
-        workoutListDiv.textContent = 'Ошибка при загрузке тренировок.';
+        showModal('Ошибка при загрузке тренировок.');
       }
     } catch (error) {
       console.error('Ошибка:', error);
-      workoutListDiv.textContent = 'Ошибка при загрузке тренировок.';
+      showModal('Ошибка при загрузке тренировок.');
     }
   }
 
@@ -34,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Функция для отображения списка тренировок
   function displayWorkouts(workouts) {
-    console.log('Отображаем тренировки:', workouts);
     if (!workouts || workouts.length === 0) {
       workoutListDiv.textContent = 'У вас нет сохранённых тренировок.';
       return;
@@ -79,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
       timeLabel.textContent = 'ВРЕМЯ';
       const timeValue = document.createElement('div');
       timeValue.className = 'info-column-value info-time-value';
-      timeValue.textContent = workout.totalWorkoutTime || '0С'; // Если нет данных, показать 0С
+      timeValue.textContent = workout.total_workout_time || '0С';  // Если нет данных, показать 0С
       timeCol.appendChild(timeLabel);
       timeCol.appendChild(timeValue);
 
@@ -91,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
       xpLabel.textContent = 'ОПЫТ';
       const xpVal = document.createElement('div');
       xpVal.className = 'info-column-value info-xp-value';
-      xpVal.textContent = `${workout.totalXP || 0} XP`; // Если нет данных, 0 XP
+      xpVal.textContent = `${workout.total_experience || 0} XP`;  // Если нет данных, 0 XP
       xpCol.appendChild(xpLabel);
       xpCol.appendChild(xpVal);
 
@@ -124,8 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // При клике на карточку переходим к деталям
       workoutDiv.addEventListener('click', () => {
-        console.log('Переход к тренировке с ID:', workout._id);
-        window.location.href = `/workout_detail.html?id=${workout._id}`;
+        window.location.href = `/workout_detail?id=${workout.id}`;
       });
 
       workoutListDiv.appendChild(workoutDiv);

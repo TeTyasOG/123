@@ -1,0 +1,373 @@
+/* public/css/addExercise.css */
+
+/* CSS Variables */
+:root {
+  --font-family: 'INTRO', sans-serif;
+
+  --icon-size: 64px;
+
+  --top-bar-height: 80px;
+  --separator-height: 10px;
+  --separator-color: #545454;
+
+  --search-box-height: 80px;
+  --search-box-background-color: #f0f0f0;
+  --search-box-border-radius: 20px;
+  --search-box-margin: 20px;
+  --search-icon-size: 40px;
+  --search-icon-margin: 0 10px;
+  --search-input-font-size: 32px;
+  --search-input-color: #000;
+
+  --muscle-filter-button-height: 80px;
+  --muscle-filter-button-background-color: #f0f0f0;
+  --muscle-filter-button-border-radius: 20px;
+  --muscle-filter-button-font-size: 32px;
+  --muscle-filter-button-color: #000;
+  --muscle-filter-button-selected-color: #fff;
+  --muscle-filter-button-selected-background: #7e7e7e;
+
+  --section-title-font-size: 48px;
+  --section-title-margin: 10px;
+
+  --separator-width: 100%; /* Изменено на 100%, чтобы достигать краёв экрана */
+  --exercise-separator-width: 100%;
+
+  --exercise-item-height: 140px;
+  --exercise-image-size: 140px;
+  --exercise-image-border-radius: 200px;
+  --exercise-image-border-width: 2px;
+  --exercise-image-border-color: #545454;
+  --exercise-name-font-size: 32px;
+  --exercise-muscle-font-size: 24px;
+  --exercise-muscle-color: #7e7e7e;
+
+  --level-indicator-width: 45px;
+  --level-indicator-height: 25px;
+  --level-indicator-margin: 4px;
+  --level-indicator-border-radius: 15px;
+
+  --modal-background-color: rgba(0,0,0,0.4);
+  --modal-content-background: #fff;
+  --modal-content-border-radius: 20px;
+  --modal-title-font-size: 64px;
+  --modal-option-font-size: 55px;
+  --modal-option-margin: 25px;
+
+  --very-small-separator-height: 1px;
+  --very-small-separator-color: #ccc;
+}
+
+@font-face {
+  font-family: 'INTRO';
+  src: url('../fonts/INTRO.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+}
+
+.modal-open .modal {
+  backdrop-filter: blur(5px); /* Применяем размытие к фону модального окна */
+}
+
+.top-bar {
+  position: relative;
+  width: 100%;
+  height: var(--top-bar-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#pageTitle {
+  font-size: 64px;
+  text-transform: uppercase;
+}
+
+.icon-button {
+  position: absolute;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.icon-button img {
+  width: 100%;
+  height: 100%;
+}
+
+#closeButton {
+  left: 5px;
+}
+
+.separator {
+  border: none;
+  height: var(--separator-height);
+  background-color: var(--separator-color);
+  margin: 0;
+  width: var(--separator-width);
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: var(--search-box-margin);
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background-color: var(--search-box-background-color);
+  border-radius: var(--search-box-border-radius);
+  height: var(--search-box-height);
+  flex: 1;
+  margin-right: 10px;
+}
+
+.search-icon {
+  width: var(--search-icon-size);
+  height: var(--search-icon-size);
+  margin: var(--search-icon-margin);
+}
+
+#searchInput {
+  border: none;
+  background: none;
+  font-size: var(--search-input-font-size);
+  color: var(--search-input-color);
+  width: 100%;
+  font-family: var(--font-family);
+}
+
+#searchInput::placeholder {
+  color: #aaa;
+}
+
+#searchInput:focus {
+  outline: none;
+}
+
+.muscle-filter-button {
+  background-color: var(--muscle-filter-button-background-color);
+  border: none;
+  border-radius: var(--muscle-filter-button-border-radius);
+  height: var(--muscle-filter-button-height);
+  padding: 0 20px;
+  font-size: var(--muscle-filter-button-font-size);
+  color: var(--muscle-filter-button-color);
+  cursor: pointer;
+  font-family: var(--font-family);
+  margin-right: 10px;
+}
+
+.muscle-filter-button.muscle-selected {
+  background-color: var(--muscle-filter-button-selected-background);
+  color: var(--muscle-filter-button-selected-color);
+}
+
+.filter-button {
+  background-color: var(--muscle-filter-button-background-color);
+  border: none;
+  border-radius: var(--muscle-filter-button-border-radius);
+  height: var(--muscle-filter-button-height);
+  width: var(--muscle-filter-button-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.filter-button img {
+  width: var(--search-icon-size);
+  height: var(--search-icon-size);
+}
+
+.section-title {
+  font-size: var(--section-title-font-size);
+  margin: var(--section-title-margin);
+  font-family: var(--font-family);
+}
+
+.small-separator {
+  border: none;
+  height: 5px;
+  background-color: #ccc;
+  margin: 0;
+  width: var(--separator-width);
+}
+
+.very-small-separator {
+  border: none;
+  height: var(--very-small-separator-height);
+  background-color: var(--very-small-separator-color);
+  margin: 0;
+  width: var(--separator-width);
+}
+
+.exercise-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.exercise-item:hover {
+  background-color: #f9f9f9;
+}
+
+.exercise-image {
+  width: var(--exercise-image-size);
+  height: var(--exercise-image-size);
+  border-radius: var(--exercise-image-border-radius);
+  margin-right: 20px;
+  border: var(--exercise-image-border-width) solid var(--exercise-image-border-color);
+}
+
+.exercise-details {
+  flex: 1;
+}
+
+.exercise-name {
+  font-size: var(--exercise-name-font-size);
+  text-transform: uppercase;
+  font-family: var(--font-family);
+}
+
+.exercise-muscle {
+  font-size: var(--exercise-muscle-font-size);
+  color: var(--exercise-muscle-color);
+  text-transform: uppercase;
+  font-family: var(--font-family);
+}
+
+.exercise-levels {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+}
+
+.level-indicator {
+  width: var(--level-indicator-width);
+  height: var(--level-indicator-height);
+  margin: var(--level-indicator-margin);
+  border-radius: var(--level-indicator-border-radius);
+}
+
+.level-indicator.bronze {
+  background-color: #bf8970;
+}
+
+.level-indicator.silver {
+  background-color: #c0c0c0;
+}
+
+.level-indicator.gold {
+  background-color: #ffd700;
+}
+
+.level-indicator.diamond {
+  background-color: #70d1f4;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background-color: var(--modal-background-color);
+}
+
+.modal-content {
+  background-color: var(--modal-content-background);
+  margin: 5% auto;
+  padding: 0;
+  width: 90%;
+  max-width: 700px;
+  position: relative;
+  border-radius: var(--modal-content-border-radius);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-title {
+  font-size: var(--modal-title-font-size);
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-family: var(--font-family);
+}
+
+.modal .close {
+  display: none; /* Скрываем кнопку закрытия */
+}
+
+.muscle-option,
+.filter-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: var(--modal-option-margin) 0;
+}
+
+.muscle-icon,
+.filter-icon {
+  width: 50px;
+  height: 50px;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.muscle-name,
+.filter-name {
+  font-size: var(--modal-option-font-size);
+  flex: 1;
+  font-family: var(--font-family);
+}
+
+.muscle-check,
+.filter-check {
+  width: 64px;
+  height: 64px;
+  margin-right: 24px;
+  background-image: url('../images/icons/check.png');
+  background-size: cover;
+  visibility: hidden;
+}
+
+.muscle-option.selected .muscle-check,
+.filter-option.selected .filter-check {
+  visibility: visible;
+}
+
+.exercise-separator {
+  border: none;
+  height: 2px;
+  background-color: #ccc;
+  margin: 0;
+  width: var(--exercise-separator-width);
+}
+
+@media screen and (max-width: 480px) {
+  :root {
+    --icon-size: 32px;
+    --search-icon-size: 24px;
+    --search-input-font-size: 18px;
+    --muscle-filter-button-font-size: 18px;
+    --section-title-font-size: 24px;
+    --exercise-name-font-size: 16px;
+    --exercise-muscle-font-size: 12px;
+  }
+}

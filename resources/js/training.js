@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const startWorkoutButton = document.getElementById('startWorkoutButton');
   const createProgramButton = document.getElementById('createProgramButton');
   const programList = document.getElementById('programList');
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalText = document.getElementById('modalText');
+  const modalOkButton = document.getElementById('modalOkButton');
 
   const startProgramModal = document.getElementById('startProgramModal');
   const startProgramMessage = document.getElementById('startProgramMessage');
@@ -11,32 +14,60 @@ document.addEventListener('DOMContentLoaded', () => {
   let userPrograms = [];
   let selectedProgramToStart = null;
 
+  function showModal(text, onClose) {
+    modalText.textContent = text;
+    modalOverlay.style.display = 'block';
+
+    // Закрытие по кнопке "ОК"
+    modalOkButton.onclick = () => {
+      closeModal();
+      if (onClose) onClose();
+    };
+
+    // Закрытие по фону
+    modalOverlay.addEventListener('click', function overlayHandler(e) {
+      if (e.target === modalOverlay) {
+        closeModal();
+        modalOverlay.removeEventListener('click', overlayHandler); // Убираем обработчик
+        if (onClose) onClose();
+      }
+    });
+  }
+
+  function closeModal() {
+    modalOverlay.style.display = 'none';
+  }
+
   // Нажатие на кнопку "НАЧАТЬ ТРЕНИРОВКУ" — начинаем тренировку без программы
   startWorkoutButton.addEventListener('click', () => {
     sessionStorage.removeItem('currentProgramWorkout');
     // Чтобы при добавлении упражнений мы возвращались в тренировку
     sessionStorage.setItem('returnTo', 'workout');
-    window.location.href = 'workout.html';
+    window.location.href = 'workout';
   });
 
   // Нажатие на кнопку "СОЗДАТЬ ПРОГРАММУ"
   createProgramButton.addEventListener('click', () => {
     sessionStorage.setItem('returnTo', 'program');
-    window.location.href = 'addProgram.html';
+    window.location.href = 'addProgram';
   });
 
-  // Загрузка программ пользователя из localStorage
+  // Загрузка программ пользователя 
   function loadPrograms() {
-    const storedPrograms = localStorage.getItem('userPrograms');
-    if (storedPrograms) {
-      userPrograms = JSON.parse(storedPrograms);
-    } else {
-      userPrograms = [];
-    }
-
-    // Отображаем все программы (поиск убран)
-    displayPrograms(userPrograms);
+    fetch('/program/list', { credentials: 'include' })
+      .then(res => res.json())
+      .then(programs => {
+        userPrograms = programs;
+        displayPrograms(programs);
+      })
+      .catch(err => {
+        console.error('Ошибка при получении списка программ:', err);
+        userPrograms = [];
+        displayPrograms([]);
+        showModal('Ошибка при загрузке списка программ.');
+      });
   }
+  
 
   // Функция для получения количества выполнений программы
   function getProgramCompletions(programId) {
@@ -58,9 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function displayPrograms(programs) {
     programList.innerHTML = '';
     programs.forEach(program => {
-      const completions = getProgramCompletions(program.id);
-      const xp = calculateProgramXP(program);
-
+      // program.id
+      // program.name
+      // program.experience
+      // program.times_completed
+  
       const div = document.createElement('div');
       div.className = 'program-item';
       div.innerHTML = `
@@ -68,34 +101,41 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="program-stats-row">
           <div class="program-stat-block">
             <div class="program-stat-label">ВЫПОЛН.</div>
-            <div class="program-stat-value" style="color:var(--program-value-color);">${completions}</div>
+            <div class="program-stat-value">${program.times_completed || 0}</div>
           </div>
           <div class="program-stat-block">
             <div class="program-stat-label">ОПЫТ</div>
-            <div class="program-stat-value xp-value">${xp}</div>
+            <div class="program-stat-value xp-value">${program.experience || 0}</div>
           </div>
         </div>
       `;
-
-      // Нажатие на карточку программы
+  
+      // Клик на программу => начать тренировку (или открыть модалку "начать?")
       div.addEventListener('click', () => {
         selectedProgramToStart = program;
         startProgramMessage.textContent = `ВЫ ХОТИТЕ ЗАПУСТИТЬ ПРОГРАММУ "${program.name.toUpperCase()}"?`;
         startProgramModal.style.display = 'block';
       });
-
+      
       programList.appendChild(div);
     });
   }
+  
 
   confirmStartProgram.addEventListener('click', () => {
     if (selectedProgramToStart) {
-      sessionStorage.setItem('currentProgramWorkout', JSON.stringify(selectedProgramToStart));
-      // При запуске программы сразу идём в тренировку, и будем добавлять упражнения из программы
-      sessionStorage.setItem('returnTo', 'workout');
-      window.location.href = 'workout.html';
+        // Записываем в sessionStorage
+        sessionStorage.setItem('currentProgramWorkout', JSON.stringify(selectedProgramToStart));
+        sessionStorage.setItem('returnTo', 'workout');
+
+        // <-- Добавим флажок «пропустить загрузку прошлых сетов»
+        sessionStorage.setItem('skipPreviousSets', 'true');
+
+        // Переходим на страницу workout
+        window.location.href = 'workout';
     }
-  });
+});
+
 
   cancelStartProgram.addEventListener('click', () => {
     startProgramModal.style.display = 'none';

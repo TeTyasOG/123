@@ -1,0 +1,40 @@
+/* exercises.css */
+
+#filterForm {
+    margin-bottom: 20px;
+}
+
+#filterForm label {
+    margin-right: 10px;
+}
+
+#filterForm select {
+    padding: 5px;
+    margin-right: 10px;
+}
+
+#exerciseList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.exercise-card {
+    border: 1px solid #ccc;
+    padding: 15px;
+    width: 300px;
+    border-radius: 5px;
+}
+
+.exercise-card h3 {
+    margin-top: 0;
+}
+
+.exercise-card video {
+    width: 100%;
+    height: auto;
+}
+
+.exercise-card p {
+    margin: 10px 0;
+}
