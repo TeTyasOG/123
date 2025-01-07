@@ -47,8 +47,10 @@ export default defineConfig({
         }),
     ],
     server: {
+        host: '0.0.0.0', // или '134.209.197.54'
+        port: 5173,
         hmr: {
-            host: 'localhost',
+            host: '134.209.197.54',
         },
     },
 });
